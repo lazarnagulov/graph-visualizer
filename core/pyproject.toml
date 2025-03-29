@@ -7,7 +7,5 @@ name = "graph-visualizer-core"
 version = "0.0.1"
 description = "Graph visualizer core component that contains busines logic and rules."
 dependencies = [
-    "graph-visualizer-api==0.0.1",
-    "complex-visualizer==0.0.1",
-    "simple-visualizer==0.0.1"
+    "graph-visualizer-api==0.0.1"
 ]
