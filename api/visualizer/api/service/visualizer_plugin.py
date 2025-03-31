@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import Tuple
 
 from ..model.graph import Graph
-from ..service.plugin import Plugin
+from .plugin import Plugin
 
 
 class VisualizerPlugin(Plugin):

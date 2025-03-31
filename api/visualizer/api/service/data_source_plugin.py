@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from ..model.graph import Graph
-from ..service.plugin import Plugin
+from .plugin import Plugin
 
 
 class DataSourcePlugin(Plugin):
