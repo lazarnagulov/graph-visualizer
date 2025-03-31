@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 
 from typing_extensions import Optional
 
@@ -8,24 +8,24 @@ class Node:
     __slots__ = ['__properties']
 
     def __init__(self, **properties) -> None:
-        self.__properties: Dict[str, any] = properties
+        self.__properties: Dict[str, Any] = properties
 
     @property
-    def properties(self) -> Dict[str, any]:
+    def properties(self) -> Dict[str, Any]:
         return self.__properties
 
     @properties.setter
-    def properties(self, attributes: Dict[str, any]) -> None:
+    def properties(self, attributes: Dict[str, Any]) -> None:
         if not isinstance(attributes, dict):
             raise TypeError(f"Error: expected dict but got { type(attributes) }")
         self.__properties = attributes
 
-    def add_property(self, key: str, value: any) -> None:
+    def add_property(self, key: str, value: Any) -> None:
         if not isinstance(key, str):
             raise TypeError(f"Error: expected str but got { type(key) }")
         self.__properties[key] = value
 
-    def remove_property(self, key: str) -> Optional[any]:
+    def remove_property(self, key: str) -> Optional[Any]:
         if not isinstance(key, str):
             raise TypeError(f"Error: expected str but got { type(key) }")
         return self.__properties.pop(key, None)
