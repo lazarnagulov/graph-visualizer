@@ -25,10 +25,9 @@ class Edge:
         :raises TypeError: If either source or destination is not a Node object.
         """
         if not isinstance(source, Node):
-            raise TypeError(f"Error: Expected source to be a Node, but got { type(source) }")
+            raise TypeError(f"expected source to be a Node, but got { type(source) }")
         if not isinstance(destination, Node):
-            raise TypeError(f"Error: Expected destination to be a Node, but got {type(destination)}")
-
+            raise TypeError(f"expected destination to be a Node, but got {type(destination)}")
         self.__source: Node = source
         self.__destination: Node = destination
         self.__properties: Dict[str, Any] = properties
@@ -54,7 +53,7 @@ class Edge:
         :raises TypeError: If the source is not a Node object.
         """
         if not isinstance(source, Node):
-            raise TypeError(f'Error: expected Node but got { type(source) }')
+            raise TypeError(f'Error: expected Node, but got { type(source) }')
         self.__source = source
 
     @property
@@ -134,6 +133,24 @@ class Edge:
         :rtype: Tuple[Node, Node]
         """
         return self.__source, self.__destination
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Compare this Edge object with another object for equality.
+
+        This method checks if the other object is an `Edge` and determines their equality.
+        Edges are considered equal if their source and destination are the same.
+
+        :param other: The object to compare this Edge to.
+        :type other: object
+
+        :return: True if the edges are equal (i.e., have the same source and destination),
+                 False otherwise.
+        :rtype: bool
+        """
+        if not isinstance(other, Edge):
+            return False
+        return self.source == other.source and self.destination == other.destination
 
     def __hash__(self) -> int:
         """

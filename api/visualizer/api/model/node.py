@@ -38,18 +38,18 @@ class Node:
         return self.__properties
 
     @properties.setter
-    def properties(self, attributes: Dict[str, Any]) -> None:
+    def properties(self, properties: Dict[str, Any]) -> None:
         """
         Set the properties of the Node.
 
-        :param attributes: A dictionary of properties to be set for the node.
-        :type attributes: Dict[str, Any]
+        :param properties: A dictionary of properties to be set for the node.
+        :type properties: Dict[str, Any]
 
         :raises TypeError: If the provided attributes are not a dictionary.
         """
-        if not isinstance(attributes, dict):
-            raise TypeError(f"Error: expected dict but got { type(attributes) }")
-        self.__properties = attributes
+        if not isinstance(properties, dict):
+            raise TypeError(f"expected properties to be a dict, but got { type(properties) }")
+        self.__properties = properties
 
     def add_property(self, key: str, value: Any) -> None:
         """
@@ -63,7 +63,8 @@ class Node:
         :raises TypeError: If the key is not a string.
         """
         if not isinstance(key, str):
-            raise TypeError(f"Error: expected str but got { type(key) }")
+            raise TypeError(f"expected key to be a str, but got { type(key) }")
+
         self.__properties[key] = value
 
     def remove_property(self, key: str) -> Optional[Any]:

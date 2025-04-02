@@ -140,9 +140,14 @@ class Graph:
         :type edge: Edge
 
         :raises TypeError: If the provided edge is not an instance of `Edge`.
+        :raises ValueError: If the provided edge redefines existing edge.
         """
         if not isinstance(edge, Edge):
-            raise TypeError(f"Error: expected Edge got { type(edge) }")
+            raise TypeError(f"expected Edge got { type(edge) }")
+
+        if self.contains_edge(edge):
+            raise ValueError(f"redefinition of edge: { edge }")
+
         self.outgoing[edge.source][edge.destination] = edge
         self.incoming[edge.destination][edge.source] = edge
 
@@ -202,7 +207,8 @@ class Graph:
         :raises KeyError: If the node is not in the graph.
         """
         if node not in self.outgoing:
-            raise KeyError(f"Errr: node {node} is not in the graph.")
+            raise KeyError(f"Error: node {node} is not in the graph.")
+
         for edge in self.outgoing[node].values():
             yield edge
 
