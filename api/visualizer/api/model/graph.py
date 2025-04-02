@@ -58,7 +58,7 @@ class Graph:
         :raises TypeError: If the provided value is not a dictionary.
         """
         if not isinstance(value, dict):
-            raise TypeError(f"Error: expected dict got { type(value) }")
+            raise TypeError(f"expected value to ba a dict, but got { type(value) }")
         self.__outgoing = value
 
     @property
@@ -91,7 +91,7 @@ class Graph:
         :raises TypeError: If the provided value is not a dictionary.
         """
         if not isinstance(value, dict):
-            raise TypeError(f"Error: expected dict got { type(value) }")
+            raise TypeError(f"expected value to be a dict, but got { type(value) }")
         self.__incoming = value
 
     def insert_node(self, node: Node) -> None:
@@ -108,7 +108,7 @@ class Graph:
         :raises TypeError: If the provided node is not an instance of `Node`.
         """
         if not isinstance(node, Node):
-            raise TypeError(f"Error: expected Node got { type(node) }")
+            raise TypeError(f"expected Node, but got { type(node) }")
         self.outgoing[node] = {}
         self.incoming[node] = {}
 
@@ -143,7 +143,7 @@ class Graph:
         :raises ValueError: If the provided edge redefines existing edge.
         """
         if not isinstance(edge, Edge):
-            raise TypeError(f"expected Edge got { type(edge) }")
+            raise TypeError(f"expected Edge, but got { type(edge) }")
 
         if self.contains_edge(edge):
             raise ValueError(f"redefinition of edge: { edge }")
@@ -207,7 +207,7 @@ class Graph:
         :raises KeyError: If the node is not in the graph.
         """
         if node not in self.outgoing:
-            raise KeyError(f"Error: node {node} is not in the graph.")
+            raise KeyError(f"node {node} is not in the graph.")
 
         for edge in self.outgoing[node].values():
             yield edge
