@@ -1,3 +1,4 @@
+import uuid
 from typing import Dict, Any
 
 from typing_extensions import Optional
@@ -12,19 +13,22 @@ class Node:
     string, and the value can be of any type.
     """
 
-    __slots__ = ['__properties']
+    __slots__ = ['__properties', "__id"]
 
-    def __init__(self, **properties) -> None:
+    def __init__(self, node_id: Optional[str] = None, **properties) -> None:
         """
-        Initializes a Node object with properties.
+        Initializes a Node object with properties and id.
 
+        :param node_id: The id of the node. If not provided, a new id is generated.
+        :ptype node_id: Optional[str]
         :param properties: A dictionary of properties where keys are strings
                            representing property names and values can be of any type.
 
         Example:
             node = Node(name="A", value=10)
-            # Creates a node with properties {'name': 'A', 'value': 10}
+            # Creates a node with properties {'name': 'A', 'value': 10} and random generated id
         """
+        self.__id = node_id if node_id else str(uuid.uuid4())
         self.__properties: Dict[str, Any] = properties
 
     @property
@@ -50,6 +54,30 @@ class Node:
         if not isinstance(properties, dict):
             raise TypeError(f"expected properties to be a dict, but got { type(properties) }")
         self.__properties = properties
+
+    @property
+    def id(self) -> str:
+        """
+        Get the id of the Node.
+
+        :return: The id of the node.
+        :rtype: str
+        """
+        return self.__id
+
+    @id.setter
+    def id(self, value: str) -> None:
+        """
+        Set the id of the Node.
+
+        :param value: The id to be set for the node.
+        :type value: str
+
+        :raises TypeError: If the provided value is not a string.
+        """
+        if not isinstance(value, str):
+            raise TypeError(f"expected id to be a str, but got { type(value) }")
+        self.__id = value
 
     def add_property(self, key: str, value: Any) -> None:
         """
@@ -85,19 +113,23 @@ class Node:
         """
         Compare this Node object with another object for equality.
 
-        This method checks if the other object is a `Node` and compares their
-        properties to determine equality. Nodes are considered equal if their
-        properties (both keys and values) are the same.
+        This method checks if the other object is an instance of `Node` and compares
+        their `id` and `properties`. Nodes are considered equal if they have the same
+        `id` and if their `properties` (both keys and values) match.
 
         :param other: The object to compare this Node to.
         :type other: object
 
-        :return: True if the nodes are equal (i.e., have the same properties),
+        :return: True if the nodes have the same `id` and identical `properties`,
                  False otherwise.
         :rtype: bool
+
+        :raises TypeError: If the other object is not an instance of Node.
         """
         if not isinstance(other, Node):
             return False
+        if self.id == other.id:
+            return True
         if self.properties.keys() == other.properties.keys():
             return False
         return all(self.properties[k] == other.properties[k] for k in self.properties)
@@ -125,4 +157,8 @@ class Node:
         :rtype: str
         """
         properties_str = ', '.join(f'{key}: {value}' for key, value in self.__properties.items())
-        return f'Node({ properties_str })'
+        return f'Node(id: {self.id} -- { properties_str })'
+
+
+
+
