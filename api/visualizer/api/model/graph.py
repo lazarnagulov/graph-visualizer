@@ -134,19 +134,24 @@ class Graph:
 
         This method adds a directed edge between two nodes in the graph. It updates both the
         outgoing edges of the source node and the incoming edges of the destination node.
-        If the edge already exists, it will be replaced with the new one.
 
         :param edge: The edge to insert into the graph.
         :type edge: Edge
 
         :raises TypeError: If the provided edge is not an instance of `Edge`.
-        :raises ValueError: If the provided edge redefines existing edge.
+        :raises ValueError: If the provided edge redefines existing edge or if node does not exist.
         """
         if not isinstance(edge, Edge):
             raise TypeError(f"expected Edge, but got { type(edge) }")
 
         if self.contains_edge(edge):
             raise ValueError(f"redefinition of edge: { edge }")
+
+        if not self.contains_node(edge.source):
+            raise ValueError(f"node {edge.source } not in graph.")
+
+        if not self.contains_node(edge.destination):
+            raise ValueError(f"node {edge.destination } not in graph.")
 
         self.outgoing[edge.source][edge.destination] = edge
         self.incoming[edge.destination][edge.source] = edge
@@ -163,6 +168,7 @@ class Graph:
         :type edges: Edge
 
         :raises TypeError: If any of the provided arguments is not an instance of `Edge`.
+        :raises ValueError: If any of the provided edge redefines existing edge.
         """
         for edge in edges:
             self.insert_edge(edge)
@@ -206,7 +212,7 @@ class Graph:
 
         :raises KeyError: If the node is not in the graph.
         """
-        if node not in self.outgoing:
+        if not self.contains_node(node):
             raise KeyError(f"node {node} is not in the graph.")
 
         for edge in self.outgoing[node].values():
