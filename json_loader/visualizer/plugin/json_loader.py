@@ -27,7 +27,7 @@ class JsonLoader(DataSourcePlugin):
             self.__id_field = self.DEFAULT_ID_FIELD
             self.__ref_prefix = self.DEFAULT_REF_PREFIX
         else:
-            with open(self.CONFIG_PATH) as f:
+            with open(self.CONFIG_PATH, "r+", encoding="utf-8") as f:
                 config = json.load(f)
                 self.__id_field = config['id-field']
                 self.__ref_prefix = config['ref-prefix']
@@ -71,7 +71,7 @@ class JsonLoader(DataSourcePlugin):
         self.__nodes[node_id] = node
 
     @staticmethod
-    def __load_json(path) -> Any:
+    def __load_json(path: str) -> Any:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
 
@@ -150,3 +150,6 @@ class JsonLoader(DataSourcePlugin):
     def __get_reference_id(self, value: str) -> str:
         return value[len(self.ref_prefix):]
 
+if __name__ == "__main__":
+    loader: DataSourcePlugin = JsonLoader()
+    print(loader.load(path=os.path.join("..", "..", "..", "data", "json", "big_cyclic_data.json")))
