@@ -46,7 +46,7 @@ class JsonLoader(DataSourcePlugin):
     def name(self) -> str:
         return "JsonLoader"
 
-    def load(self, path: str, **kwargs) -> Graph:
+    def load(self, path: Optional[str], **kwargs) -> Graph:
         graph: Graph = Graph()
 
         if not path:
@@ -80,8 +80,7 @@ class JsonLoader(DataSourcePlugin):
             ref_node: Optional[Node] = self.__get_node_by_id(ref_id)
             if not ref_node:
                 raise ValueError(f"invalid reference in JSON: {ref_id}")
-            edge: Edge = Edge(node, ref_node)
-            edge.add_property("relation", relation_name)
+            edge: Edge = Edge(node, ref_node, relation=relation_name)
             graph.insert_edge(edge)
 
     def __generate_graph(
@@ -91,65 +90,64 @@ class JsonLoader(DataSourcePlugin):
         parent_node: Optional[Node] = None,
         relation_name: Optional[str] = None
     ) -> None:
-        if isinstance(parsed_json, dict):
-            node: Node = Node()
-            graph.insert_node(node)
-            if parent_node:
-                edge: Edge = Edge(parent_node, node, relation=relation_name)
-                graph.insert_edge(edge)
-
-            for key, value in parsed_json.items():
-                if key == self.id:
-                    node.id = value
-                    self.__insert_node(value, node)
-                    continue
-
-                if isinstance(value, str) and value.startswith(self.ref_prefix):
-                    ref_id: str = self.__get_reference_id(value)
-                    ref_node: Optional[Node] = self.__get_node_by_id(ref_id)
-                    if not ref_node:
-                        self.__insert_unresolved_edge(node, ref_id, key)
-                        continue
-
-                    edge: Edge = Edge(node, ref_node, relation=key)
-                    graph.insert_edge(edge)
-                    continue
-
-                if isinstance(value, dict) or isinstance(value, list):
-                    self.__generate_graph(graph, value, node, key)
-                elif isinstance(value, list):
-                    for item in parsed_json:
-                        self.__generate_graph(graph, item, node, key)
-                else:
-                    node.add_property(key, value)
-
-        elif isinstance(parsed_json, list):
-            for item in parsed_json:
-                self.__generate_graph(graph, item, parent_node, relation_name)
-        else:
-            if isinstance(parsed_json, str) and parsed_json.startswith(self.ref_prefix):
-                ref_id: str = self.__get_reference_id(parsed_json)
-                ref_node: Optional[Node] = self.__get_node_by_id(ref_id)
-                if not ref_node:
-                    self.__insert_unresolved_edge(parent_node, ref_id, relation_name)
-                    return
-
-                edge: Edge = Edge(parent_node, ref_node, relation=relation_name)
-                graph.insert_edge(edge)
-                return
-
-            if not self.__get_node_by_id(str(parsed_json)):
+        match parsed_json:
+            case dict():
                 node: Node = Node()
-                node.id = parsed_json
-                self.__insert_node(parsed_json, node)
                 graph.insert_node(node)
-                if parent_node and relation_name:
+                if parent_node:
                     edge: Edge = Edge(parent_node, node, relation=relation_name)
                     graph.insert_edge(edge)
+
+                for key, value in parsed_json.items():
+                    self.__parse_dict_pair(graph, node, key, value)
+            case list():
+                for item in parsed_json:
+                    self.__generate_graph(graph, item, parent_node, relation_name)
+            case _:
+                if self.__is_reference(parsed_json):
+                    self.__parse_reference(graph, parent_node, relation_name, parsed_json)
+                    return
+
+                if not self.__get_node_by_id(str(parsed_json)):
+                    node: Node = Node(parsed_json)
+                    self.__insert_node(str(parsed_json), node)
+                    graph.insert_node(node)
+                    if parent_node and relation_name:
+                        edge: Edge = Edge(parent_node, node, relation=relation_name)
+                        graph.insert_edge(edge)
+
+    def __parse_dict_pair(self, graph: Graph, node: Node, key: str, value: Any) -> None:
+        if key == self.id:
+            node.id = value
+            self.__insert_node(value, node)
+            return
+
+        if self.__is_reference(value):
+            self.__parse_reference(graph, node, key, value)
+            return
+
+        if isinstance(value, dict) or isinstance(value, list):
+            self.__generate_graph(graph, value, node, key)
+        else:
+            node.add_property(key, value)
+
+    def __parse_reference(self, graph: Graph, parent_node: Node, key: str, value: str) -> None:
+        ref_id: str = self.__get_reference_id(value)
+        ref_node: Optional[Node] = self.__get_node_by_id(ref_id)
+        if not ref_node:
+            self.__insert_unresolved_edge(parent_node, ref_id, key)
+            return
+
+        edge: Edge = Edge(parent_node, ref_node, relation=key)
+        graph.insert_edge(edge)
 
     def __get_reference_id(self, value: str) -> str:
         return value[len(self.ref_prefix):]
 
+    def __is_reference(self, value: Any) -> bool:
+        return isinstance(value, str) and value.startswith(self.ref_prefix)
+
+
 if __name__ == "__main__":
     loader: DataSourcePlugin = JsonLoader()
-    print(loader.load(path=os.path.join("..", "..", "..", "data", "json", "big_cyclic_data.json")))
+    print(loader.load(path=os.path.join("..", "..", "..", "data", "json", "small_cyclic_data.json")))
