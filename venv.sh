@@ -6,7 +6,7 @@ if [ -d "venv" ]; then
 fi
 
 echo "Creating environment."
-python3 -m venv venv
+python -m venv venv
 source venv/bin/activate
 
 echo "Environment has been activated successfully!"
