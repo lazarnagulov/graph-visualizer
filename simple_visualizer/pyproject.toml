@@ -12,4 +12,4 @@ dependencies = [
 ]
 
 [project.entry-points."visualizer.visualizer"]
-visualizer_complex = "visualizer.plugin.simple_visualizer:SimpleVisualizer"
+simple_visualizer = "visualizer.plugin.simple_visualizer:SimpleVisualizer"

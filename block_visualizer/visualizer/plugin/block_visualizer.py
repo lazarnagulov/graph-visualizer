@@ -8,7 +8,7 @@ from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 class BlockVisualizer(VisualizerPlugin):
 
     def visualize(self, graph: Graph, **kwargs) -> Tuple[str, str]:
-        print("Visualizing graph complexly")
+        print("Visualizing graph blockly")
         return "", f"<div>{json.dumps(graph)}</div>"
 
     def identifier(self) -> str:
