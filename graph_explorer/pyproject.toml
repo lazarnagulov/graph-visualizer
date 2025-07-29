@@ -11,4 +11,4 @@ dependencies = [
     "block-visualizer==0.0.1",
     "simple-visualizer==0.0.1",
     "Django>=5.1"
-]gigt
+]
