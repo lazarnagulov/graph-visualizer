@@ -14,12 +14,8 @@ python --version
 ```
 
 ### Installation
-Clone repository
-```bash
-git clone https://github.com/lazarnagulov/graph-visualizer.git
-```
 
-*Optional*: Install virtual environment:
+*Optional*: Install virtual environment with following command:
 ```bash
 chmod +x venv.sh && ./venv.sh  # for linux / macos
 call venv.bat                  # for windows (run in cmd, not integrated terminal)
@@ -36,7 +32,6 @@ Run server:
 chmod +x run.sh && ./run.sh # for linux
 call run.bat                # for windows (run in cmd, not integrated terminal)
 ```
-
 ## Plugins
 There are two types of plugins - *visualizer* and *data sources*.
 #### Data source plugins:
@@ -101,8 +96,9 @@ or directly in `config.json` file:
 > ⚠️ All references must be defined!
 
 
+
 ## Authors:
 - [Lazar Nagulov](https://github.com/lazarnagulov)
 - [Filip Tot](https://github.com/FilipT03)
-- [Stefan Lekić](https://github.com/ConfusingBox)
-- [Leon Jurić](https://github.com/SirBoi)
+- [Stefan Lekić](https://github.com/SirBoi)
+- [Leon Jurić](https://github.com/ConfusingBox)

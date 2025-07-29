@@ -122,6 +122,25 @@ class Edge:
             raise TypeError(f'Error: expected str but got { type(key) }')
         self.__properties[key] = value
 
+    def add_properties(self, **properties: Dict[str, Any]) -> None:
+        """
+        Add multiple properties to the edge.
+
+        This method allows you to associate multiple key-value pairs with the edge
+        at once. Each keyword argument is treated as a property, where the key must
+        be a string and the value can be any type.
+
+        :param properties: Arbitrary keyword arguments representing properties to add.
+                           Each key must be a string.
+        :type properties: Dict[str, Any]
+
+        :raises TypeError: If any of the keys is not a string.
+        """
+        for key in properties:
+            if not isinstance(key, str):
+                raise TypeError(f'expected str but got {type(key)}')
+        self.__properties.update(properties)
+
     def get_endpoints(self) -> Tuple[Node, Node]:
         """
         Get the source and destination nodes of the edge.
