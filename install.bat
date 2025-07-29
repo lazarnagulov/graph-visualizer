@@ -1,6 +1,10 @@
 @echo off
 setlocal enabledelayedexpansion
 
+if exist venv/Scripts/activate.bat (
+  call venv/Scripts/activate.bat
+)
+
 call :install_component "Graph visualizer API" "./api"
 if errorlevel 1 exit /b 1
 
