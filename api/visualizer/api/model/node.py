@@ -123,8 +123,6 @@ class Node:
         :return: True if the nodes have the same `id` and identical `properties`,
                  False otherwise.
         :rtype: bool
-
-        :raises TypeError: If the other object is not an instance of Node.
         """
         if not isinstance(other, Node):
             return False

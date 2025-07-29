@@ -122,6 +122,9 @@ class Edge:
             raise TypeError(f'Error: expected str but got { type(key) }')
         self.__properties[key] = value
 
+    def add_properties(self, **properties: Dict[str, Any]) -> None:
+        self.__properties.update(properties)
+
     def get_endpoints(self) -> Tuple[Node, Node]:
         """
         Get the source and destination nodes of the edge.
