@@ -80,7 +80,7 @@ class JsonLoader(DataSourcePlugin):
             ref_node: Optional[Node] = self.__get_node_by_id(ref_id)
             if not ref_node:
                 raise ValueError(f"invalid reference in JSON: {ref_id}")
-            edge: Edge = Edge(node, ref_node, relation=relation_name)
+            edge: Edge = Edge(node, ref_node, **{relation_name: True})
             graph.insert_edge(edge)
 
     def __generate_graph(
@@ -95,7 +95,7 @@ class JsonLoader(DataSourcePlugin):
                 node: Node = Node()
                 graph.insert_node(node)
                 if parent_node:
-                    edge: Edge = Edge(parent_node, node, relation=relation_name)
+                    edge: Edge = Edge(parent_node, node, **{relation_name: True})
                     graph.insert_edge(edge)
 
                 for key, value in parsed_json.items():
@@ -113,7 +113,7 @@ class JsonLoader(DataSourcePlugin):
                     self.__insert_node(str(parsed_json), node)
                     graph.insert_node(node)
                     if parent_node and relation_name:
-                        edge: Edge = Edge(parent_node, node, relation=relation_name)
+                        edge: Edge = Edge(parent_node, node, **{relation_name: True})
                         graph.insert_edge(edge)
 
     def __parse_dict_pair(self, graph: Graph, node: Node, key: str, value: Any) -> None:
@@ -138,7 +138,7 @@ class JsonLoader(DataSourcePlugin):
             self.__insert_unresolved_edge(parent_node, ref_id, key)
             return
 
-        edge: Edge = Edge(parent_node, ref_node, relation=key)
+        edge: Edge = Edge(parent_node, ref_node, **{key: True})
         graph.insert_edge(edge)
 
     def __get_reference_id(self, value: str) -> str:
