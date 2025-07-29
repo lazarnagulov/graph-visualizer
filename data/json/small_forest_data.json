@@ -1,0 +1,133 @@
+[
+    {
+        "type": "marshmallows",
+        "name": "Fudge Fantasy",
+        "ppu": 0.02,
+        "batters": [
+            {
+                "type": "strawberry",
+                "description": "fluffy texture"
+            },
+            {
+                "type": "caramel",
+                "description": "rich flavor"
+            }
+        ],
+        "topping": [
+            {
+                "type": "sprinkles",
+                "description": "tender"
+            },
+            {
+                "type": "chocolate chips",
+                "description": "refreshing"
+            },
+            {
+                "type": "caramel drizzle",
+                "description": "gooey"
+            },
+            {
+                "type": "marshmallows",
+                "description": "creamy"
+            },
+            {
+                "type": "gummy bears",
+                "description": "buttery"
+            },
+            {
+                "type": "crushed nuts",
+                "description": "crispy"
+            },
+            {
+                "type": "whipped cream",
+                "description": "juicy"
+            }
+        ]
+    },
+    {
+        "type": "lollipops",
+        "name": "Gummy Galaxy",
+        "ppu": 0.28,
+        "batters": [
+            {
+                "type": "caramel",
+                "description": "rich flavor"
+            },
+            {
+                "type": "hazelnut",
+                "description": "rich flavor"
+            }
+        ],
+        "topping": [
+            {
+                "type": "sprinkles",
+                "description": "tender"
+            },
+            {
+                "type": "chocolate chips",
+                "description": "refreshing"
+            },
+            {
+                "type": "caramel drizzle",
+                "description": "tender"
+            },
+            {
+                "type": "marshmallows",
+                "description": "buttery"
+            }
+        ]
+    },
+    {
+        "type": "fudge",
+        "name": "Caramel Delight",
+        "ppu": 0.69,
+        "batters": [],
+        "topping": [
+            {
+                "type": "sprinkles",
+                "description": "crispy"
+            }
+        ]
+    },
+    {
+        "type": "jelly beans",
+        "name": "Rocky Road Bliss",
+        "ppu": 0.96,
+        "batters": [],
+        "topping": [
+            {
+                "type": "sprinkles",
+                "description": "crunchy"
+            },
+            {
+                "type": "chocolate chips",
+                "description": "sweet"
+            },
+            {
+                "type": "caramel drizzle",
+                "description": "buttery"
+            }
+        ]
+    },
+    {
+        "type": "rock candy",
+        "name": "Gummy Galaxy",
+        "ppu": 0.72,
+        "batters": [
+            {
+                "type": "cherry",
+                "description": "fluffy texture"
+            },
+            {
+                "type": "raspberry",
+                "description": "rich flavor"
+            }
+        ],
+        "topping": [
+            {
+                "type": "sprinkles",
+                "description": "crunchy"
+            }
+        ]
+    }
+]

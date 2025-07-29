@@ -1,0 +1,139 @@
+[
+    {
+        "@id": "node001",
+        "name": "Elisa",
+        "age": 21,
+        "city": "Alpiarça",
+        "details": {
+            "hobbies": [
+                "cooking",
+                "hiking"
+            ],
+            "job": "Research Assistant IV",
+            "education": {
+                "degree": "Trade school certificate",
+                "university": "Kwan Dong University",
+                "graduation_year": 1995
+            },
+            "contact": {
+                "email": "eestcourt0@reverbnation.com",
+                "phone": "485-591-2299",
+                "address": "7 Dwight Avenue"
+            }
+        },
+        "friends": [
+            "&node001",
+            "&node004",
+            "&node003"
+        ]
+    },
+    {
+        "@id": "node002",
+        "name": "Ara",
+        "age": 84,
+        "city": "Non Sung",
+        "details": {
+            "hobbies": [
+                "hiking",
+                "reading",
+                "cooking"
+            ],
+            "job": "Professor",
+            "education": {
+                "degree": "PhD",
+                "university": "Université François Rabelais de Tours",
+                "graduation_year": 1954
+            },
+            "contact": {
+                "email": "abooton1@google.es",
+                "phone": "688-988-8034",
+                "address": "2 Kensington Alley"
+            }
+        },
+        "friends": [
+            "&node002",
+            "&node005"
+        ]
+    },
+    {
+        "@id": "node003",
+        "name": "Stanton",
+        "age": 85,
+        "city": "Mętków",
+        "details": {
+            "hobbies": [
+                "reading"
+            ],
+            "job": "Senior Financial Analyst",
+            "education": {
+                "degree": "Bachelor's degree",
+                "university": "Universidade de Aveiro",
+                "graduation_year": 1962
+            },
+            "contact": {
+                "email": "smalcher2@sohu.com",
+                "phone": "380-905-0716",
+                "address": "22 Hoffman Junction"
+            }
+        },
+        "friends": [
+            "&node004"
+        ]
+    },
+    {
+        "@id": "node004",
+        "name": "Nichol",
+        "age": 131,
+        "city": "Obock",
+        "details": {
+            "hobbies": [
+                "hiking",
+                "cooking",
+                "reading"
+            ],
+            "job": "General Manager",
+            "education": {
+                "degree": "PhD",
+                "university": "University of Hyderabad",
+                "graduation_year": 1908
+            },
+            "contact": {
+                "email": "novitts3@ucoz.ru",
+                "phone": "781-759-7193",
+                "address": "9 Heffernan Crossing"
+            }
+        },
+        "friends": [
+            "&node004",
+            "&node001",
+            "&node005"
+        ]
+    },
+    {
+        "@id": "node005",
+        "name": "Cassey",
+        "age": 86,
+        "city": "Kalodu",
+        "details": {
+            "hobbies": [
+                "cooking"
+            ],
+            "job": "Geologist II",
+            "education": {
+                "degree": "PhD",
+                "university": "Stratford College London",
+                "graduation_year": 1993
+            },
+            "contact": {
+                "email": "cgiacobazzi4@wisc.edu",
+                "phone": "905-308-4358",
+                "address": "2 Oriole Street"
+            }
+        },
+        "friends": [
+            "&node001",
+            "&node005",
+            "&node002"
+        ]
+    }
+]

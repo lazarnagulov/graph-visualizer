@@ -1,0 +1,17 @@
+[
+  {
+    "@id": "YWtvX292b19jaXRhc19jYXJfc2k=",
+    "name": "Joe",
+    "friends": ["&amFfc2FtX3N2ZXRza2lfbWVnYV9jYXI="]
+  },
+  {
+    "@id": "amFfc2FtX3N2ZXRza2lfbWVnYV9jYXI=",
+    "name": "Jane",
+    "friends": ["&YWtvX292b19jaXRhc19jYXJfc2k=", "&bmFjZXNfbmlzdGFfemFuaW1saml2b19uYWNpX292ZGU="]
+  },
+  {
+    "@id": "bmFjZXNfbmlzdGFfemFuaW1saml2b19uYWNpX292ZGU=",
+    "name": "Bob",
+    "friends": ["&YWtvX292b19jaXRhc19jYXJfc2k="]
+  }
+]
