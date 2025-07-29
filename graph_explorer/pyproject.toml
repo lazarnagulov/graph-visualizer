@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graph-visualizer-web"
+version = "0.0.1"
+description = "Graph visualizer web application"
+dependencies = [
+    "graph-visualizer-core==0.0.1",
+    "complex-visualizer==0.0.1",
+    "simple-visualizer==0.0.1",
+    "Django>=5.1"
+]
