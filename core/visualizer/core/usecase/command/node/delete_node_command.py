@@ -5,7 +5,7 @@ from visualizer.api.model.graph import Graph
 
 class DeleteNodeCommand(Command):
 
-    __slots__ = ["__graph, __node_id"]
+    __slots__ = ["__graph", "__node_id"]
 
     def __init__(self, graph: Graph, node_id: str) -> None:
         self.__graph = graph

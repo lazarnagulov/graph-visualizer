@@ -1,11 +1,10 @@
 from typing import Dict, Any, Optional
 
-from visualizer.core.usecase.command import Command
 
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
 from visualizer.api.model.edge import Edge
-
+from visualizer.core.usecase.command import Command
 from visualizer.core.usecase.event_bus import EventBus
 
 
@@ -33,4 +32,6 @@ class CreateEdgeCommand(Command):
             self.__event_bus.emit("graph_updated", self.__graph)
 
     def undo(self) -> None:
-        raise NotImplemented("implement create edge command undo")
+        self.__graph.remove_edge(self.__source, self.__destination)
+        if self.__event_bus:
+            self.__event_bus.emit("graph_updated", self.__graph)

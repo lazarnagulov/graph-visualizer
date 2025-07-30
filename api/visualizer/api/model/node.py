@@ -28,7 +28,7 @@ class Node:
             node = Node(name="A", value=10)
             # Creates a node with properties {'name': 'A', 'value': 10} and random generated id
         """
-        self.__id = node_id if node_id else str(uuid.uuid4())
+        self.__id: str = node_id if node_id else str(uuid.uuid4())
         self.__properties: Dict[str, Any] = properties
 
     @property

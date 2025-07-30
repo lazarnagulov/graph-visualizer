@@ -1,7 +1,9 @@
-from typing import Dict, Iterator, Optional
+from typing import Dict, Iterator, Optional, overload, Union
 
 from .node import Node
 from .edge import Edge
+from ..exception.node_exception import NodeHasEdgesError
+
 
 class Graph:
     """
@@ -128,6 +130,43 @@ class Graph:
         for node in nodes:
             self.insert_node(node)
 
+    @overload
+    def remove_node(self, node: Node) -> None:  # type: ignore
+        ...
+
+    @overload
+    def remove_node(self, node_id: str) -> None:  # type: ignore
+        ...
+
+    def remove_node(self, node_or_id: Union[Node, str]) -> None:
+        """
+        Removes a node by either a Node object or a node_id, only if there are no edges attached.
+
+        This method will first check if the node has any outgoing or incoming edges. If edges
+        are attached to the node, it will raise a `NodeHasEdgesError`. Otherwise, the node is
+        removed from the graph.
+
+        :param node_or_id: The node object or node ID of the node to be removed.
+        :type node_or_id: Union[Node, str]
+
+        :raises ValueError: If the provided node ID is not found in the graph.
+        :raises NodeHasEdgesError: If the node has edges attached (either incoming or outgoing).
+        """
+        if isinstance(node_or_id, Node):
+            node = node_or_id
+        else:
+            # Should I also add id -> Node mapping for this?
+            node = next((n for n in self.__outgoing if n.id == node_or_id), None)
+
+        if node is None:
+            raise ValueError(f"node with ID {node_or_id} not found in the graph.")
+
+        if len(self.__outgoing[node]) > 0 or len(self.__incoming[node]) > 0:
+            raise NodeHasEdgesError(node)
+
+        del self.__outgoing[node]
+        del self.__incoming[node]
+
     def insert_edge(self, edge: Edge) -> None:
         """
         Insert a directed edge into the graph.
@@ -147,10 +186,10 @@ class Graph:
             raise TypeError(f"expected Edge, but got { type(edge) }")
 
         if not self.contains_node(edge.source):
-            raise ValueError(f"node {edge.source } not in graph.")
+            raise ValueError(f"node { edge.source } not in graph.")
 
         if not self.contains_node(edge.destination):
-            raise ValueError(f"node {edge.destination } not in graph.")
+            raise ValueError(f"node { edge.destination } not in graph.")
 
         existing_edge: Optional[Edge] = self.get_edge(edge.source, edge.destination)
         if existing_edge:
@@ -268,6 +307,23 @@ class Graph:
         :rtype: bool
         """
         return self.get_edge(edge.source, edge.destination) is not None
+
+    def remove_edge(self, source: Node, destination: Node) -> None:
+        """
+        Removes an edge from the graph.
+
+        This method removes the directed edge from `source` to `destination`, both from
+        the outgoing edges of the source node and the incoming edges of the destination node.
+
+        :param source: The source node of the edge to remove.
+        :type source: Node
+        :param destination: The destination node of the edge to remove.
+        :type destination: Node
+        """
+        if source in self.__outgoing and destination in self.__outgoing[source]:
+            del self.__outgoing[source][destination]
+        if destination in self.__incoming and source in self.__incoming[destination]:
+            del self.__incoming[destination][source]
 
     def __str__(self) -> str:
         """

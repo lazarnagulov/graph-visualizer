@@ -7,7 +7,7 @@ name = "json_loader"
 version = "0.0.1"
 description = "Json loader"
 dependencies = [
-    "graph-visualizer-api==0.0.1",
+    "graph-visualizer-api==0.1.0",
 ]
 
 [project.scripts]
