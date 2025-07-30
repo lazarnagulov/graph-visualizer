@@ -95,6 +95,10 @@ class Node:
 
         self.__properties[key] = value
 
+    def add_properties(self, properties: Dict[str, Any]) -> None:
+        for key, value in properties.items():
+            self.add_property(key, value)
+
     def remove_property(self, key: str) -> Optional[Any]:
         """
         Remove a property from the Node by its key.

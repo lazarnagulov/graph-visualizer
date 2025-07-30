@@ -1,13 +1,15 @@
 from typing import Any, Dict, Optional
 
 from visualizer.api.model.graph import Graph
+from visualizer.api.model.node import Node
 from visualizer.core.command import Command
 from visualizer.core.usecase.event_bus import EventBus
+from visualizer.core.cli.exception.parser_exception import ParserError
 
 
 class EditNodeCommand(Command):
 
-    __slots__ = ["__graph", "__node_id", "__new_properties", "__old_properties", "__event_bus"]
+    __slots__ = ["__graph", "__node_id", "__new_properties", "__old_properties", "__node", "__event_bus"]
 
     def __init__(
         self,
@@ -18,12 +20,19 @@ class EditNodeCommand(Command):
     ) -> None:
         self.__graph = graph
         self.__node_id = node_id
+        self.__node: Optional[Node] = self.__graph.get_node(node_id)
+        if self.__node is None:
+            raise ParserError(f"node with id {self.__node_id} not found")
+        self.__old_properties = self.__node.properties.copy()
         self.__new_properties = new_properties
-        self.__old_properties = None
         self.__event_bus = event_bus
 
     def execute(self) -> None:
-        raise NotImplemented("implement edit node command execute")
+        self.__node.add_properties(self.__new_properties)
+        if self.__event_bus:
+            self.__event_bus.emit("node_updated", self.__node)
 
     def undo(self):
-        raise NotImplemented("implement edit node command undo")
+        self.__node.properties = self.__old_properties
+        if self.__event_bus:
+            self.__event_bus.emit("node_updated", self.__node)
