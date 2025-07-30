@@ -1,5 +1,5 @@
 from visualizer.api.model.graph import Graph
-from visualizer.core.usecase.command import Command
+from visualizer.core.command import Command
 
 
 class FilterCommand(Command):

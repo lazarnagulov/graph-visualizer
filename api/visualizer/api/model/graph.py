@@ -29,6 +29,7 @@ class Graph:
         """
         self.__outgoing: Dict[Node,Dict[Node, Edge]] = {}
         self.__incoming: Dict[Node,Dict[Node, Edge]] = {}
+        self.__nodes_by_id: Dict[str, Node] = {}
 
     @property
     def outgoing(self) -> Dict[Node,Dict[Node, Edge]]:
@@ -113,6 +114,7 @@ class Graph:
             raise TypeError(f"expected Node, but got { type(node) }")
         self.outgoing[node] = {}
         self.incoming[node] = {}
+        self.__nodes_by_id[node.id] = node
 
     def insert_nodes(self, *nodes: Node) -> None:
         """
@@ -131,11 +133,11 @@ class Graph:
             self.insert_node(node)
 
     @overload
-    def remove_node(self, node: Node) -> None:  # type: ignore
+    def remove_node(self, node: Node) -> None:
         ...
 
     @overload
-    def remove_node(self, node_id: str) -> None:  # type: ignore
+    def remove_node(self, node_id: str) -> None:
         ...
 
     def remove_node(self, node_or_id: Union[Node, str]) -> None:
@@ -155,8 +157,7 @@ class Graph:
         if isinstance(node_or_id, Node):
             node = node_or_id
         else:
-            # Should I also add id -> Node mapping for this?
-            node = next((n for n in self.__outgoing if n.id == node_or_id), None)
+            node = self.get_node(node_or_id)
 
         if node is None:
             raise ValueError(f"node with ID {node_or_id} not found in the graph.")
@@ -227,6 +228,9 @@ class Graph:
         :rtype: int
         """
         return len(self.outgoing)
+
+    def get_node(self, node_id: str) -> Optional[Node]:
+        return self.__nodes_by_id.get(node_id, None)
 
     def get_nodes(self) -> Iterator[Node]:
         """

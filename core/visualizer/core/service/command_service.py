@@ -1,6 +1,6 @@
 from typing import List
 
-from visualizer.core.usecase.command.command import Command
+from visualizer.core.command import Command
 
 
 class CommandService:

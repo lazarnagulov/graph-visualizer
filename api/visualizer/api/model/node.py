@@ -128,9 +128,6 @@ class Node:
             return False
         if self.id == other.id:
             return True
-        if self.properties.keys() == other.properties.keys():
-            return False
-        return all(self.properties[k] == other.properties[k] for k in self.properties)
 
     def __hash__(self) -> int:
         """
@@ -142,7 +139,7 @@ class Node:
         :return: A hash value representing the Node.
         :rtype: int
         """
-        return hash(id(self))
+        return hash(self.id)
 
     def __str__(self) -> str:
         """

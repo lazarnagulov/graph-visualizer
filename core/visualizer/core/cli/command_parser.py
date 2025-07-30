@@ -1,9 +1,10 @@
 from typing import Any, Dict, Optional
 
 from visualizer.api.model.graph import Graph
-from visualizer.core.usecase.command import Command
-from visualizer.core.usecase.command import CreateNodeCommand
-from visualizer.core.usecase.command.exception.parser_exception import ParserError
+from visualizer.core.command import Command, CreateNodeCommand, DeleteNodeCommand
+from visualizer.core.command.exception.parser_exception import ParserError
+
+from core.visualizer.core.service.command_service import CommandService
 
 
 def parse_command(graph: Graph, input_line: str) -> Command:
@@ -25,9 +26,18 @@ def parse_command(graph: Graph, input_line: str) -> Command:
             i += 1
         return CreateNodeCommand(graph, node_id, properties, None)
 
+    if tokens[0] == "delete" and tokens[1] == "node":
+        if len(tokens) == 3:
+            if tokens[2].startswith("--id="):
+                node_id = tokens[2].split("--id=")[1]
+                return DeleteNodeCommand(graph, node_id)
+        raise ParserError("no node id provided")
 
 if __name__ == '__main__':
     g: Graph = Graph()
+    cmd_service = CommandService()
+
     cmd = parse_command(g, "create node --id=1234 --property Name=Lazar --property Surname=Nagulov")
-    cmd.execute()
+    cmd_service.execute(cmd)
+    cmd_service.undo()
     print(g)
