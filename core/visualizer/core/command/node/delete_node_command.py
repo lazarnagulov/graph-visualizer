@@ -8,11 +8,10 @@ from visualizer.core.usecase.event_bus import EventBus
 
 class DeleteNodeCommand(Command):
 
-    __slots__ = ["__graph", "__node_id", "__event_bus"]
+    __slots__ = ["__graph", "__event_bus"]
 
     def __init__(self, graph: Graph, node_id: str, event_bus: Optional[EventBus] = None) -> None:
         self.__graph = graph
-        self.__node_id = node_id
         self.__event_bus = event_bus
         self.__node = self.__graph.get_node(node_id)
 

@@ -8,7 +8,7 @@ from visualizer.core.usecase.event_bus import EventBus
 
 class CreateNodeCommand(Command):
 
-    __slots__ = ["__graph", "__node_id", "__properties", "__event_bus", "__node"]
+    __slots__ = ["__graph", "__event_bus", "__node"]
 
     def __init__(
         self,
@@ -18,10 +18,8 @@ class CreateNodeCommand(Command):
         event_bus: Optional[EventBus]
     ) -> None:
         self.__graph = graph
-        self.__node_id = node_id
-        self.__properties = properties
         self.__event_bus = event_bus
-        self.__node = Node(self.__node_id, **self.__properties)
+        self.__node = Node(node_id, **properties)
 
     def execute(self) -> None:
         self.__graph.insert_node(self.__node)
