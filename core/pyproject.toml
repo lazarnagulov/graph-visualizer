@@ -9,3 +9,6 @@ description = "Graph visualizer core component that contains busines logic and r
 dependencies = [
     "graph-visualizer-api==0.1.0"
 ]
+
+[project.scripts]
+repl = "visualizer.core.cli.command_parser:run_repl"

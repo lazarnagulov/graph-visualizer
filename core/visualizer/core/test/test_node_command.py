@@ -19,18 +19,17 @@ class TestNodeCommand(TestCase):
         self.node = Node(self.node_id, **self.node_properties)
         self.node_to_delete = Node(self.node_to_delete_id, **self.node_properties)
 
-        self.graph.insert_node(self.node)
-        self.graph.insert_node(self.node_to_delete)
+        self.graph.insert_nodes(self.node, self.node_to_delete)
 
     def test_create_node(self):
-        command_input = "create node --id=5 --property test1=test1 --property test2=test2 --property test3=test3"
+        command_input = "create node --id=5 --property str=test1 --property boolean=True --property test3=123"
 
         parse_command(self.graph, command_input).execute()
 
         node = self.graph.get_node("5")
         self.assertIsNotNone(node)
         self.assertEqual(node.id, "5")
-        self.assertEqual(node.properties, {"test1": "test1", "test2": "test2", "test3": "test3"})
+        self.assertEqual(node.properties, {"str": "test1", "boolean": True, "test3": 123})
 
     def test_create_node_without_properties(self):
         command_input = "create node --id=6"
