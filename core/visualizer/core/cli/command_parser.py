@@ -5,7 +5,6 @@ from visualizer.api.model.node import Node
 from visualizer.core.cli.exception.parser_exception import ParserError
 from visualizer.core.command import Command, CreateNodeCommand, DeleteNodeCommand, EditNodeCommand, CreateEdgeCommand, \
     EditEdgeCommand, DeleteEdgeCommand
-from visualizer.core.service.command_service import CommandService
 
 
 def parse_command(graph: Graph, input_line: str) -> Command:
@@ -13,13 +12,16 @@ def parse_command(graph: Graph, input_line: str) -> Command:
     if not tokens:
         raise ParserError("no tokens provided")
 
+    if len(tokens) == 1:
+        raise NotImplementedError("implement general commands")
+
     match tokens[1]:
         case "node":
             return __parse_node_command(graph, tokens)
         case "edge":
             return __parse_edge_command(graph, tokens)
         case _:
-            raise NotImplemented("implement general error parsing")
+            raise ParserError("unknown command")
 
 def __parse_edge_command(graph: Graph, tokens: List[str]) -> Command:
     source: Node = graph.get_node(tokens[2])
@@ -80,18 +82,3 @@ def __parse_properties(tokens: List[str], require_id: bool = True) -> Tuple[Opti
         raise ParserError("no node id provided")
 
     return node_id, properties
-
-def run_repl() -> None:
-    graph: Graph = Graph()
-    command_service: CommandService = CommandService()
-
-    while True:
-        value = input(">> ")
-        if value.lower().strip() == "exit":
-            break
-        try:
-            cmd = parse_command(graph, value)
-            command_service.execute(cmd)
-            print(graph)
-        except Exception as e:
-            print(e)

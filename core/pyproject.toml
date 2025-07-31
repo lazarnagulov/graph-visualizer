@@ -11,4 +11,4 @@ dependencies = [
 ]
 
 [project.scripts]
-repl = "visualizer.core.cli.command_parser:run_repl"
+repl = "visualizer.core.cli.repl:run_repl"
