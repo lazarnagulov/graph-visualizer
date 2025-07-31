@@ -23,6 +23,9 @@ def parse_command(graph: Graph, input_line: str) -> Command:
                 properties[key] = value
                 i += 1
             i += 1
+        if node_id is None:
+            raise ParserError("no node id provided")
+
         return CreateNodeCommand(graph, node_id, properties, None)
 
     if tokens[0] == "delete" and tokens[1] == "node":
@@ -44,6 +47,8 @@ def parse_command(graph: Graph, input_line: str) -> Command:
                 properties[key] = value
                 i += 1
             i += 1
+        if node_id is None:
+            raise ParserError("no node id provided")
         return EditNodeCommand(graph, node_id, properties, None)
 
 if __name__ == '__main__':

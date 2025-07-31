@@ -167,6 +167,7 @@ class Graph:
 
         del self.__outgoing[node]
         del self.__incoming[node]
+        del self.__nodes_by_id[node.id]
 
     def insert_edge(self, edge: Edge) -> None:
         """
