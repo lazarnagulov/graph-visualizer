@@ -9,3 +9,6 @@ description = "Graph visualizer core component that contains busines logic and r
 dependencies = [
     "graph-visualizer-api==0.0.1"
 ]
+
+[tool.setuptools.data-files]
+templates = ["visualizer/core/templates/*"]

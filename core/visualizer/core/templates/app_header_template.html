@@ -1,0 +1,26 @@
+<div>
+  <label for="selectVisualizer">Select visualizer: </label>
+  <select id="selectVisualizer"></select>
+  <label for="selectDataSource">Select data source: </label>
+  <select id="selectDataSource"></select>
+</div>
+<script>
+  let visualizers = {{ visualizer_plugins }};
+  let data_sources = {{ data_source_plugins }};
+
+  d3.select('#selectVisualizer')
+    .selectAll('option')
+    .data(visualizers)
+    .enter()
+    .append('option')
+    .attr('value', d => d.id)
+    .text(d => d.name);
+
+  d3.select('#selectDataSource')
+    .selectAll('option')
+    .data(data_sources)
+    .enter()
+    .append('option')
+    .attr('value', d => d.id)
+    .text(d => d.name);
+</script>
