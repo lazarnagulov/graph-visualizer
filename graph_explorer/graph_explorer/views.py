@@ -1,11 +1,8 @@
 from django.apps import apps
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from visualizer.core.platform.workspace import Workspace
 from visualizer.core.service.plugin_service import PluginService
-
-from visualizer.core.platform.platform import Platform
-from visualizer.core.view import main_view
-from visualizer.core.view.main_view import MainView
 
 from .apps import datasource_group, visualizer_group
 
@@ -24,12 +21,8 @@ def plugins(request):
 
 def index(request):
     plugin_service: PluginService = apps.get_app_config('graph_explorer').plugin_service
-    platform: Platform = apps.get_app_config('graph_explorer').platform
-    workspace: Workspace = platform.get_selected_workspace()
-    workspace.visualizer_plugin = plugin_service.plugins[visualizer_group][0]
-    workspace.data_source_plugin = plugin_service.plugins[datasource_group][0]
-    main_view: MainView = workspace.generate_main_view()
-    _,main_view_html = main_view.render()
+    workspace: Workspace = __get_workspace()
+    _,main_view_html = workspace.render_main_view()
     _,app_header = workspace.render_app_header()
 
     return render(request, 'index.html', {
@@ -37,3 +30,21 @@ def index(request):
         'app_header': app_header,
         'main_view': main_view_html,
     })
+
+
+def handle_visualizer_change(request):
+    plugin_id: str = request.GET.get('plugin_id')
+    workspace: Workspace = __get_workspace()
+    __get_workspace().set_visualizer_plugin(plugin_id)
+    _,main_view_html = workspace.render_main_view()
+    return HttpResponse(main_view_html)
+
+def handle_data_source_change(request):
+    plugin_id: str = request.GET.get('plugin_id')
+    workspace: Workspace = __get_workspace()
+    __get_workspace().set_data_source_plugin(plugin_id)
+    _,main_view_html = workspace.render_main_view()
+    return HttpResponse(main_view_html)
+
+def __get_workspace() -> Workspace:
+    return apps.get_app_config('graph_explorer').platform.get_selected_workspace()

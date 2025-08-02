@@ -6,7 +6,7 @@ from visualizer.api.service.data_source_plugin import DataSourcePlugin
 from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 from visualizer.api.service.plugin import Plugin
 from visualizer.core.service.plugin_service import PluginService
-from visualizer.core.view.main_view import MainView
+import visualizer.core.view.main_view as main_view
 import os
 from typing import Dict, List
 
@@ -19,32 +19,47 @@ class Workspace(object):
         self.__data_source_plugin: DataSourcePlugin | None = None
         self.__graph: Graph = Graph()
 
-    @property
-    def visualizer_plugin(self) -> VisualizerPlugin:
-        return self.__visualizer_plugin
+    def set_visualizer_plugin(self, identifier: str) -> None:
+        """
+        Set visualizer plugin via its identifier.
+        :param identifier: plugin identifier
+        """
+        self.__visualizer_plugin = self.__plugin_service.get_visualizer_plugin(identifier)
 
-    @property
-    def data_source_plugin(self) -> DataSourcePlugin:
-        return self.__data_source_plugin
+    def set_data_source_plugin(self, identifier: str) -> None:
+        """
+        Set data source plugin via its identifier.
+        :param identifier: plugin identifier
+        """
+        self.__data_source_plugin = self.__plugin_service.get_data_source_plugin(identifier)
 
-    @visualizer_plugin.setter
-    def visualizer_plugin(self, visualizer_plugin: VisualizerPlugin):
-        self.__visualizer_plugin = visualizer_plugin
+    def __set_default_plugins(self) -> None:
+        """ Set plugins to first available. """
+        # TODO: add safety check in case there are no plugins
+        if self.__visualizer_plugin is None:
+            self.__visualizer_plugin = self.__plugin_service.plugins[VISUALIZER_PLUGIN][0]
+        if self.__data_source_plugin is None:
+            self.__data_source_plugin = self.__plugin_service.plugins[DATA_SOURCE_PLUGIN][0]
 
-    @data_source_plugin.setter
-    def data_source_plugin(self, data_source_plugin: DataSourcePlugin):
-        self.__data_source_plugin = data_source_plugin
-
-    def generate_graph(self):
+    def generate_graph(self) -> None:
+        """ Generate the graph using the currently selected data source plugin. """
         # TODO: replace hardcoded path with file picker
         # TODO: add safety check in case data plugin was not set
         self.__graph = self.__data_source_plugin.load(path=os.path.join("..", "data", "json", "small_cyclic_data.json"))
 
-    def generate_main_view(self):
+    def render_main_view(self) -> (str,str):
+        """
+        Render the main view. Generates a graph if empty.
+        :return: (header,body) html string that should be included in page
+        """
+        # TODO: add safety check in case visualizer plugin was not set
+        if self.__visualizer_plugin is None or self.__data_source_plugin is None:
+            self.__set_default_plugins()
         if self.__graph is None or self.__graph.is_empty():
             self.generate_graph()
-        # TODO: add safety check in case visualizer plugin was not set
-        return MainView(self.__graph, self.__visualizer_plugin)
+
+        return main_view.render(self.__graph, self.__visualizer_plugin)
+
 
     def render_app_header(self) -> (str, str):
         """
@@ -68,5 +83,7 @@ class Workspace(object):
             for plugin in data_source_plugins]
 
         body_html = Template(body_template).render(visualizer_plugins=visualizer_plugins_js,
-                                                   data_source_plugins=data_source_plugins_js)
+                                                   data_source_plugins=data_source_plugins_js,
+                                                   selected_visualizer=self.__visualizer_plugin.identifier(),
+                                                   selected_data_source=self.__data_source_plugin.identifier())
         return "", body_html
