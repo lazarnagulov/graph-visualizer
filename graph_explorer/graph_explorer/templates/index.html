@@ -1,47 +1,12 @@
-<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <!--Ucitavanje d3.js biblioteke moguce je na ovaj nacin.-->
-        {% load static %}
-    <!-- Download d3.v3.js from a website-->
-    <!--    <script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>-->
-    <!-- Use local d3.v3.js -->
-    <!--    <script type="text/javascript" src="{% static 'd3.v3.js' %}"></script>-->
-    <!--    <link rel="stylesheet" href="{% static 'style.css' %}"/>-->
-        <title>{{title}}</title>
-        {% block head_content %}{% endblock %}
-    </head>
-    <body>
+{% extends "base.html" %}
+{% block content %}
     <div class="page">
-          <div class="header">
-              <div>
-              <a href="{% url 'index' %}">Home</a>
-              </div>
-              <div>
-                  <h2>Loaders</h2>
-                  {% if datasource_plugins %}
-                     {% for p in datasource_plugins %}
-                        <span>{{p.name}}</span>
-                     {% endfor %}
-                  {% else %}
-                    <h3>Not recognized any datasource plugin</h3>
-                  {% endif %}
-              </div>
-              <div>
-                  <h2>Visualizers</h2>
-                  {% if visualizer_plugins %}
-                     {% for p in visualizer_plugins %}
-                        <span>{{p.name}}</span>
-                     {% endfor %}
-                  {% else %}
-                    <h3>Not recognized any visualizer plugin</h3>
-                  {% endif %}
-              </div>
-          </div>
-          <div class="center">
-              {% block content %}{% endblock %}
-          </div>
+        <div class="header">
+            {% csrf_token %}
+            {{ app_header|safe }}
+        </div>
+        <div class="center">
+            {{ main_view|safe }}
+        </div>
     </div>
-    </body>
-</html>
+{% endblock %}
