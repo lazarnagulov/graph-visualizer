@@ -1,12 +1,23 @@
 <div>
   <label for="selectVisualizer">Select visualizer: </label>
-  <select id="selectVisualizer"></select>
+  <select name="plugin_id" id="selectVisualizer"
+    hx-get="/change-visualizer"
+    hx-trigger="change"
+    hx-target="#main-view"
+    hx-swap="innerHTML"></select>
   <label for="selectDataSource">Select data source: </label>
-  <select id="selectDataSource"></select>
+  <select name="plugin_id" id="selectDataSource"
+    hx-get="/change-data-source"
+    hx-trigger="change"
+    hx-target="#main-view"
+    hx-swap="innerHTML"></select>
 </div>
 <script>
   let visualizers = {{ visualizer_plugins }};
   let data_sources = {{ data_source_plugins }};
+
+  let initial_visualizer = {{ selected_visualizer|tojson }};
+  let initial_data_source = {{ selected_data_source|tojson }};
 
   d3.select('#selectVisualizer')
     .selectAll('option')
@@ -14,7 +25,8 @@
     .enter()
     .append('option')
     .attr('value', d => d.id)
-    .text(d => d.name);
+    .text(d => d.name)
+    .attr('selected', d => d.id === initial_visualizer.id);
 
   d3.select('#selectDataSource')
     .selectAll('option')
@@ -22,5 +34,7 @@
     .enter()
     .append('option')
     .attr('value', d => d.id)
-    .text(d => d.name);
+    .text(d => d.name)
+    .attr('selected', d => d.id === initial_data_source.id);
+
 </script>

@@ -9,7 +9,7 @@ class BlockVisualizer(VisualizerPlugin):
 
     def visualize(self, graph: Graph, **kwargs) -> Tuple[str, str]:
         print("Visualizing graph blockly")
-        return "", f"<div>{str(graph)}</div>"
+        return "", f"<div>{str(graph)[::-1]}</div>"
 
     def identifier(self) -> str:
         return "block_visualizer"
