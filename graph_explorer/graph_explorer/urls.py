@@ -24,6 +24,7 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('plugins', views.plugins, name="plugins"),
 
-    path('change-visualizer/', views.handle_visualizer_change, name='change-visualizer'),
-    path('change-data-source/', views.handle_data_source_change, name='change-data-source'),
+    path('change-visualizer/', views.visualizer_change, name='change-visualizer'),
+    path('change-data-source/', views.data_source_change, name='change-data-source'),
+    path('upload-data-file/', views.data_file_upload, name='upload-data-file'),
 ]

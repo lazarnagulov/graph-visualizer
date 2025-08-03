@@ -19,13 +19,12 @@ def render(graph: Graph, visualizer: VisualizerPlugin, **kwargs) -> (str, str):
     with open(os.path.join(sys.prefix, 'templates/main_view_template.html'), 'r', encoding='utf-8') as file:
         main_view_template = file.read()
 
-    _, visualized_body = visualizer.visualize(graph=graph, **kwargs)
+    if visualizer and graph:
+        _, visualized_body = visualizer.visualize(graph=graph, **kwargs)
+    elif not graph:
+        visualized_body = "<p>No graph</p>"
+    else:
+        visualized_body = "<p>No visualizer plugin</p>"
+
     main_view_html = Template(main_view_template).render(visualized_body=visualized_body)
-
     return "", main_view_html
-
-
-# class MainView(object):
-#     def __init__(self):
-#         pass
-#

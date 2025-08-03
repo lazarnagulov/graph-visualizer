@@ -18,6 +18,7 @@ class Workspace(object):
         self.__visualizer_plugin: VisualizerPlugin | None = None
         self.__data_source_plugin: DataSourcePlugin | None = None
         self.__graph: Graph = Graph()
+        self.__data_file_string: str = ""
 
     def set_visualizer_plugin(self, identifier: str) -> None:
         """
@@ -35,24 +36,28 @@ class Workspace(object):
 
     def __set_default_plugins(self) -> None:
         """ Set plugins to first available. """
-        # TODO: add safety check in case there are no plugins
-        if self.__visualizer_plugin is None:
+        if self.__visualizer_plugin is None and len(self.__plugin_service.plugins[VISUALIZER_PLUGIN]) > 0:
             self.__visualizer_plugin = self.__plugin_service.plugins[VISUALIZER_PLUGIN][0]
-        if self.__data_source_plugin is None:
+        if self.__data_source_plugin is None and len(self.__plugin_service.plugins[DATA_SOURCE_PLUGIN]) > 0:
             self.__data_source_plugin = self.__plugin_service.plugins[DATA_SOURCE_PLUGIN][0]
+
+    @property
+    def data_file_string(self) -> str:
+        return self.__data_file_string
+    @data_file_string.setter
+    def data_file_string(self, data_file_string: str) -> None:
+        self.__data_file_string = data_file_string
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
-        # TODO: replace hardcoded path with file picker
-        # TODO: add safety check in case data plugin was not set
-        self.__graph = self.__data_source_plugin.load(path=os.path.join("..", "data", "json", "small_cyclic_data.json"))
+        if self.__data_source_plugin and self.__data_file_string:
+            self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
 
     def render_main_view(self) -> (str,str):
         """
         Render the main view. Generates a graph if empty.
         :return: (header,body) html string that should be included in page
         """
-        # TODO: add safety check in case visualizer plugin was not set
         if self.__visualizer_plugin is None or self.__data_source_plugin is None:
             self.__set_default_plugins()
         if self.__graph is None or self.__graph.is_empty():

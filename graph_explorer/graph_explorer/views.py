@@ -1,6 +1,8 @@
 from django.apps import apps
+from django.core.files.uploadedfile import UploadedFile
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from visualizer.core.platform.workspace import Workspace
 from visualizer.core.service.plugin_service import PluginService
 
@@ -32,17 +34,28 @@ def index(request):
     })
 
 
-def handle_visualizer_change(request):
+def visualizer_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
     __get_workspace().set_visualizer_plugin(plugin_id)
     _,main_view_html = workspace.render_main_view()
     return HttpResponse(main_view_html)
 
-def handle_data_source_change(request):
+def data_source_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
     __get_workspace().set_data_source_plugin(plugin_id)
+    _,main_view_html = workspace.render_main_view()
+    return HttpResponse(main_view_html)
+
+def data_file_upload(request):
+    workspace: Workspace = __get_workspace()
+    if request.method == "POST" and 'file_input' in request.FILES:
+        uploaded_file:UploadedFile = request.FILES['file_input']
+        file_string = uploaded_file.read()
+        workspace.data_file_string = file_string
+        workspace.generate_graph()
+
     _,main_view_html = workspace.render_main_view()
     return HttpResponse(main_view_html)
 
