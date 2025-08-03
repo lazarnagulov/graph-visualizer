@@ -17,4 +17,4 @@ json_loader = "visualizer.command.json_config:config"
 provides = ["visualizer.commands", "visualizer.plugin"]
 
 [project.entry-points."visualizer.datasource"]
-datasource_json = "visualizer.command.json_loader:JsonLoader"
+datasource_json = "visualizer.plugin.json_loader:JsonLoader"
