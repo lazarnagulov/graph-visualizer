@@ -4,19 +4,19 @@
     hx-get="/change-visualizer"
     hx-trigger="change"
     hx-target="#main-view"
-    hx-swap="innerHTML"></select>
+    hx-swap="outerHTML"></select>
   <label for="select-data-source">Select data source: </label>
   <select name="plugin_id" id="select-data-source"
     hx-get="/change-data-source"
     hx-trigger="change"
     hx-target="#main-view"
-    hx-swap="innerHTML"></select>
+    hx-swap="outerHTML"></select>
   <label for="file-input">Upload File: </label>
   <input type="file" id="file-input" name="file_input"
       hx-post="/upload-data-file/"
       hx-target="#main-view"
       hx-trigger="change"
-      hx-swap="innerHTML"
+      hx-swap="outerHTML"
       hx-encoding="multipart/form-data">
 </div>
 <script>
