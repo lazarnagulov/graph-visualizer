@@ -8,7 +8,7 @@ from visualizer.api.service.plugin import Plugin
 from visualizer.core.service.plugin_service import PluginService
 import visualizer.core.view.main_view as main_view
 import os
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
@@ -53,7 +53,7 @@ class Workspace(object):
         if self.__data_source_plugin and self.__data_file_string:
             self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
 
-    def render_main_view(self) -> (str,str):
+    def render_main_view(self) -> Tuple[str, str]:
         """
         Render the main view. Generates a graph if empty.
         :return: (header,body) html string that should be included in page
@@ -66,7 +66,7 @@ class Workspace(object):
         return main_view.render(self.__graph, self.__visualizer_plugin)
 
 
-    def render_app_header(self) -> (str, str):
+    def render_app_header(self) -> Tuple[str, str]:
         """
         Returns the required header and body html content that needs to be included in page
         in order to display the app header.
