@@ -8,15 +8,15 @@ from visualizer.api.service.plugin import Plugin
 from visualizer.core.service.plugin_service import PluginService
 import visualizer.core.view.main_view as main_view
 import os
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
 class Workspace(object):
     def __init__(self, plugin_service: PluginService):
         self.__plugin_service = plugin_service
-        self.__visualizer_plugin: VisualizerPlugin | None = None
-        self.__data_source_plugin: DataSourcePlugin | None = None
+        self.__visualizer_plugin: Optional[VisualizerPlugin] = None
+        self.__data_source_plugin: Optional[DataSourcePlugin] = None
         self.__graph: Graph = Graph()
         self.__data_file_string: str = ""
 
