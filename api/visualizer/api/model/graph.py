@@ -109,9 +109,14 @@ class Graph:
         :type node: Node
 
         :raises TypeError: If the provided node is not an instance of `Node`.
+        :raises ValueError: If the provided node id already exists in the graph.
         """
         if not isinstance(node, Node):
             raise TypeError(f"expected Node, but got { type(node) }")
+
+        if node.id in self.__nodes_by_id.keys():
+            raise ValueError(f"node with id { node.id } already exists")
+
         self.outgoing[node] = {}
         self.incoming[node] = {}
         self.__nodes_by_id[node.id] = node

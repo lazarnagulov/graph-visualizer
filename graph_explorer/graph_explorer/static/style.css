@@ -67,5 +67,10 @@ body {
     outline: none;
 }
 
-.terminal-line.ok { color: #0f0; }
-.terminal-line.error { color: #f55; }
+.terminal-line.ok {
+  color: #00ff88;
+}
+
+.terminal-line.error {
+  color: #ff4455;
+}
