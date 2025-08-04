@@ -96,6 +96,17 @@ class Node:
         self.__properties[key] = value
 
     def add_properties(self, properties: Dict[str, Any]) -> None:
+        """
+        Add multiple properties to the Node.
+
+        This method iterates over the provided dictionary and adds each key-value pair
+        to the Node using the `add_property` method.
+
+        :param properties: A dictionary of properties to be added to the node.
+        :type properties: Dict[str, Any]
+
+        :raises TypeError: If any key in the dictionary is not a string.
+        """
         for key, value in properties.items():
             self.add_property(key, value)
 

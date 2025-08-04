@@ -44,7 +44,12 @@ The backend is powered by Django, while the core logic is implemented in Python.
 This project uses the following core technologies:
 
 [![Python][Python-img]][Python-url]  
-[![Django][Django-img]][Django-url]  
+
+[![Django][Django-img]][Django-url]
+
+[![D3.js][D3-img]][D3-url]  
+
+[![HTMX][HTMX-img]][HTMX-url]
 
 <br/>
 
@@ -154,6 +159,12 @@ Default server URL:
 
 [Django-img]: https://img.shields.io/badge/Django-5.1+-success?logo=django&logoColor=white
 [Django-url]: https://www.djangoproject.com/
+
+[D3-img]: https://img.shields.io/badge/D3.js-F9A03C?logo=d3.js&logoColor=white
+[D3-url]: https://d3js.org/
+
+[HTMX-img]: https://img.shields.io/badge/HTMX-FF6F61?logo=htmx&logoColor=white
+[HTMX-url]: https://htmx.org/
 
 [contributors-shield]: https://img.shields.io/github/contributors/lazarnagulov/graph-visualizer.svg?style=for-the-badge
 [contributors-url]: https://github/contributors/lazarnagulov/graph-visualizer/graphs/contributors
