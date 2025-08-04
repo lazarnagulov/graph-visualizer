@@ -29,12 +29,12 @@ def __parse_edge_command(graph: Graph, tokens: List[str]) -> Command:
     match tokens[0]:
         case "create":
             _, properties = __parse_properties(tokens[4:])
-            return CreateEdgeCommand(graph, source, destination, properties, None)
+            return CreateEdgeCommand(graph, source, destination, properties)
         case "edit":
             _, properties = __parse_properties(tokens[4:])
-            return EditEdgeCommand(graph, source, destination, properties, None)
+            return EditEdgeCommand(graph, source, destination, properties)
         case "delete":
-            return DeleteEdgeCommand(graph, source, destination, None)
+            return DeleteEdgeCommand(graph, source, destination)
         case _:
             raise ParserError(f"unknown command '{tokens[0]} node'")
 
@@ -44,12 +44,12 @@ def __parse_node_command(graph: Graph, tokens: List[str]) -> Command:
             node_id, properties = __parse_properties(tokens[2:])
             if not node_id:
                 raise ParserError("no node id provided")
-            return CreateNodeCommand(graph, node_id, properties, None)
+            return CreateNodeCommand(graph, node_id, properties)
         case "edit":
             node_id, properties = __parse_properties(tokens[2:])
             if not node_id:
                 raise ParserError("no node id provided")
-            return EditNodeCommand(graph, node_id, properties, None)
+            return EditNodeCommand(graph, node_id, properties)
         case "delete":
             if len(tokens) > 2 and tokens[2].startswith("--id="):
                 node_id = tokens[2].split("--id=")[1]

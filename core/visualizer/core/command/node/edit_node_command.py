@@ -9,14 +9,13 @@ from visualizer.core.cli.exception.parser_exception import ParserError
 
 class EditNodeCommand(Command):
 
-    __slots__ = ["__graph", "__new_properties", "__old_properties", "__node", "__event_bus"]
+    __slots__ = ["__graph", "__new_properties", "__old_properties", "__node"]
 
     def __init__(
         self,
         graph: Graph,
         node_id: str,
-        new_properties: Dict[str, Any],
-        event_bus: Optional[EventBus] = None,
+        new_properties: Dict[str, Any]
     ) -> None:
         self.__graph = graph
         self.__node: Optional[Node] = self.__graph.get_node(node_id)
@@ -24,14 +23,9 @@ class EditNodeCommand(Command):
             raise ValueError(f"node with id { node_id } not found")
         self.__old_properties = self.__node.properties.copy()
         self.__new_properties = new_properties
-        self.__event_bus = event_bus
 
     def execute(self) -> None:
         self.__node.add_properties(self.__new_properties)
-        if self.__event_bus:
-            self.__event_bus.emit("node_updated", self.__node)
 
     def undo(self):
         self.__node.properties = self.__old_properties
-        if self.__event_bus:
-            self.__event_bus.emit("node_updated", self.__node)

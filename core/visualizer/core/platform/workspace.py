@@ -18,6 +18,18 @@ from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
 class Workspace(object):
     def __init__(self, plugin_service: PluginService, command_service: CommandService):
+        """
+        Initialize the Workspace with plugin and command services.
+
+        This constructor sets up the workspace by initializing internal references to the
+        plugin and command services. It also initializes the visualizer and data source plugins
+        to `None`, prepares an empty graph, and initializes an empty data file string.
+
+        :param plugin_service: The service responsible for managing available plugins.
+        :type plugin_service: PluginService
+        :param command_service: The service responsible for executing and undoing commands.
+        :type command_service: CommandService
+        """
         self.__plugin_service = plugin_service
         self.__command_service = command_service
         self.__visualizer_plugin: Optional[VisualizerPlugin] = None
@@ -48,13 +60,37 @@ class Workspace(object):
 
     @property
     def data_file_string(self) -> str:
+        """
+        Get the current data file string used by the data source plugin.
+
+        :return: The string content of the data file.
+        :rtype: str
+        """
         return self.__data_file_string
 
     @data_file_string.setter
     def data_file_string(self, data_file_string: str) -> None:
+        """
+        Set the data file string to be used by the data source plugin.
+
+        :param data_file_string: The string representation of the input data file.
+        :type data_file_string: str
+        """
         self.__data_file_string = data_file_string
 
     def execute_command(self, command_input: str) -> CommandResult:
+        """
+        Parse and execute a command string on the current graph.
+
+        This method uses the CLI command parser to parse the input, executes the resulting command,
+        and returns a `CommandResult` indicating success or error.
+
+        :param command_input: The command string to execute.
+        :type command_input: str
+
+        :return: A `CommandResult` indicating the outcome of the execution.
+        :rtype: CommandResult
+        """
         try:
             command: Command = parse_command(self.__graph, command_input)
             self.__command_service.execute(command)

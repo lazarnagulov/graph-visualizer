@@ -7,16 +7,13 @@ from visualizer.core.usecase.event_bus import EventBus
 
 class ClearCommand(Command):
 
-    __slots__ = ["__graph", "__event_bus"]
+    __slots__ = ["__graph"]
 
-    def __init__(self, graph: Graph, event_bus: Optional[EventBus] = None) -> None:
+    def __init__(self, graph: Graph) -> None:
         self.__graph: Graph = graph
-        self.__event_bus: EventBus = event_bus
 
     def execute(self) -> None:
         self.__graph = Graph()
-        if self.__event_bus:
-            self.__event_bus.emit("graph_updated", self.__graph)
 
     def undo(self) -> None:
         raise NotImplemented("implement clear command undo")

@@ -8,25 +8,19 @@ from visualizer.core.usecase.event_bus import EventBus
 
 class CreateNodeCommand(Command):
 
-    __slots__ = ["__graph", "__event_bus", "__node"]
+    __slots__ = ["__graph", "__node"]
 
     def __init__(
         self,
         graph: Graph,
         node_id: str,
-        properties: Dict[str, Any],
-        event_bus: Optional[EventBus]
+        properties: Dict[str, Any]
     ) -> None:
         self.__graph = graph
-        self.__event_bus = event_bus
         self.__node = Node(node_id, **properties)
 
     def execute(self) -> None:
         self.__graph.insert_node(self.__node)
-        if self.__event_bus:
-            self.__event_bus.emit("graph_updated", self.__graph)
 
     def undo(self) -> None:
         self.__graph.remove_node(self.__node)
-        if self.__event_bus:
-            self.__event_bus.emit("graph_updated", self.__graph)
