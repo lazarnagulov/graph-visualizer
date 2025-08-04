@@ -153,4 +153,4 @@ if __name__ == "__main__":
     path = os.path.join("..", "..", "..", "data", "json", "small_cyclic_data.json")
     with open(path, "r", encoding="utf-8") as f:
         file_str = f.read()
-    print(loader.load(file=file_str))
+    print(loader.load(file_string=file_str))

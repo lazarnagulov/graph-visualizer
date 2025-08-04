@@ -143,7 +143,7 @@ class Node:
         :return: A hash value representing the Node.
         :rtype: int
         """
-        return hash(self.id)
+        return hash(id(self))
 
     def __str__(self) -> str:
         """

@@ -28,10 +28,10 @@ def __parse_edge_command(graph: Graph, tokens: List[str]) -> Command:
     destination: Node = graph.get_node(tokens[3])
     match tokens[0]:
         case "create":
-            _, properties = __parse_properties(tokens[4:], False)
+            _, properties = __parse_properties(tokens[4:])
             return CreateEdgeCommand(graph, source, destination, properties, None)
         case "edit":
-            _, properties = __parse_properties(tokens[4:], False)
+            _, properties = __parse_properties(tokens[4:])
             return EditEdgeCommand(graph, source, destination, properties, None)
         case "delete":
             return DeleteEdgeCommand(graph, source, destination, None)
@@ -42,12 +42,16 @@ def __parse_node_command(graph: Graph, tokens: List[str]) -> Command:
     match tokens[0]:
         case "create":
             node_id, properties = __parse_properties(tokens[2:])
+            if not node_id:
+                raise ParserError("no node id provided")
             return CreateNodeCommand(graph, node_id, properties, None)
         case "edit":
             node_id, properties = __parse_properties(tokens[2:])
+            if not node_id:
+                raise ParserError("no node id provided")
             return EditNodeCommand(graph, node_id, properties, None)
         case "delete":
-            if tokens[2].startswith("--id="):
+            if len(tokens) > 2 and tokens[2].startswith("--id="):
                 node_id = tokens[2].split("--id=")[1]
                 return DeleteNodeCommand(graph, node_id)
             raise ParserError("no node id provided")
@@ -55,14 +59,14 @@ def __parse_node_command(graph: Graph, tokens: List[str]) -> Command:
             raise ParserError(f"unknown command '{tokens[0]} node'")
 
 
-def __parse_properties(tokens: List[str], require_id: bool = True) -> Tuple[Optional[str], Dict[str, Any]]:
+def __parse_properties(tokens: List[str]) -> Tuple[Optional[str], Dict[str, Any]]:
     import ast
-    node_id: Optional[str] = None
+    entity_id: Optional[str] = None
     properties: Dict[str, Any] = {}
     i = 0
     while i < len(tokens):
         if tokens[i].startswith("--id="):
-            node_id = tokens[i].split("--id=", 1)[1]
+            entity_id = tokens[i].split("--id=", 1)[1]
         elif tokens[i] == "--property":
             if i + 1 >= len(tokens):
                 raise ParserError("expected key=value after --property")
@@ -78,7 +82,4 @@ def __parse_properties(tokens: List[str], require_id: bool = True) -> Tuple[Opti
             i += 1
         i += 1
 
-    if require_id and node_id is None:
-        raise ParserError("no node id provided")
-
-    return node_id, properties
+    return entity_id, properties
