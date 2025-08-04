@@ -1,12 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="page">
+    <div class="workspace-page">
         <div class="header">
             {% csrf_token %}
             {{ app_header|safe }}
         </div>
-        <div class="center">
-            {{ main_view|safe }}
+        <div class="workspace-content">
+            <div class="sidebar">
+                <div class="tree-view">
+<!--                    {{ tree_view|safe }}-->
+                </div>
+                <div class="minimap-view">
+<!--                    {{ minimap_view|safe }}-->
+                </div>
+            </div>
+
+            <div class="main-column">
+                <div class="main-graph">
+                    {{ main_view|safe }}
+                </div>
+                <div id="cli-terminal">
+                    <div id="terminal-output"></div>
+                    <input id="terminal-input"
+                           name="command"
+                           placeholder="Enter command..."
+                           autocomplete="off"
+                           />
+                </div>
+            </div>
+
         </div>
     </div>
 {% endblock %}
