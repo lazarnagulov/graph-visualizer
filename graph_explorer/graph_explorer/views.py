@@ -58,25 +58,13 @@ def data_file_upload(request):
 def execute_command(request):
     command: str = request.POST.get('command').strip()
     if not command:
-        return JsonResponse({
-            "status": "error",
-            "output": "Empty command."
-        })
+        return __build_cli_response("empty command", "error")
 
     workspace: Workspace = __get_workspace()
     result: CommandResult = workspace.execute_command(command)
-    response = HttpResponse(render_to_string('cli_output.html', {
-        "output": result.output,
-        "status": result.status
-    }))
 
-    if result.status == "ok":
-        response["HX-Trigger"] = "graph-updated"
-
-    response["HX-Reswap"] = "beforeend"
-    response["HX-Retarget"] = "#terminal-output"
-
-    return response
+    trigger = "graph-updated" if result.status == "ok" else None
+    return __build_cli_response(result.output, result.status, trigger)
 
 def generate_graph(_request):
     workspace: Workspace = __get_workspace()
@@ -85,3 +73,14 @@ def generate_graph(_request):
 
 def __get_workspace() -> Workspace:
     return apps.get_app_config('graph_explorer').platform.get_selected_workspace()
+
+def __build_cli_response(output: str, status: str, trigger: str = None) -> HttpResponse:
+    response = HttpResponse(render_to_string('cli_output.html', {
+        "output": output,
+        "status": status
+    }))
+    if trigger:
+        response["HX-Trigger"] = trigger
+    response["HX-Reswap"] = "innerHTML"
+    response["HX-Retarget"] = "#terminal-output"
+    return response
