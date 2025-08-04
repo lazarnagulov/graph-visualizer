@@ -13,3 +13,6 @@ dependencies = [
 
 [project.entry-points."visualizer.visualizer"]
 simple_visualizer = "visualizer.plugin.simple_visualizer:SimpleVisualizer"
+
+[tool.setuptools.data-files]
+templates = ["visualizer/plugin/templates/*"]

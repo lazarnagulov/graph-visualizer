@@ -14,11 +14,16 @@ class VisualizerPlugin(Plugin):
         """
         Visualizes the given graph.
 
+        All top-level elements included in the head must have the "plugin-visualizer-head" class:
+            ``<style class="plugin-visualizer-head">...</style>``
+
+            ``<script class="plugin-visualizer-head">...</script>``
+
         :param graph: The graph to visualize.
         :param kwargs: Arbitrary keyword arguments for customization (e.g., layout options).
         :type graph: Graph
         :type kwargs: any
-        :return: A tuple containing the HTML header and body for the visualization.
+        :return: A tuple containing the HTML head and body for the visualization.
         :rtype: Tuple[str, str]
         """
         ...
