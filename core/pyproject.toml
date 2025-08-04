@@ -10,5 +10,8 @@ dependencies = [
     "graph-visualizer-api==0.1.0"
 ]
 
+[tool.setuptools.data-files]
+templates = ["visualizer/core/templates/*"]
+
 [project.scripts]
 repl = "visualizer.core.cli.repl:run_repl"

@@ -46,13 +46,14 @@ class JsonLoader(DataSourcePlugin):
     def name(self) -> str:
         return "JsonLoader"
 
-    def load(self, path: Optional[str], **kwargs) -> Graph:
+    def load(self, file_string: Optional[str], **kwargs) -> Graph:
+        if not file_string:
+            raise ValueError("file_string must be provided")
         graph: Graph = Graph()
+        self.__nodes = {}
+        self.__unresolved_edges = []
 
-        if not path:
-            raise ValueError("path must be provided")
-
-        self.__generate_graph(graph, self.__load_json(path))
+        self.__generate_graph(graph, self.__load_json(file_string))
         self.__resolve_edges(graph)
 
         return graph
@@ -71,9 +72,8 @@ class JsonLoader(DataSourcePlugin):
         self.__nodes[node_id] = node
 
     @staticmethod
-    def __load_json(path: str) -> Any:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+    def __load_json(file: str) -> Any:
+        return json.loads(file)
 
     def __resolve_edges(self, graph: Graph) -> None:
         for node, ref_id, relation_name in self.__unresolved_edges:
@@ -150,4 +150,7 @@ class JsonLoader(DataSourcePlugin):
 
 if __name__ == "__main__":
     loader: DataSourcePlugin = JsonLoader()
-    print(loader.load(path=os.path.join("..", "..", "..", "data", "json", "small_cyclic_data.json")))
+    path = os.path.join("..", "..", "..", "data", "json", "small_cyclic_data.json")
+    with open(path, "r", encoding="utf-8") as f:
+        file_str = f.read()
+    print(loader.load(file=file_str))

@@ -313,6 +313,15 @@ class Graph:
         """
         return self.get_edge(edge.source, edge.destination) is not None
 
+    def is_empty(self) -> bool:
+        """
+        Check if the graph is empty.
+
+        :return: `True` if the graph is empty, `False` otherwise.
+        :rtype: bool
+        """
+        return self.get_node_count() == 0
+
     def remove_edge(self, source: Node, destination: Node) -> None:
         """
         Removes an edge from the graph.

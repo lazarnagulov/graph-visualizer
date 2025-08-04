@@ -1,0 +1,53 @@
+<div id="app-header">
+  <label for="select-visualizer">Select visualizer: </label>
+  <select name="plugin_id" id="select-visualizer"
+    hx-get="/change-visualizer"
+    hx-trigger="change"
+    hx-target="#main-view"
+    hx-swap="outerHTML"></select>
+  <label for="select-data-source">Select data source: </label>
+  <select name="plugin_id" id="select-data-source"
+    hx-get="/change-data-source"
+    hx-trigger="change"
+    hx-target="#main-view"
+    hx-swap="outerHTML"></select>
+  <label for="file-input">Upload File: </label>
+  <input type="file" id="file-input" name="file_input"
+      hx-post="/upload-data-file/"
+      hx-target="#main-view"
+      hx-trigger="change"
+      hx-swap="outerHTML"
+      hx-encoding="multipart/form-data">
+</div>
+<script>
+  let csrfElements = document.getElementsByName("csrfmiddlewaretoken");
+  let csrfToken = "";
+  if (csrfElements.length > 0)
+    csrfToken = csrfElements[0].value;
+  header = '{"X-CSRFTOKEN": "' + csrfToken + '"}';
+  d3.select("#file-input").attr("hx-headers", header);
+
+  let visualizers = {{ visualizer_plugins }};
+  let data_sources = {{ data_source_plugins }};
+  let initial_visualizer = {{ selected_visualizer|tojson }};
+  let initial_data_source = {{ selected_data_source|tojson }};
+
+  d3.select('#select-visualizer')
+    .selectAll('option')
+    .data(visualizers)
+    .enter()
+    .append('option')
+    .attr('value', d => d.id)
+    .text(d => d.name)
+    .property('selected', d => d.id === initial_visualizer ? true : null);
+
+  d3.select('#select-data-source')
+    .selectAll('option')
+    .data(data_sources)
+    .enter()
+    .append('option')
+    .attr('value', d => d.id)
+    .text(d => d.name)
+    .property('selected', d => d.id === initial_data_source ? true : null);
+
+</script>
