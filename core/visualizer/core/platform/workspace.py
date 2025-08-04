@@ -5,16 +5,21 @@ from visualizer.api.model.graph import Graph
 from visualizer.api.service.data_source_plugin import DataSourcePlugin
 from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 from visualizer.api.service.plugin import Plugin
+from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
 import visualizer.core.view.main_view as main_view
 import os
 from typing import Dict, List, Tuple, Optional
 
+from ..cli.command_parser import parse_command
+from ..command import Command
+from ..command.command_result import CommandResult
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
 class Workspace(object):
-    def __init__(self, plugin_service: PluginService):
+    def __init__(self, plugin_service: PluginService, command_service: CommandService):
         self.__plugin_service = plugin_service
+        self.__command_service = command_service
         self.__visualizer_plugin: Optional[VisualizerPlugin] = None
         self.__data_source_plugin: Optional[DataSourcePlugin] = None
         self.__graph: Graph = Graph()
@@ -44,9 +49,18 @@ class Workspace(object):
     @property
     def data_file_string(self) -> str:
         return self.__data_file_string
+
     @data_file_string.setter
     def data_file_string(self, data_file_string: str) -> None:
         self.__data_file_string = data_file_string
+
+    def execute_command(self, command_input: str) -> CommandResult:
+        try:
+            command: Command = parse_command(self.__graph, command_input)
+            self.__command_service.execute(command)
+            return CommandResult("ok", "Success")
+        except Exception as e:
+            return CommandResult("error", str(e))
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """

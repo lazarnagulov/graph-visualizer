@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
 from visualizer.core.platform.platform import Platform
 
@@ -9,7 +10,8 @@ class GraphExplorerConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'graph_explorer'
     plugin_service = PluginService()
-    platform = Platform(plugin_service)
+    command_service = CommandService()
+    platform = Platform(plugin_service, command_service)
 
     def ready(self):
         self.plugin_service.load_plugins(datasource_group)

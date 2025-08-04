@@ -1,15 +1,12 @@
 from django.apps import apps
 from django.core.files.uploadedfile import UploadedFile
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from visualizer.core.platform.workspace import Workspace
 from visualizer.core.service.plugin_service import PluginService
-
+from visualizer.core.command.command_result import CommandResult
 from .apps import datasource_group, visualizer_group
-
-from pprint import pprint
-
 
 def plugins(request):
     plugin_service: PluginService = apps.get_app_config('graph_explorer').plugin_service
@@ -22,7 +19,6 @@ def plugins(request):
     })
 
 def index(request):
-    plugin_service: PluginService = apps.get_app_config('graph_explorer').plugin_service
     workspace: Workspace = __get_workspace()
     _,main_view_html = workspace.render_main_view()
     _,app_header = workspace.render_app_header()
@@ -57,6 +53,34 @@ def data_file_upload(request):
         workspace.generate_graph()
 
     _,main_view_html = workspace.render_main_view()
+    return HttpResponse(main_view_html)
+
+def execute_command(request):
+    command: str = request.POST.get('command').strip()
+    if not command:
+        return JsonResponse({
+            "status": "error",
+            "output": "Empty command."
+        })
+
+    workspace: Workspace = __get_workspace()
+    result: CommandResult = workspace.execute_command(command)
+    response = HttpResponse(render_to_string('cli_output.html', {
+        "output": result.output,
+        "status": result.status
+    }))
+
+    if result.status == "ok":
+        response["HX-Trigger"] = "graph-updated"
+
+    response["HX-Reswap"] = "beforeend"
+    response["HX-Retarget"] = "#terminal-output"
+
+    return response
+
+def generate_graph(_request):
+    workspace: Workspace = __get_workspace()
+    _, main_view_html = workspace.render_main_view()
     return HttpResponse(main_view_html)
 
 def __get_workspace() -> Workspace:
