@@ -118,7 +118,7 @@ class JsonLoader(DataSourcePlugin):
 
     def __parse_dict_pair(self, graph: Graph, node: Node, key: str, value: Any) -> None:
         if key == self.id:
-            node.id = value
+            graph.update_node_id(node.id, value)
             self.__insert_node(value, node)
             return
 

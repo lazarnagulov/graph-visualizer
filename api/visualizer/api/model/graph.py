@@ -97,6 +97,29 @@ class Graph:
             raise TypeError(f"expected value to be a dict, but got { type(value) }")
         self.__incoming = value
 
+    def update_node_id(self, old_id: str, new_id: str) -> None:
+        """
+        Update the ID of an existing node in the graph.
+
+        This method changes the ID of a node already in the graph. It retrieves the node using
+        `old_id`, updates its `id` attribute to `new_id`, and updates the internal lookup
+        dictionary accordingly.
+
+        :param old_id: The current ID of the node.
+        :type old_id: str
+        :param new_id: The new ID to assign to the node.
+        :type new_id: str
+
+        :raises ValueError: If a node with `old_id` does not exist in the graph.
+        """
+        node: Optional[Node] = self.get_node(old_id)
+        if not node:
+            raise ValueError("node not found")
+
+        node.id = new_id
+        self.__nodes_by_id[new_id] = node
+        del self.__nodes_by_id[old_id]
+
     def insert_node(self, node: Node) -> None:
         """
         Insert a node into the graph.
@@ -165,7 +188,9 @@ class Graph:
             node = self.get_node(node_or_id)
 
         if node is None:
-            raise ValueError(f"node with ID {node_or_id} not found in the graph.")
+            print(self.__nodes_by_id)
+            print(str(self))
+            raise ValueError(f"node not found")
 
         if len(self.__outgoing[node]) > 0 or len(self.__incoming[node]) > 0:
             raise NodeHasEdgesError(node)
@@ -236,6 +261,17 @@ class Graph:
         return len(self.outgoing)
 
     def get_node(self, node_id: str) -> Optional[Node]:
+        """
+        Retrieve a node from the graph by its ID.
+
+        This method looks up a node using its unique string identifier.
+
+        :param node_id: The ID of the node to retrieve.
+        :type node_id: str
+
+        :return: The node with the specified ID, or `None` if it does not exist.
+        :rtype: Optional[Node]
+        """
         return self.__nodes_by_id.get(node_id, None)
 
     def get_nodes(self) -> Iterator[Node]:
