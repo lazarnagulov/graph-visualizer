@@ -20,7 +20,7 @@ class EditNodeCommand(Command):
         self.__graph = graph
         self.__node: Optional[Node] = self.__graph.get_node(node_id)
         if self.__node is None:
-            raise ValueError(f"node with id { node_id } not found")
+            raise ValueError(f"Cannot edit node: No node found with source ID '{node_id}'.")
         self.__old_properties = self.__node.properties.copy()
         self.__new_properties = new_properties
 

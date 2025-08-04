@@ -58,7 +58,7 @@ def data_file_upload(request):
 def execute_command(request):
     command: str = request.POST.get('command').strip()
     if not command:
-        return __build_cli_response("empty command", "error")
+        return __build_cli_response("No input provided. Please enter a command.", "error")
 
     workspace: Workspace = __get_workspace()
     result: CommandResult = workspace.execute_command(command)

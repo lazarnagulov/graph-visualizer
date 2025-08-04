@@ -21,7 +21,7 @@ class EditEdgeCommand(Command):
         self.__graph: Graph = graph
         self.__edge: Edge = self.__graph.get_edge(source, destination)
         if not self.__edge:
-            raise ValueError(f"edge not found")
+            raise ValueError(f"Cannot edit edge: No edge found with source '{source.id}' and destination '{destination.id}'.")
         self.__new_properties: Dict[str, Any] = properties
         self.__old_properties: Dict[str, Any] = self.__edge.properties.copy()
 

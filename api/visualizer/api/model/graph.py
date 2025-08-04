@@ -61,7 +61,8 @@ class Graph:
         :raises TypeError: If the provided value is not a dictionary.
         """
         if not isinstance(value, dict):
-            raise TypeError(f"expected value to ba a dict, but got { type(value) }")
+            raise TypeError(
+                f"Invalid value for 'outgoing': Expected type Dict[Node, Dict[Node, Edge]], but got {type(value).__name__}")
         self.__outgoing = value
 
     @property
@@ -94,7 +95,8 @@ class Graph:
         :raises TypeError: If the provided value is not a dictionary.
         """
         if not isinstance(value, dict):
-            raise TypeError(f"expected value to be a dict, but got { type(value) }")
+            raise TypeError(
+                f"Invalid value for 'incoming': Expected type Dict[Node, Dict[Node, Edge]], but got {type(value).__name__}")
         self.__incoming = value
 
     def update_node_id(self, old_id: str, new_id: str) -> None:
@@ -114,7 +116,7 @@ class Graph:
         """
         node: Optional[Node] = self.get_node(old_id)
         if not node:
-            raise ValueError("node not found")
+            raise ValueError(f"Cannot update node ID: No node found with id '{old_id}'.")
 
         node.id = new_id
         self.__nodes_by_id[new_id] = node
@@ -135,10 +137,10 @@ class Graph:
         :raises ValueError: If the provided node id already exists in the graph.
         """
         if not isinstance(node, Node):
-            raise TypeError(f"expected Node, but got { type(node) }")
+            raise TypeError(f"Invalid node: Expected type 'Node', but got {type(node).__name__}")
 
         if node.id in self.__nodes_by_id.keys():
-            raise ValueError(f"node with id { node.id } already exists")
+            raise ValueError(f"Node insertion failed: Node with id '{node.id}' already exists in the graph.")
 
         self.outgoing[node] = {}
         self.incoming[node] = {}
@@ -190,7 +192,7 @@ class Graph:
         if node is None:
             print(self.__nodes_by_id)
             print(str(self))
-            raise ValueError(f"node not found")
+            raise ValueError(f"Cannot remove node: Node with ID '{node_or_id}' not found in the graph.")
 
         if len(self.__outgoing[node]) > 0 or len(self.__incoming[node]) > 0:
             raise NodeHasEdgesError(node)
@@ -215,13 +217,13 @@ class Graph:
         :raises ValueError: If either the source or destination node of the edge does not exist in the graph.
         """
         if not isinstance(edge, Edge):
-            raise TypeError(f"expected Edge, but got { type(edge) }")
+            raise TypeError(f"Invalid edge: Expected type 'Edge', but got {type(edge).__name__}")
 
         if not self.contains_node(edge.source):
-            raise ValueError(f"node { edge.source } not in graph.")
+            raise ValueError(f"Edge insertion failed: Source node '{edge.source}' is not in the graph.")
 
         if not self.contains_node(edge.destination):
-            raise ValueError(f"node { edge.destination } not in graph.")
+            raise ValueError(f"Edge insertion failed: Destination node '{edge.destination}' is not in the graph.")
 
         existing_edge: Optional[Edge] = self.get_edge(edge.source, edge.destination)
         if existing_edge:
@@ -302,7 +304,7 @@ class Graph:
         :raises KeyError: If the node is not in the graph.
         """
         if not self.contains_node(node):
-            raise KeyError(f"node {node} is not in the graph.")
+            raise KeyError(f"Cannot retrieve incident edges: Node '{node}' is not present in the graph.")
 
         for edge in self.outgoing[node].values():
             yield edge
