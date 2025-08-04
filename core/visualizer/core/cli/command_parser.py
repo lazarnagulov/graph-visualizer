@@ -24,6 +24,9 @@ def parse_command(graph: Graph, input_line: str) -> Command:
             raise ParserError("unknown command")
 
 def __parse_edge_command(graph: Graph, tokens: List[str]) -> Command:
+    if len(tokens) < 4:
+        raise ParserError("expected source and destination")
+
     source: Node = graph.get_node(tokens[2])
     destination: Node = graph.get_node(tokens[3])
     match tokens[0]:

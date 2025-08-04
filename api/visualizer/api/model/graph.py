@@ -322,6 +322,8 @@ class Graph:
         :return: The edge from the source node to the destination node, or `None` if no such edge exists.
         :rtype: Optional[Edge]
         """
+        if not self.contains_node(source) or not self.contains_node(destination):
+            return None
         return self.outgoing[source].get(destination, None)
 
     def contains_node(self, node: Node) -> bool:

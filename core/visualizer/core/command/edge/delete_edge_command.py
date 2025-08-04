@@ -16,6 +16,8 @@ class DeleteEdgeCommand(Command):
         self.__source = source
         self.__destination = destination
         self.__edge = self.__graph.get_edge(source, destination)
+        if not self.__edge:
+            raise ValueError(f"edge not found")
         self.__old_properties = self.__edge.properties.copy()
 
     def execute(self) -> None:

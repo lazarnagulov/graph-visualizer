@@ -20,6 +20,8 @@ class EditEdgeCommand(Command):
     ) -> None:
         self.__graph: Graph = graph
         self.__edge: Edge = self.__graph.get_edge(source, destination)
+        if not self.__edge:
+            raise ValueError(f"edge not found")
         self.__new_properties: Dict[str, Any] = properties
         self.__old_properties: Dict[str, Any] = self.__edge.properties.copy()
 
