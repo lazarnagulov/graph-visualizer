@@ -32,11 +32,11 @@ def __parse_edge_command(graph: Graph, tokens: List[str]) -> Command:
 
     source: Optional[Node] = graph.get_node(tokens[2])
     if not source:
-        raise ParserError(f"Source node not found. Make sure both source and destination nodes exist.")
+        raise ValueError(f"Source node not found. Make sure both source and destination nodes exist.")
 
     destination: Optional[Node] = graph.get_node(tokens[3])
     if not destination:
-        raise ParserError(f"Destination node not found. Make sure both source and destination nodes exist.")
+        raise ValueError(f"Destination node not found. Make sure both source and destination nodes exist.")
 
     match tokens[0]:
         case "create":

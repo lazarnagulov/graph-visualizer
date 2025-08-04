@@ -190,8 +190,6 @@ class Graph:
             node = self.get_node(node_or_id)
 
         if node is None:
-            print(self.__nodes_by_id)
-            print(str(self))
             raise ValueError(f"Cannot remove node: Node with ID '{node_or_id}' not found in the graph.")
 
         if len(self.__outgoing[node]) > 0 or len(self.__incoming[node]) > 0:

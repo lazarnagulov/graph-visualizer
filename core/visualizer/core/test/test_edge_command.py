@@ -49,7 +49,7 @@ class TestEdgeCommand(TestCase):
         with self.assertRaises(ParserError) as exception:
             parse_command(self.graph, command_input).execute()
 
-            self.assertEqual(str(exception.exception), "expected source and destination")
+        self.assertEqual(str(exception.exception), "Incomplete edge command. Expected syntax: '<action> edge <source> <destination> [--property key=value ...]'")
 
     def test_edit_edge_add_new_property(self):
         command_input = "edit edge 3 4 --property test1=123"
@@ -79,7 +79,7 @@ class TestEdgeCommand(TestCase):
         with self.assertRaises(ValueError) as exception:
             parse_command(self.graph, command_input).execute()
 
-            self.assertEqual(str(exception.exception), "edge not found")
+        self.assertEqual(str(exception.exception), "Source node not found. Make sure both source and destination nodes exist.")
 
     def test_delete_edge(self):
         command_input = "delete edge 4 4"
@@ -95,4 +95,4 @@ class TestEdgeCommand(TestCase):
         with self.assertRaises(ValueError) as exception:
             parse_command(self.graph, command_input).execute()
 
-            self.assertEqual(str(exception.exception), "edge not found")
+        self.assertEqual(str(exception.exception), "Source node not found. Make sure both source and destination nodes exist.")

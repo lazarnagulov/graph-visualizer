@@ -47,7 +47,7 @@ class TestNodeCommand(TestCase):
         with self.assertRaises(ParserError) as exception:
             parse_command(self.graph, command_input).execute()
 
-            self.assertEqual(str(exception.exception), "no node id provided")
+        self.assertEqual(str(exception.exception), "Missing node ID. Use '--id=<node_id>' to specify the ID.")
 
 
     def test_edit_node_add_new_property(self):
@@ -71,7 +71,8 @@ class TestNodeCommand(TestCase):
 
         with self.assertRaises(ParserError) as exception:
             parse_command(self.graph, command_input).execute()
-            self.assertEqual(str(exception.exception), "no node id provided")
+
+        self.assertEqual(str(exception.exception), "Missing node ID. Use '--id=<node_id>' to specify the ID for editing.")
 
     def test_edit_node_that_does_not_exist_should_raise_value_error(self):
         command_input = "edit node --id=500 --property test1=test1"
@@ -79,7 +80,7 @@ class TestNodeCommand(TestCase):
         with self.assertRaises(ValueError) as exception:
             parse_command(self.graph, command_input).execute()
 
-            self.assertEqual(str(exception.exception), "node with ID 500 not found")
+        self.assertEqual(str(exception.exception), "Cannot edit node: No node found with source ID '500'.")
 
     def test_delete_node(self):
         command_input = f"delete node --id={ self.node_to_delete_id }"
@@ -94,7 +95,7 @@ class TestNodeCommand(TestCase):
         with self.assertRaises(ParserError) as exception:
             parse_command(self.graph, command_input).execute()
 
-            self.assertEqual(str(exception.exception), "no node id provided")
+        self.assertEqual(str(exception.exception), "Missing node ID. Use '--id=<node_id>' to specify which node to delete.")
 
     def test_delete_node_that_does_not_exist_should_raise_value_error(self):
         command_input = f"delete node --id=500"
@@ -102,4 +103,4 @@ class TestNodeCommand(TestCase):
         with self.assertRaises(ValueError) as exception:
             parse_command(self.graph, command_input).execute()
 
-            self.assertEqual(str(exception.exception), "node with ID 500 not found")
+        self.assertEqual(str(exception.exception), "Cannot remove node: Node with ID 'None' not found in the graph.")
