@@ -13,7 +13,7 @@ from typing import Dict, List, Tuple, Optional
 
 from ..cli.command_parser import parse_command
 from ..command import Command
-from ..command.command_result import CommandResult
+from ..command.command_result import CommandResult, CommandStatus
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
 class Workspace(object):
@@ -92,16 +92,24 @@ class Workspace(object):
         :rtype: CommandResult
         """
         try:
-            command: Command = parse_command(self.__graph, command_input)
-            self.__command_service.execute(command)
-            return CommandResult("ok", "Success")
+            if command_input == "undo":
+                self.__command_service.undo()
+                return CommandResult(CommandStatus.OK, "Undo successful")
+            elif command_input == "redo":
+                self.__command_service.redo()
+                return CommandResult(CommandStatus.OK, "Redo successful")
+            else:
+                command: Command = parse_command(self.__graph, command_input)
+                self.__command_service.execute(command)
+                return CommandResult(CommandStatus.OK, "Success")
         except Exception as e:
-            return CommandResult("error", str(e))
+            return CommandResult(CommandStatus.ERROR, str(e))
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
         if self.__data_source_plugin and self.__data_file_string:
             self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
+            self.__data_file_string = ""
 
     def render_main_view(self) -> Tuple[str, str]:
         """

@@ -22,9 +22,9 @@ def render(graph: Graph, visualizer: VisualizerPlugin, **kwargs) -> Tuple[str, s
         main_view_template = file.read()
 
     if not graph or graph.is_empty():
-        visualized_body = "<p>No graph</p>"
+        visualized_body = "<p style=\"margin: 1rem\">No graph</p>"
     elif not visualizer:
-        visualized_body = "<p>No visualizer plugin</p>"
+        visualized_body = "<p style=\"margin: 1rem\">No visualizer plugin</p>"
     else:
         _, visualized_body = visualizer.visualize(graph=graph, **kwargs)
 

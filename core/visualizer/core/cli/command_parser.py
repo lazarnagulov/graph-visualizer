@@ -5,9 +5,8 @@ from visualizer.api.model.node import Node
 from visualizer.core.cli.exception.parser_exception import ParserError
 from visualizer.core.command import (
     Command, CreateNodeCommand, DeleteNodeCommand, EditNodeCommand,
-    CreateEdgeCommand, EditEdgeCommand, DeleteEdgeCommand
+    CreateEdgeCommand, EditEdgeCommand, DeleteEdgeCommand, ClearCommand
 )
-
 
 def parse_command(graph: Graph, input_line: str) -> Command:
     tokens = input_line.strip().split()
@@ -15,7 +14,10 @@ def parse_command(graph: Graph, input_line: str) -> Command:
         raise ParserError("No input provided. Please enter a command.")
 
     if len(tokens) == 1:
-        raise NotImplementedError("Incomplete command. A command requires more details (e.g., 'create node ...').")
+        if tokens[0] == "clear":
+            return ClearCommand(graph)
+        else:
+            raise NotImplementedError("Incomplete command. A command requires more details (e.g., 'create node ...').")
 
     match tokens[1]:
         case "node":

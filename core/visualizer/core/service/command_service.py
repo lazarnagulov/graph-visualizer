@@ -3,6 +3,10 @@ from typing import List
 from visualizer.core.command import Command
 
 
+class CommandHistoryEmptyError(Exception): 
+    """Raised when undo or redo operation cannot be performed because history is empty."""
+    ...
+
 class CommandService:
 
     __slots__ = ["__undo_stack", "__redo_stack"]
@@ -42,6 +46,8 @@ class CommandService:
             command: Command = self.__undo_stack.pop()
             command.undo()
             self.__redo_stack.append(command)
+        else:
+            raise CommandHistoryEmptyError("Nothing to undo.")
 
     def redo(self) -> None:
         """
@@ -54,3 +60,5 @@ class CommandService:
             command: Command = self.__redo_stack.pop()
             command.execute()
             self.__undo_stack.append(command)
+        else:
+            raise CommandHistoryEmptyError("Nothing to redo.")

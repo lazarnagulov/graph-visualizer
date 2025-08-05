@@ -382,6 +382,17 @@ class Graph:
         if destination in self.__incoming and source in self.__incoming[destination]:
             del self.__incoming[destination][source]
 
+    def clear(self) -> None:
+        """
+        Remove all nodes and edges from the graph.
+
+        This clears the outgoing and incoming edge dictionaries, as well as
+        the node lookup by ID.
+        """
+        self.__outgoing.clear()
+        self.__incoming.clear()
+        self.__nodes_by_id.clear()
+
     def __str__(self) -> str:
         """
         Return a string representation of the graph, including all nodes and edges.

@@ -1,11 +1,12 @@
 from django.apps import apps
 from django.core.files.uploadedfile import UploadedFile
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from visualizer.core.platform.workspace import Workspace
 from visualizer.core.service.plugin_service import PluginService
-from visualizer.core.command.command_result import CommandResult
+from visualizer.core.command.command_result import CommandResult, CommandStatus
+
 from .apps import datasource_group, visualizer_group
 
 def plugins(request):
@@ -20,8 +21,8 @@ def plugins(request):
 
 def index(request):
     workspace: Workspace = __get_workspace()
-    _,main_view_html = workspace.render_main_view()
-    _,app_header = workspace.render_app_header()
+    _, main_view_html = workspace.render_main_view()
+    _, app_header = workspace.render_app_header()
 
     return render(request, 'index.html', {
         'title': 'Graph Explorer',
@@ -58,12 +59,12 @@ def data_file_upload(request):
 def execute_command(request):
     command: str = request.POST.get('command').strip()
     if not command:
-        return __build_cli_response("No input provided. Please enter a command.", "error")
+        return __build_cli_response("No input provided. Please enter a command.", CommandStatus.ERROR)
 
     workspace: Workspace = __get_workspace()
     result: CommandResult = workspace.execute_command(command)
 
-    trigger = "graph-updated" if result.status == "ok" else None
+    trigger = "graph-updated" if result.status == CommandStatus.OK else None
     return __build_cli_response(result.output, result.status, trigger)
 
 def generate_graph(_request):
@@ -74,10 +75,10 @@ def generate_graph(_request):
 def __get_workspace() -> Workspace:
     return apps.get_app_config('graph_explorer').platform.get_selected_workspace()
 
-def __build_cli_response(output: str, status: str, trigger: str = None) -> HttpResponse:
+def __build_cli_response(output: str, status: CommandStatus, trigger: str = None) -> HttpResponse:
     response = HttpResponse(render_to_string('cli_output.html', {
         "output": output,
-        "status": status
+        "status": status.value,
     }))
     if trigger:
         response["HX-Trigger"] = trigger
