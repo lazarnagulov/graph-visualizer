@@ -19,6 +19,8 @@ class VisualizerPlugin(Plugin):
 
             ``<script class="plugin-visualizer-head">...</script>``
 
+        All visualized nodes should have a "node" class, and all edges a "link" class.
+
         :param graph: The graph to visualize.
         :param kwargs: Arbitrary keyword arguments for customization (e.g., layout options).
         :type graph: Graph
