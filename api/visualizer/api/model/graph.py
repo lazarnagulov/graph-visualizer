@@ -1,5 +1,7 @@
 from typing import Dict, Iterator, Optional, TypedDict, List, overload, Union
 
+from visualizer.api.exception.node_exception import NodeHasEdgesError
+
 from .edge import Edge, EdgeDict
 from .node import Node, NodeDict
 
