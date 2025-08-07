@@ -1,0 +1,153 @@
+<div id = "simple-visualizer-main-div" style = "width: 100%; height: 100%;">
+</div>
+<script>
+    function renderSimpleVisualizer(graph, width, height) {
+        console.log(graph);
+        if (!width || !height) {
+            let rect = document.getElementById('simple-visualizer-main-div').getBoundingClientRect();
+            width = width || rect.width;
+            height = height || rect.height;
+        }
+
+        // The force simulation mutates links and nodes, so create a copy
+        // so that re-evaluating this cell produces the same result.
+        const links = graph.edges.map(d => ({...d}));
+        const nodes = graph.nodes.map(d => ({...d}));
+
+        // Create a simulation with several forces.
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links)
+                .id(d => d.id)
+                .distance(150)
+                .strength(0.1))
+            .force("charge", d3.forceManyBody().strength(-30*40*2))
+            .force("x", d3.forceX())
+            .force("y", d3.forceY())
+            .force("center", d3.forceCenter(0, 0))
+            .force("collision", d3.forceCollide().radius(50));
+
+        // Create the SVG container.
+        const svg = d3.select("#simple-visualizer-main-div").append("svg")//;.create("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [-width / 2, -height / 2, width, height])
+            .attr("style", "max-width: 100%; height: auto;");
+
+        svg.append("defs")
+            .append("marker")
+                .attr("id", "arrow")
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 30) // node radius (40) + arrow padding
+                .attr("refY", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+            .append("path")
+                .attr("fill", "#999")
+                .attr("d", "M0,-5L10,0L0,5")
+
+        svg.select("#arrow").clone(true)
+            .attr("id", "loop-arrow")
+            .attr("refX", 9)
+            // Use paths for links instead of lines
+
+        const link = svg.append("g")
+            .attr("fill", "none")
+            .attr("stroke", "#000")
+            .attr("stroke-opacity", 0.5)
+            .attr("stroke-width", 3.2)
+            .attr("class", "link")
+            .selectAll("path")
+            .data(links)
+            .join("path")
+            .attr("marker-end", d => d.loop ? "url(#loop-arrow)" : "url(#arrow)");
+
+        const node = svg.append("g")
+            .attr("class", "node")
+            .selectAll("g")
+            .data(nodes)
+            .enter()
+            .append("g")
+
+        node.append("circle")
+            .attr("stroke", "#000")
+            .attr("stroke-width", 1.5)
+            .attr("r", 40)
+            .attr("fill", d => "#fff");
+
+        node.append("text")
+            .attr("text-anchor", "middle")
+            .attr("dy", ".35em")
+            .attr("clip-path", "circle(40)")
+            .text(d => d.id);
+
+        // Add a drag behavior.
+        node.call(d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended));
+
+        // Set the position attributes of links and nodes each time the simulation ticks.
+        simulation.on("tick", () => {
+            link.attr("d", linkPath)
+            node.attr("transform", d => `translate(${d.x}, ${d.y})`);
+        });
+
+
+        function linkPath(d) {
+            if (d.loop) { // loop edge
+                const nodeR = 40;
+                const loopR = 50;
+                const startAngle = -Math.PI / 2;
+                const endAngle = startAngle + 2.5;
+
+                const sx = d.source.x + nodeR * Math.cos(startAngle);
+                const sy = d.source.y + nodeR * Math.sin(startAngle);
+                const tx = d.source.x + nodeR * Math.cos(endAngle);
+                const ty = d.source.y + nodeR * Math.sin(endAngle);
+
+                return `
+                    M${sx},${sy}
+                    A${loopR},${loopR} 0 1,1 ${tx},${ty}
+                `;
+            }
+
+
+            if (d.double) { // double edge
+                let offset = Victor(d.target.x - d.source.x, d.target.y - d.source.y)
+                    .normalize()
+                    .rotateDeg(90)
+                    .multiplyScalar(10);
+                return `M${d.source.x+offset.x},${d.source.y+offset.y}
+                        L${d.target.x+offset.x},${d.target.y+offset.y}`;
+            }
+
+            return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`; // normal edge
+        }
+        // Reheat the simulation when drag starts, and fix the subject position.
+        function dragstarted(event) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+        }
+
+        // Update the subject (dragged node) position during drag.
+        function dragged(event) {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+
+        // Restore the target alpha so the simulation cools after dragging ends.
+        // Unfix the subject position now that it’s no longer being dragged.
+        function dragended(event) {
+            if (!event.active) simulation.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+        }
+    }
+    renderSimpleVisualizer(
+        {{graph | tojson | safe}},
+        {{width | default("undefined")}},
+        {{height | default("undefined")}}
+    )
+</script>
