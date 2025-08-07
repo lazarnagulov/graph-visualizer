@@ -60,7 +60,13 @@
             .selectAll("path")
             .data(links)
             .join("path")
-            .attr("marker-end", d => d.loop ? "url(#loop-arrow)" : "url(#arrow)");
+            .attr("marker-end", d =>
+                !graph.directed
+                    ? undefined
+                    : (d.loop
+                        ? "url(#loop-arrow)"
+                        : "url(#arrow)")
+            );
 
         const node = svg.append("g")
             .attr("class", "node")
@@ -112,8 +118,7 @@
                 `;
             }
 
-
-            if (d.double) { // double edge
+            if (graph.directed && d.double) { // double edge
                 let offset = Victor(d.target.x - d.source.x, d.target.y - d.source.y)
                     .normalize()
                     .rotateDeg(90)
