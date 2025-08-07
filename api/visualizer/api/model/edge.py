@@ -1,7 +1,20 @@
-from typing import Dict, Tuple, Any
+import copy
+from typing import Dict, Tuple, Any, TypedDict
 
 from .node import Node
 
+class EdgeDict(TypedDict):
+    """
+    Dictionary representation of an edge
+
+    Attributes:
+        source (str): ID of the source node
+        destination (str): ID of the destination node
+        properties (dict): Dictionary of properties
+    """
+    source: str
+    destination: str
+    properties: Dict[str, Any]
 
 class Edge:
     """
@@ -152,6 +165,25 @@ class Edge:
         :rtype: Tuple[Node, Node]
         """
         return self.__source, self.__destination
+
+    def to_dict(self) -> EdgeDict:
+        """
+        Return a dictionary representation of the edge using only JSON-serializable types.
+
+        The dictionary has the following structure:
+            - 'source': ID of the source node
+            - 'destination': ID of the destination node
+            - 'properties': dictionary of properties associated with the edge
+
+        :return: A dictionary representation of the edge.
+        :rtype: EdgeDict
+        """
+
+        return {
+            'source': self.source.id,
+            'destination': self.destination.id,
+            'properties': copy.deepcopy(self.properties)
+        }
 
     def __eq__(self, other: object) -> bool:
         """

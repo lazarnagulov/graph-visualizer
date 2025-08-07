@@ -24,13 +24,14 @@ def plugins(request):
 def index(request):
     plugin_service: PluginService = apps.get_app_config('graph_explorer').plugin_service
     workspace: Workspace = __get_workspace()
-    _,main_view_html = workspace.render_main_view()
+    main_view_head, plugin_head, main_view_body = workspace.render_main_view()
     _,app_header = workspace.render_app_header()
 
     return render(request, 'index.html', {
         'title': 'Graph Explorer',
         'app_header': app_header,
-        'main_view': main_view_html,
+        'main_view': main_view_body,
+        'head': main_view_head + plugin_head,
     })
 
 
@@ -38,15 +39,15 @@ def visualizer_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
     __get_workspace().set_visualizer_plugin(plugin_id)
-    _,main_view_html = workspace.render_main_view()
-    return HttpResponse(main_view_html)
+    _,plugin_head,main_view_body = workspace.render_main_view()
+    return HttpResponse(plugin_head + main_view_body)
 
 def data_source_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
     __get_workspace().set_data_source_plugin(plugin_id)
-    _,main_view_html = workspace.render_main_view()
-    return HttpResponse(main_view_html)
+    _,_,main_view_body = workspace.render_main_view()
+    return HttpResponse(main_view_body) # we will not update the head since the visualizer hasn't changed
 
 def data_file_upload(request):
     workspace: Workspace = __get_workspace()
@@ -56,8 +57,8 @@ def data_file_upload(request):
         workspace.data_file_string = file_string
         workspace.generate_graph()
 
-    _,main_view_html = workspace.render_main_view()
-    return HttpResponse(main_view_html)
+    _,_,main_view_body = workspace.render_main_view()
+    return HttpResponse(main_view_body) # we will not update the head since the visualizer hasn't changed
 
 def __get_workspace() -> Workspace:
     return apps.get_app_config('graph_explorer').platform.get_selected_workspace()

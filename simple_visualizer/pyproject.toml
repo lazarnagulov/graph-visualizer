@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simple-visualizer"
-version = "0.0.1"
+version = "1.0.0"
 description = "Simple visualizer"
 dependencies = [
     "graph-visualizer-api==0.0.1",
@@ -13,3 +13,6 @@ dependencies = [
 
 [project.entry-points."visualizer.visualizer"]
 simple_visualizer = "visualizer.plugin.simple_visualizer:SimpleVisualizer"
+
+[tool.setuptools.data-files]
+templates = ["visualizer/plugin/templates/*"]
