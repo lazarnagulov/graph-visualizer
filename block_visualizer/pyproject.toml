@@ -7,7 +7,7 @@ name = "block-visualizer"
 version = "0.0.1"
 description = "Block visualizer"
 dependencies = [
-    "graph-visualizer-api==0.0.1",
+    "graph-visualizer-api==0.1.0",
     "jinja2==3.1.4"
 ]
 

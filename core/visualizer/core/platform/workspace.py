@@ -5,16 +5,33 @@ from visualizer.api.model.graph import Graph
 from visualizer.api.service.data_source_plugin import DataSourcePlugin
 from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 from visualizer.api.service.plugin import Plugin
+from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
 import visualizer.core.view.main_view as main_view
 import os
 from typing import Dict, List, Tuple, Optional
 
+from ..cli.command_parser import parse_command
+from ..command import Command
+from ..command.command_result import CommandResult, CommandStatus
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
 class Workspace(object):
-    def __init__(self, plugin_service: PluginService):
+    def __init__(self, plugin_service: PluginService, command_service: CommandService):
+        """
+        Initialize the Workspace with plugin and command services.
+
+        This constructor sets up the workspace by initializing internal references to the
+        plugin and command services. It also initializes the visualizer and data source plugins
+        to `None`, prepares an empty graph, and initializes an empty data file string.
+
+        :param plugin_service: The service responsible for managing available plugins.
+        :type plugin_service: PluginService
+        :param command_service: The service responsible for executing and undoing commands.
+        :type command_service: CommandService
+        """
         self.__plugin_service = plugin_service
+        self.__command_service = command_service
         self.__visualizer_plugin: Optional[VisualizerPlugin] = None
         self.__data_source_plugin: Optional[DataSourcePlugin] = None
         self.__graph: Graph = Graph()
@@ -43,15 +60,56 @@ class Workspace(object):
 
     @property
     def data_file_string(self) -> str:
+        """
+        Get the current data file string used by the data source plugin.
+
+        :return: The string content of the data file.
+        :rtype: str
+        """
         return self.__data_file_string
+
     @data_file_string.setter
     def data_file_string(self, data_file_string: str) -> None:
+        """
+        Set the data file string to be used by the data source plugin.
+
+        :param data_file_string: The string representation of the input data file.
+        :type data_file_string: str
+        """
         self.__data_file_string = data_file_string
+
+    def execute_command(self, command_input: str) -> CommandResult:
+        """
+        Parse and execute a command string on the current graph.
+
+        This method uses the CLI command parser to parse the input, executes the resulting command,
+        and returns a `CommandResult` indicating success or error.
+
+        :param command_input: The command string to execute.
+        :type command_input: str
+
+        :return: A `CommandResult` indicating the outcome of the execution.
+        :rtype: CommandResult
+        """
+        try:
+            if command_input == "undo":
+                self.__command_service.undo()
+                return CommandResult(CommandStatus.OK, "Undo successful")
+            elif command_input == "redo":
+                self.__command_service.redo()
+                return CommandResult(CommandStatus.OK, "Redo successful")
+            else:
+                command: Command = parse_command(self.__graph, command_input)
+                self.__command_service.execute(command)
+                return CommandResult(CommandStatus.OK, "Success")
+        except Exception as e:
+            return CommandResult(CommandStatus.ERROR, str(e))
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
         if self.__data_source_plugin and self.__data_file_string:
             self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
+            self.__data_file_string = ""
 
     def render_main_view(self) -> Tuple[str, str, str]:
         """

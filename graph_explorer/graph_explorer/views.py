@@ -1,15 +1,13 @@
 from django.apps import apps
 from django.core.files.uploadedfile import UploadedFile
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from visualizer.core.platform.workspace import Workspace
 from visualizer.core.service.plugin_service import PluginService
+from visualizer.core.command.command_result import CommandResult, CommandStatus
 
 from .apps import datasource_group, visualizer_group
-
-from pprint import pprint
-
 
 def plugins(request):
     plugin_service: PluginService = apps.get_app_config('graph_explorer').plugin_service
@@ -22,7 +20,6 @@ def plugins(request):
     })
 
 def index(request):
-    plugin_service: PluginService = apps.get_app_config('graph_explorer').plugin_service
     workspace: Workspace = __get_workspace()
     main_view_head, plugin_head, main_view_body = workspace.render_main_view()
     _,app_header = workspace.render_app_header()
@@ -60,5 +57,32 @@ def data_file_upload(request):
     _,_,main_view_body = workspace.render_main_view()
     return HttpResponse(main_view_body) # we will not update the head since the visualizer hasn't changed
 
+def execute_command(request):
+    command: str = request.POST.get('command').strip()
+    if not command:
+        return __build_cli_response("No input provided. Please enter a command.", CommandStatus.ERROR)
+
+    workspace: Workspace = __get_workspace()
+    result: CommandResult = workspace.execute_command(command)
+
+    trigger = "graph-updated" if result.status == CommandStatus.OK else None
+    return __build_cli_response(result.output, result.status, trigger)
+
+def generate_graph(_request):
+    workspace: Workspace = __get_workspace()
+    _,_, main_view_html = workspace.render_main_view()
+    return HttpResponse(main_view_html)
+
 def __get_workspace() -> Workspace:
     return apps.get_app_config('graph_explorer').platform.get_selected_workspace()
+
+def __build_cli_response(output: str, status: CommandStatus, trigger: str = None) -> HttpResponse:
+    response = HttpResponse(render_to_string('cli_output.html', {
+        "output": output,
+        "status": status.value,
+    }))
+    if trigger:
+        response["HX-Trigger"] = trigger
+    response["HX-Reswap"] = "innerHTML"
+    response["HX-Retarget"] = "#terminal-output"
+    return response

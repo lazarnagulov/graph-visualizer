@@ -1,7 +1,9 @@
-from typing import Dict, Iterator, Optional, List, Any, TypedDict
+from typing import Dict, Iterator, Optional, TypedDict, List, overload, Union
 
-from .node import Node, NodeDict
+from visualizer.api.exception.node_exception import NodeHasEdgesError
+
 from .edge import Edge, EdgeDict
+from .node import Node, NodeDict
 
 
 class GraphDict(TypedDict):
@@ -39,6 +41,7 @@ class Graph:
         """
         self.__outgoing: Dict[Node,Dict[Node, Edge]] = {}
         self.__incoming: Dict[Node,Dict[Node, Edge]] = {}
+        self.__nodes_by_id: Dict[str, Node] = {}
 
     @property
     def outgoing(self) -> Dict[Node,Dict[Node, Edge]]:
@@ -70,7 +73,8 @@ class Graph:
         :raises TypeError: If the provided value is not a dictionary.
         """
         if not isinstance(value, dict):
-            raise TypeError(f"expected value to ba a dict, but got { type(value) }")
+            raise TypeError(
+                f"Invalid value for 'outgoing': Expected type Dict[Node, Dict[Node, Edge]], but got {type(value).__name__}")
         self.__outgoing = value
 
     @property
@@ -103,8 +107,32 @@ class Graph:
         :raises TypeError: If the provided value is not a dictionary.
         """
         if not isinstance(value, dict):
-            raise TypeError(f"expected value to be a dict, but got { type(value) }")
+            raise TypeError(
+                f"Invalid value for 'incoming': Expected type Dict[Node, Dict[Node, Edge]], but got {type(value).__name__}")
         self.__incoming = value
+
+    def update_node_id(self, old_id: str, new_id: str) -> None:
+        """
+        Update the ID of an existing node in the graph.
+
+        This method changes the ID of a node already in the graph. It retrieves the node using
+        `old_id`, updates its `id` attribute to `new_id`, and updates the internal lookup
+        dictionary accordingly.
+
+        :param old_id: The current ID of the node.
+        :type old_id: str
+        :param new_id: The new ID to assign to the node.
+        :type new_id: str
+
+        :raises ValueError: If a node with `old_id` does not exist in the graph.
+        """
+        node: Optional[Node] = self.get_node(old_id)
+        if not node:
+            raise ValueError(f"Cannot update node ID: No node found with id '{old_id}'.")
+
+        node.id = new_id
+        self.__nodes_by_id[new_id] = node
+        del self.__nodes_by_id[old_id]
 
     def insert_node(self, node: Node) -> None:
         """
@@ -118,11 +146,17 @@ class Graph:
         :type node: Node
 
         :raises TypeError: If the provided node is not an instance of `Node`.
+        :raises ValueError: If the provided node id already exists in the graph.
         """
         if not isinstance(node, Node):
-            raise TypeError(f"expected Node, but got { type(node) }")
+            raise TypeError(f"Invalid node: Expected type 'Node', but got {type(node).__name__}")
+
+        if node.id in self.__nodes_by_id.keys():
+            raise ValueError(f"Node insertion failed: Node with id '{node.id}' already exists in the graph.")
+
         self.outgoing[node] = {}
         self.incoming[node] = {}
+        self.__nodes_by_id[node.id] = node
 
     def insert_nodes(self, *nodes: Node) -> None:
         """
@@ -140,6 +174,43 @@ class Graph:
         for node in nodes:
             self.insert_node(node)
 
+    @overload
+    def remove_node(self, node: Node) -> None:
+        ...
+
+    @overload
+    def remove_node(self, node_id: str) -> None:
+        ...
+
+    def remove_node(self, node_or_id: Union[Node, str]) -> None:
+        """
+        Removes a node by either a Node object or a node_id, only if there are no edges attached.
+
+        This method will first check if the node has any outgoing or incoming edges. If edges
+        are attached to the node, it will raise a `NodeHasEdgesError`. Otherwise, the node is
+        removed from the graph.
+
+        :param node_or_id: The node object or node ID of the node to be removed.
+        :type node_or_id: Union[Node, str]
+
+        :raises ValueError: If the provided node ID is not found in the graph.
+        :raises NodeHasEdgesError: If the node has edges attached (either incoming or outgoing).
+        """
+        if isinstance(node_or_id, Node):
+            node = node_or_id
+        else:
+            node = self.get_node(node_or_id)
+
+        if node is None:
+            raise ValueError(f"Cannot remove node: Node with ID '{node_or_id}' not found in the graph.")
+
+        if len(self.__outgoing[node]) > 0 or len(self.__incoming[node]) > 0:
+            raise NodeHasEdgesError(node)
+
+        del self.__outgoing[node]
+        del self.__incoming[node]
+        del self.__nodes_by_id[node.id]
+
     def insert_edge(self, edge: Edge) -> None:
         """
         Insert a directed edge into the graph.
@@ -156,13 +227,13 @@ class Graph:
         :raises ValueError: If either the source or destination node of the edge does not exist in the graph.
         """
         if not isinstance(edge, Edge):
-            raise TypeError(f"expected Edge, but got { type(edge) }")
+            raise TypeError(f"Invalid edge: Expected type 'Edge', but got {type(edge).__name__}")
 
         if not self.contains_node(edge.source):
-            raise ValueError(f"node {edge.source } not in graph.")
+            raise ValueError(f"Edge insertion failed: Source node '{edge.source}' is not in the graph.")
 
         if not self.contains_node(edge.destination):
-            raise ValueError(f"node {edge.destination } not in graph.")
+            raise ValueError(f"Edge insertion failed: Destination node '{edge.destination}' is not in the graph.")
 
         existing_edge: Optional[Edge] = self.get_edge(edge.source, edge.destination)
         if existing_edge:
@@ -201,6 +272,20 @@ class Graph:
         """
         return len(self.outgoing)
 
+    def get_node(self, node_id: str) -> Optional[Node]:
+        """
+        Retrieve a node from the graph by its ID.
+
+        This method looks up a node using its unique string identifier.
+
+        :param node_id: The ID of the node to retrieve.
+        :type node_id: str
+
+        :return: The node with the specified ID, or `None` if it does not exist.
+        :rtype: Optional[Node]
+        """
+        return self.__nodes_by_id.get(node_id, None)
+
     def get_nodes(self) -> Iterator[Node]:
         """
         Get an iterator over all nodes in the graph.
@@ -229,7 +314,7 @@ class Graph:
         :raises KeyError: If the node is not in the graph.
         """
         if not self.contains_node(node):
-            raise KeyError(f"node {node} is not in the graph.")
+            raise KeyError(f"Cannot retrieve incident edges: Node '{node}' is not present in the graph.")
 
         for edge in self.outgoing[node].values():
             yield edge
@@ -249,6 +334,8 @@ class Graph:
         :return: The edge from the source node to the destination node, or `None` if no such edge exists.
         :rtype: Optional[Edge]
         """
+        if not self.contains_node(source) or not self.contains_node(destination):
+            return None
         return self.outgoing[source].get(destination, None)
 
     def contains_node(self, node: Node) -> bool:
@@ -289,6 +376,34 @@ class Graph:
         :rtype: bool
         """
         return self.get_node_count() == 0
+
+    def remove_edge(self, source: Node, destination: Node) -> None:
+        """
+        Removes an edge from the graph.
+
+        This method removes the directed edge from `source` to `destination`, both from
+        the outgoing edges of the source node and the incoming edges of the destination node.
+
+        :param source: The source node of the edge to remove.
+        :type source: Node
+        :param destination: The destination node of the edge to remove.
+        :type destination: Node
+        """
+        if source in self.__outgoing and destination in self.__outgoing[source]:
+            del self.__outgoing[source][destination]
+        if destination in self.__incoming and source in self.__incoming[destination]:
+            del self.__incoming[destination][source]
+
+    def clear(self) -> None:
+        """
+        Remove all nodes and edges from the graph.
+
+        This clears the outgoing and incoming edge dictionaries, as well as
+        the node lookup by ID.
+        """
+        self.__outgoing.clear()
+        self.__incoming.clear()
+        self.__nodes_by_id.clear()
 
     def to_dict(self) -> GraphDict:
         """

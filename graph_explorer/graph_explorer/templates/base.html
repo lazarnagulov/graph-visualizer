@@ -16,5 +16,14 @@
     </head>
     <body>
         {% block content %}{% endblock %}
+        <script>
+          document.body.addEventListener('htmx:configRequest', (event) => {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (csrfToken) {
+              event.detail.headers['X-CSRFToken'] = csrfToken;
+            }
+          });
+          window.onload = () => addMainViewFunctionality()
+        </script>
     </body>
 </html>

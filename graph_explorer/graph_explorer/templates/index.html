@@ -3,13 +3,53 @@
     {{ head|safe }}
 {% endblock %}
 {% block content %}
-    <div class="page">
+    <div class="workspace-page">
         <div class="header">
             {% csrf_token %}
             {{ app_header|safe }}
         </div>
-        <div class="center">
-            {{ main_view|safe }}
+        <div class="workspace-content">
+            <div class="sidebar">
+                <div class="tree-view">
+                    todo: tree_view
+<!--                    {{ tree_view|safe }}-->
+                </div>
+                <div class="minimap-view">
+                    todo: minimap
+<!--                    {{ minimap_view|safe }}-->
+                </div>
+            </div>
+            <div class="main-column">
+                <div class="main-graph">
+                    {{ main_view|safe }}
+                </div>
+                <div id="cli-terminal">
+                    {% csrf_token %}
+                    <div id="terminal-output"
+                         hx-swap-oob="true"></div>
+                    <input id="terminal-input"
+                           name="command"
+                           placeholder="Enter command..."
+                           hx-post="/execute-command/"
+                           hx-include="[name=command]"
+                           hx-swap="none"
+                           autocomplete="off"
+                           />
+                    <div
+                        hx-get="/generate-graph"
+                        hx-trigger="graph-updated from:body"
+                        hx-target="#main-view"
+                        hx-swap="outerHTML">
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+    <script>
+        document.addEventListener("htmx:afterRequest", () => {
+          const input = document.getElementById("terminal-input");
+          if (input) input.value = "";
+        });
+    </script>
 {% endblock %}

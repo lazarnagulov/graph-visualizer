@@ -118,7 +118,7 @@ class JsonLoader(DataSourcePlugin):
 
     def __parse_dict_pair(self, graph: Graph, node: Node, key: str, value: Any) -> None:
         if key == self.id:
-            node.id = value
+            graph.update_node_id(node.id, value)
             self.__insert_node(value, node)
             return
 
@@ -153,4 +153,4 @@ if __name__ == "__main__":
     path = os.path.join("..", "..", "..", "data", "json", "small_cyclic_data.json")
     with open(path, "r", encoding="utf-8") as f:
         file_str = f.read()
-    print(loader.load(file=file_str))
+    print(loader.load(file_string=file_str))

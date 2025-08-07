@@ -17,7 +17,6 @@ def render(graph: Graph, visualizer: VisualizerPlugin, **kwargs) -> Tuple[str, s
     :param kwargs: Arguments for the visualizer plugin.
     :return: (main_view_head, plugin_head, body) html string that should be included in page.
     """
-
     with open(os.path.join(sys.prefix, 'templates/main_view_head_template.html'), 'r', encoding='utf-8') as file:
         main_view_head = file.read()
     with open(os.path.join(sys.prefix, 'templates/main_view_body_template.html'), 'r', encoding='utf-8') as file:
@@ -30,10 +29,10 @@ def render(graph: Graph, visualizer: VisualizerPlugin, **kwargs) -> Tuple[str, s
         visualized_head, visualized_body = visualizer.visualize(graph=graph, **kwargs)
     else:
         visualized_head = ""
-        visualized_body = "<p>No visualizer plugin</p>"
+        visualized_body = "<p style=\"margin: 1rem\">No visualizer plugin</p>"
 
     if graph.is_empty() or visualized_body == "":
-        visualized_body = "<p>No graph</p>"
+        visualized_body = "<p style=\"margin: 1rem\">No graph</p>"
 
     main_view_html = Template(main_view_body).render(visualized_body=visualized_body)
     return main_view_head, visualized_head, main_view_html

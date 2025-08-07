@@ -39,7 +39,7 @@ class Node:
             node = Node(name="A", value=10)
             # Creates a node with properties {'name': 'A', 'value': 10} and random generated id
         """
-        self.__id = node_id if node_id else str(uuid.uuid4())
+        self.__id: str = node_id if node_id else str(uuid.uuid4())
         self.__properties: Dict[str, Any] = properties
 
     @property
@@ -106,6 +106,21 @@ class Node:
 
         self.__properties[key] = value
 
+    def add_properties(self, properties: Dict[str, Any]) -> None:
+        """
+        Add multiple properties to the Node.
+
+        This method iterates over the provided dictionary and adds each key-value pair
+        to the Node using the `add_property` method.
+
+        :param properties: A dictionary of properties to be added to the node.
+        :type properties: Dict[str, Any]
+
+        :raises TypeError: If any key in the dictionary is not a string.
+        """
+        for key, value in properties.items():
+            self.add_property(key, value)
+
     def remove_property(self, key: str) -> Optional[Any]:
         """
         Remove a property from the Node by its key.
@@ -153,9 +168,6 @@ class Node:
             return False
         if self.id == other.id:
             return True
-        if self.properties.keys() == other.properties.keys():
-            return False
-        return all(self.properties[k] == other.properties[k] for k in self.properties)
 
     def __hash__(self) -> int:
         """
