@@ -1,8 +1,19 @@
+import copy
 import uuid
-from typing import Dict, Any
+from typing import Dict, Any, TypedDict
 
 from typing_extensions import Optional
 
+class NodeDict(TypedDict):
+    """
+    Dictionary representation of a node
+
+    Attributes:
+        id (str): Unique identifier
+        properties (dict): Dictionary of properties
+    """
+    id: str
+    properties: Dict[str, Any]
 
 class Node:
     """
@@ -108,6 +119,20 @@ class Node:
         :raises TypeError: If the key is not a string.
         """
         return self.__properties.pop(key, None)
+
+    def to_dict(self) -> NodeDict:
+        """
+        Return a dictionary representation of the node using only JSON-serializable types.
+
+        The dictionary has the following structure:
+            - 'id': ID of the node
+            - 'properties': dictionary of properties associated with the node
+
+        :return: A dictionary representation of the node.
+        :rtype: NodeDict
+        """
+
+        return {'id': self.id, 'properties': copy.deepcopy(self.properties)}
 
     def __eq__(self, other: object) -> bool:
         """
