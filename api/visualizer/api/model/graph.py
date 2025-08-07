@@ -1,9 +1,19 @@
-from typing import Dict, Iterator, Optional, overload, Union
+from typing import Dict, Iterator, Optional, TypedDict, List, overload, Union
 
-from .node import Node
-from .edge import Edge
-from ..exception.node_exception import NodeHasEdgesError
+from .edge import Edge, EdgeDict
+from .node import Node, NodeDict
 
+
+class GraphDict(TypedDict):
+    """
+    Dictionary representation of a graph using only JSON-serializable types.
+
+    Attributes:
+        nodes (List[NodeDict]): List of nodes formatted as NodeDict
+        edges (List[EdgeDict]): List of edges formatted as EdgeDict
+    """
+    nodes: List[NodeDict]
+    edges: List[EdgeDict]
 
 class Graph:
     """
@@ -393,13 +403,32 @@ class Graph:
         self.__incoming.clear()
         self.__nodes_by_id.clear()
 
+    def to_dict(self) -> GraphDict:
+        """
+        Return a dictionary representation of the graph using only JSON-serializable types.
+
+        The returned dictionary has the following structure:
+            - 'nodes': a list of dictionaries, each representing a node with the keys: 'id' and 'properties'.
+            - 'edges': a list of dictionaries, each representing an edge with the keys: 'source', 'destination' and 'properties'.
+
+        :return: A dictionary with 'nodes' and 'edges' as keys.
+        :rtype: GraphDict
+        """
+        nodes = [node.to_dict() for node in self.get_nodes()]
+        edges = [
+            edge.to_dict()
+            for destinations in self.outgoing.values()
+            for edge in destinations.values()
+        ]
+        return {'nodes': nodes, 'edges': edges}
+
     def __str__(self) -> str:
         """
         Return a string representation of the graph, including all nodes and edges.
 
         The string representation is formatted as follows:
-        - All nodes in the graph are listed, each on a new line.
-        - All edges in the graph are listed, showing the source and destination node.
+            - All nodes in the graph are listed, each on a new line.
+            - All edges in the graph are listed, showing the source and destination node.
 
         Nodes and Edges are represented by their string representation (i.e., the `__str__` method
         of the `Node` and `Edge` class)

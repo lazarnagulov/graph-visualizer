@@ -1,0 +1,9 @@
+<div id = "simple-visualizer-main-div" style = "width: 100%; height: 100%;">
+</div>
+<script>
+    window.renderSimpleVisualizer(
+        {{graph | tojson | safe}},
+        {{width | default("undefined")}},
+        {{height | default("undefined")}}
+    )
+</script>
