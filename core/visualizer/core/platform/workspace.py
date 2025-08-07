@@ -53,10 +53,10 @@ class Workspace(object):
         if self.__data_source_plugin and self.__data_file_string:
             self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
 
-    def render_main_view(self) -> Tuple[str, str]:
+    def render_main_view(self) -> Tuple[str, str, str]:
         """
         Render the main view. Generates a graph if empty.
-        :return: (header,body) html string that should be included in page
+        :return: (main_view_head, plugin_head, body) html string that should be included in page
         """
         if self.__visualizer_plugin is None or self.__data_source_plugin is None:
             self.__set_default_plugins()

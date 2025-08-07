@@ -19,6 +19,9 @@ class SimpleVisualizer(VisualizerPlugin):
         with open(os.path.join(sys.prefix, 'templates/simple_visualizer_body_template.html'), 'r', encoding='utf-8') as file:
             body_template = file.read()
 
+        if not graph or graph.is_empty():
+            return head, ""
+
         graph_dict: GraphDict = graph.to_dict()
         self.__modify_data(graph_dict)
 
