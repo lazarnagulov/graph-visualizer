@@ -46,7 +46,6 @@ class SimpleVisualizer(VisualizerPlugin):
             reverse_key = (key[1], key[0])
             if key[0] == key[1]: # loop
                 graph_dict['edges'][index]['loop'] = True
-                edge_table[key] = -1 # mark as checked
             elif reverse_key in edge_table: # two edges between a pair of nodes
                 graph_dict['edges'][index]['double'] = True
                 index2 = edge_table[reverse_key]
