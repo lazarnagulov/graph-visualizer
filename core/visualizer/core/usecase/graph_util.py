@@ -1,6 +1,6 @@
 import ast
 import copy
-from typing import List
+from typing import List, Set
 
 from visualizer.api.model.edge import Edge
 from visualizer.api.model.graph import Graph
@@ -9,14 +9,14 @@ from visualizer.api.model.node import Node
 from core.visualizer.core.util.compare_util import CompareUtil, CompareException
 
 
-def search_graph(graph: Graph, query: str) -> Graph:
+def search_graph(graph: Graph, query: str) -> None:
     nodes = graph.get_nodes()
     query = query.lower()
-    good_nodes = []
+    good_nodes = set()
     for node in nodes:
         if query in node.id.lower() or __search_property(node.properties, query):
             good_nodes.add(node)
-    return __recreate_graph(good_nodes, graph)
+    __recreate_graph(good_nodes, graph)
 
 def __search_property(prop: any, query: str) -> bool:
     if isinstance(prop, dict):
@@ -35,7 +35,7 @@ def __search_property(prop: any, query: str) -> bool:
     else:
         return query in str(prop).lower()
 
-def filter_graph(graph: Graph, key: str, operator: str, compare_value: str) -> Graph:
+def filter_graph(graph: Graph, key: str, operator: str, compare_value: str) -> None:
     nodes = graph.get_nodes()
     try:
         compare_value = ast.literal_eval(compare_value)
@@ -47,7 +47,7 @@ def filter_graph(graph: Graph, key: str, operator: str, compare_value: str) -> G
     except CompareException as e:
         raise e
 
-    good_nodes = []
+    good_nodes = set()
     for node in nodes:
         if key.lower() == "id":
             property_value = node.id
@@ -56,23 +56,16 @@ def filter_graph(graph: Graph, key: str, operator: str, compare_value: str) -> G
         else:
             continue
         if CompareUtil.compare(operator, property_value, compare_value):
-            good_nodes.append(node)
+            good_nodes.add(node)
 
-    return __recreate_graph(good_nodes, graph)
+    __recreate_graph(good_nodes, graph)
 
-def __recreate_graph(nodes: List[Node], graph: Graph) -> Graph:
-    new_graph = Graph()
+def __recreate_graph(nodes: Set[Node], graph: Graph) -> None:
+    edges: List[Edge] = []
     for node in nodes:
-        new_graph.insert_node(copy.deepcopy(node)) # clone nodes to avoid referencing between graphs
-    for node in nodes:
-        incident_edges = graph.get_incident_edges(node)
-        for edge in incident_edges:
-            if new_graph.get_node(edge.destination.id) is None:
-                continue
-            new_edge = Edge(
-                new_graph.get_node(edge.source.id),
-                new_graph.get_node(edge.destination.id),
-                **copy.deepcopy(edge.properties)
-            )
-            new_graph.insert_edge(new_edge)
-    return new_graph
+        for edge in graph.get_incident_edges(node):
+            if edge.destination in nodes:
+                edges.append(edge)
+    graph.clear()
+    graph.insert_nodes(*nodes)
+    graph.insert_edges(*edges)
