@@ -6,10 +6,15 @@ from visualizer.api.model.edge import Edge
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
 
-from core.visualizer.core.util.compare_util import CompareUtil, CompareException
+from visualizer.core.util.compare_util import CompareUtil, CompareException
 
 
 def search_graph(graph: Graph, query: str) -> None:
+    """
+    Search graph according to given query.
+
+    This function will modify the graph directly.
+    """
     nodes = graph.get_nodes()
     query = query.lower()
     good_nodes = set()
@@ -23,24 +28,33 @@ def __search_property(prop: any, query: str) -> bool:
         for key, value in prop.items():
             if query in key.lower():
                 return True
-            else:
-                return __search_property(value, query)
+            elif __search_property(value, query):
+                return True
         return False
     elif isinstance(prop, list) or isinstance(prop, tuple) or isinstance(prop, set):
         for value in prop:
-            return __search_property(value, query)
+            if __search_property(value, query):
+                return True
         return False
     elif isinstance(prop, str):
         return query in prop.lower()
     else:
         return query in str(prop).lower()
 
-def filter_graph(graph: Graph, key: str, operator: str, compare_value: str) -> None:
+def filter_graph(graph: Graph, key: str, operator: str, compare_value: any) -> None:
+    """
+    Filter graph according to operator and compare_value, for matching key.
+
+    This function will modify the graph directly.
+    If compare value is a string, it will be safely evaluated.
+    """
     nodes = graph.get_nodes()
     try:
         compare_value = ast.literal_eval(compare_value)
     except ValueError:
         pass # leave it as string
+    if isinstance(compare_value, str):
+        compare_value = compare_value.lower()
 
     try:
         CompareUtil.compare(operator, 1, 2)
@@ -55,6 +69,8 @@ def filter_graph(graph: Graph, key: str, operator: str, compare_value: str) -> N
             property_value = node.properties[key]
         else:
             continue
+        if isinstance(property_value, str):
+            property_value = property_value.lower()
         if CompareUtil.compare(operator, property_value, compare_value):
             good_nodes.add(node)
 

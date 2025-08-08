@@ -8,4 +8,5 @@ from .edge.edit_edge_command import EditEdgeCommand
 from .edge.delete_edge_command import DeleteEdgeCommand
 
 from .general.filter_command import FilterCommand
+from .general.search_command import SearchCommand
 from .general.clear_command import ClearCommand

@@ -1,11 +1,13 @@
 from typing import List, Optional, Dict, Any, Tuple
+from unittest import case
 
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
 from visualizer.core.cli.exception.parser_exception import ParserError
 from visualizer.core.command import (
     Command, CreateNodeCommand, DeleteNodeCommand, EditNodeCommand,
-    CreateEdgeCommand, EditEdgeCommand, DeleteEdgeCommand, ClearCommand
+    CreateEdgeCommand, EditEdgeCommand, DeleteEdgeCommand, ClearCommand,
+    SearchCommand, FilterCommand
 )
 
 def parse_command(graph: Graph, input_line: str) -> Command:
@@ -19,13 +21,21 @@ def parse_command(graph: Graph, input_line: str) -> Command:
         else:
             raise NotImplementedError("Incomplete command. A command requires more details (e.g., 'create node ...').")
 
-    match tokens[1]:
-        case "node":
-            return __parse_node_command(graph, tokens)
-        case "edge":
-            return __parse_edge_command(graph, tokens)
+    match tokens[0]:
+        case "filter":
+            return __parse_filter_command(graph, tokens)
+        case "search":
+            return __parse_search_command(graph, tokens)
+        case "create" | "edit" | "delete":
+            match tokens[1]:
+                case "node":
+                    return __parse_node_command(graph, tokens)
+                case "edge":
+                    return __parse_edge_command(graph, tokens)
+                case _:
+                    raise ParserError(f"Unknown command target: '{tokens[1]}'. Expected 'node' or 'edge'.")
         case _:
-            raise ParserError(f"Unknown command target: '{tokens[1]}'. Expected 'node' or 'edge'.")
+            raise ParserError(f"Unknown command: '{tokens[0]}'.")
 
 
 def __parse_edge_command(graph: Graph, tokens: List[str]) -> Command:
@@ -104,3 +114,15 @@ def __parse_properties(tokens: List[str]) -> Tuple[Optional[str], Dict[str, Any]
         i += 1
 
     return entity_id, properties
+
+
+def __parse_search_command(graph: Graph, tokens: List[str]) -> Command:
+    if len(tokens) < 2:
+        raise ParserError("No query provided.")
+    return SearchCommand(graph, tokens[1])
+
+
+def __parse_filter_command(graph: Graph, tokens: List[str]) -> Command:
+    if len(tokens) < 4:
+        raise ParserError("Incomplete filter command. Expected syntax: 'filter <key> <operator> <value>'")
+    return FilterCommand(graph, tokens[1], tokens[2], tokens[3])
