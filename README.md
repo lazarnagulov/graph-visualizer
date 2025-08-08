@@ -28,6 +28,7 @@
         <li><a href="#-plugins">Plugins</a>
             <ul>
                 <li><a href="#-json-data-source">JSON Data Source</a></li> 
+                <li><a href="#-python-data-source">Python Data Source</a></li> 
             </ul>
         </li> 
         <li><a href="#-running-the-server">Running the Server</a></li> 
@@ -85,7 +86,7 @@ Graph Visualizer uses a plugin-based architecture. There are two plugin types:
 #### 🔌 Data Source Plugins
 These convert raw files into graph data.
 - JSON
-- Soon
+- Python
 
 #### 🖼️ Visualizer Plugins
 These render the graph in different ways.
@@ -136,6 +137,11 @@ Or modify directly in config.json:
   "ref-prefix": "&"
 }
 ```
+
+### 🐍 Python Data Source
+The Python plugin generates graphs by analyzing the AST, representing functions and classes as nodes 
+and calls as edges.</br>
+
 ## ▶️ Running the Server
 Run the Django server:
 ```
