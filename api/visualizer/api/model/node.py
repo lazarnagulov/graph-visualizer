@@ -166,8 +166,7 @@ class Node:
         """
         if not isinstance(other, Node):
             return False
-        if self.id == other.id:
-            return True
+        return self.id == other.id
 
     def __hash__(self) -> int:
         """
@@ -179,7 +178,7 @@ class Node:
         :return: A hash value representing the Node.
         :rtype: int
         """
-        return hash(id(self))
+        return hash(self.id)
 
     def __str__(self) -> str:
         """

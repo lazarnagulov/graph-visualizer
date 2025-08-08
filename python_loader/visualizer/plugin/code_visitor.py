@@ -1,5 +1,5 @@
 import ast
-from _ast import FunctionDef, Call, ClassDef
+from _ast import FunctionDef, Call, ClassDef, expr
 from ast import NodeVisitor
 from typing import Any, Optional, cast
 
@@ -22,10 +22,9 @@ class CodeVisitor(NodeVisitor):
 
     def visit_FunctionDef(self, node: FunctionDef) -> Any:
         function_node: Node = Node(f"fn_{node.name}")
-        function_node.add_property("name", node.name)
-        function_node.add_property("args", [arg.arg for arg in node.args.args])
-        # TODO: check for duplicates before inserting
-        self.__graph.insert_node(function_node)
+        if not self.__graph.contains_node(function_node):
+            function_node.add_properties({ "name": node.name,  "args" : [arg.arg for arg in node.args.args]})
+            self.__graph.insert_node(function_node)
 
         if self.__current_function:
             edge: Edge = Edge(self.__current_function, function_node, defines=True)
@@ -38,10 +37,11 @@ class CodeVisitor(NodeVisitor):
 
     def visit_Call(self, node: Call) -> Any:
         function_name: str = self.__get_function_name(node.func)
-        call_node: Node = Node(f"fn_{function_name}")
+        call_node: Optional[Node] = self.__graph.get_node(function_name)
 
-        # TODO: check for duplicates before inserting
-        self.__graph.insert_node(call_node)
+        if not call_node:
+            call_node = Node(function_name)
+            self.__graph.insert_node(call_node)
 
         if self.__current_function:
             edge: Edge = Edge(self.__current_function, call_node, calls=True)
@@ -49,8 +49,8 @@ class CodeVisitor(NodeVisitor):
 
         self.generic_visit(node)
 
-    def __get_function_name(self, func_node: ast.AST) -> str:
+    def __get_function_name(self, func_node: expr) -> str:
         if isinstance(func_node, ast.Name):
-            return func_node.id
+            return f"fn_{func_node.id}"
         else:
             return "<unknown>"

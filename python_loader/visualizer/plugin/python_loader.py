@@ -25,7 +25,7 @@ class PythonLoader(DataSourcePlugin):
 
 
 def main() -> None:
-    path = os.path.join("..", "..", "..", "data", "python", "big_example.py")
+    path = os.path.join("..", "..", "..", "data", "python", "small_example.py")
     with open(path, "r", encoding="utf-8") as f:
         code = f.read()
     python_loader = PythonLoader()
