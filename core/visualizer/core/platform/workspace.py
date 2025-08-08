@@ -108,7 +108,7 @@ class Workspace(object):
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
         if self.__data_source_plugin and self.__data_file_string:
-            self.__graph = self.__data_source_plugin.load(code=self.__data_file_string)
+            self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
             self.__data_file_string = ""
 
     def render_main_view(self) -> Tuple[str, str, str]:

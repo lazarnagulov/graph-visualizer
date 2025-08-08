@@ -20,10 +20,32 @@ class CodeVisitor(NodeVisitor):
     def graph(self) -> Graph:
         return self.__graph
 
+    @graph.setter
+    def graph(self, graph: Graph) -> None:
+        self.__graph = graph
+
+    def visit_ClassDef(self, node: ClassDef) -> Any:
+        class_node = Node(f"class_{node.name}")
+        if not self.__graph.contains_node(class_node):
+            class_node.add_properties({"name": node.name})
+            self.__graph.insert_node(class_node)
+
+        if self.__current_function:
+            edge = Edge(self.__current_function, class_node, defines=True)
+            self.__graph.insert_edge(edge)
+
+        previous_function = self.__current_function
+        self.__current_function = class_node
+        self.generic_visit(node)
+        self.__current_function = previous_function
+
     def visit_FunctionDef(self, node: FunctionDef) -> Any:
         function_node: Node = Node(f"fn_{node.name}")
         if not self.__graph.contains_node(function_node):
             function_node.add_properties({ "name": node.name,  "args" : [arg.arg for arg in node.args.args]})
+            if node.returns:
+                return_type = ast.unparse(node.returns)
+                function_node.add_property("return_type", return_type)
             self.__graph.insert_node(function_node)
 
         if self.__current_function:
@@ -52,5 +74,13 @@ class CodeVisitor(NodeVisitor):
     def __get_function_name(self, func_node: expr) -> str:
         if isinstance(func_node, ast.Name):
             return f"fn_{func_node.id}"
-        else:
-            return "<unknown>"
+        elif isinstance(func_node, ast.Attribute):
+            attribute_parts = []
+            while isinstance(func_node, ast.Attribute):
+                attribute_parts.append(func_node.attr)
+                func_node = func_node.value
+            if isinstance(func_node, ast.Name):
+                attribute_parts.append(func_node.id)
+            full_name = '.'.join(reversed(attribute_parts))
+            return f"fn_{full_name}"
+        return "<unknown>"

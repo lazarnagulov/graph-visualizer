@@ -44,7 +44,7 @@ class JsonLoader(DataSourcePlugin):
         return "json_loader"
 
     def name(self) -> str:
-        return "JsonLoader"
+        return "Json Loader"
 
     def load(self, file_string: Optional[str], **kwargs) -> Graph:
         if not file_string:

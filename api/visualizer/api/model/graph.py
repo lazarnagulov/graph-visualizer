@@ -130,9 +130,10 @@ class Graph:
         if not node:
             raise ValueError(f"Cannot update node ID: No node found with id '{old_id}'.")
 
+        self.remove_node(node)
         node.id = new_id
-        self.__nodes_by_id[new_id] = node
-        del self.__nodes_by_id[old_id]
+        self.insert_node(node)
+
 
     def insert_node(self, node: Node) -> None:
         """

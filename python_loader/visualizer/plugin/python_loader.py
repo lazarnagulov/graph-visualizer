@@ -9,11 +9,11 @@ from visualizer.plugin.code_visitor import CodeVisitor
 class PythonLoader(DataSourcePlugin):
 
     def __init__(self):
-        super().__init__()
         self.__visitor = CodeVisitor()
 
-    def load(self, code: str, **kwargs) -> Graph:
-        tree = ast.parse(code)
+    def load(self, file_string: str, **kwargs) -> Graph:
+        self.__visitor.graph = Graph()
+        tree = ast.parse(file_string)
         self.__visitor.visit(tree)
         return self.__visitor.graph
 
