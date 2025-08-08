@@ -190,6 +190,11 @@ body {
   font-weight: 500;
 }
 
+.terminal-line.info {
+  color: #0097d4;
+  font-weight: 500;
+}
+
 @media (max-width: 600px) {
   #cli-terminal {
     height: auto;

@@ -98,6 +98,9 @@ class Workspace:
             elif command_input == "redo":
                 self.__command_service.redo()
                 return CommandResult(CommandStatus.OK, "Redo successful")
+            elif command_input == "help":
+                output = self.__command_service.help()
+                return CommandResult(CommandStatus.INFO, output)
             else:
                 command: Command = parse_command(self.__graph, command_input)
                 self.__command_service.execute(command)

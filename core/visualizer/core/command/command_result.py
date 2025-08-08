@@ -9,9 +9,11 @@ class CommandStatus(str, Enum):
     Attributes:
         OK: Indicates the command completed successfully.
         ERROR: Indicates the command encountered an error.
+        INFO: Indicates the command outputted information.
     """
     OK = "ok"
     ERROR = "error"
+    INFO = "info"
 
 
 @dataclass
