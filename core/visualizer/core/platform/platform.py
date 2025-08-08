@@ -5,7 +5,7 @@ from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
 
 
-class Platform(object):
+class Platform:
     def __init__(self, plugin_service: PluginService, command_service: CommandService):
         self.workspaces: List[Workspace] = [Workspace(plugin_service, command_service)]
 

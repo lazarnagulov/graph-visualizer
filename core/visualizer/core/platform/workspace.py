@@ -16,7 +16,7 @@ from ..command import Command
 from ..command.command_result import CommandResult, CommandStatus
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
-class Workspace(object):
+class Workspace:
     def __init__(self, plugin_service: PluginService, command_service: CommandService):
         """
         Initialize the Workspace with plugin and command services.
