@@ -92,19 +92,23 @@ class Workspace:
         :rtype: CommandResult
         """
         try:
-            if command_input == "undo":
-                self.__command_service.undo()
-                return CommandResult(CommandStatus.OK, "Undo successful")
-            elif command_input == "redo":
-                self.__command_service.redo()
-                return CommandResult(CommandStatus.OK, "Redo successful")
-            elif command_input == "help":
-                output = self.__command_service.help()
-                return CommandResult(CommandStatus.INFO, output)
-            else:
-                command: Command = parse_command(self.__graph, command_input)
-                self.__command_service.execute(command)
-                return CommandResult(CommandStatus.OK, "Success")
+            match command_input:
+                case "undo":
+                    self.__command_service.undo()
+                    return CommandResult(CommandStatus.OK, "Undo successful")
+                case "redo":
+                    self.__command_service.redo()
+                    return CommandResult(CommandStatus.OK, "Redo successful")
+                case "help":
+                    output = self.__command_service.help()
+                    return CommandResult(CommandStatus.INFO, output)
+                case "reload":
+                    self.generate_graph()
+                    return CommandResult.success()
+                case _:
+                    command: Command = parse_command(self.__graph, command_input)
+                    self.__command_service.execute(command)
+                    return CommandResult.success()
         except Exception as e:
             return CommandResult(CommandStatus.ERROR, str(e))
 
@@ -112,7 +116,6 @@ class Workspace:
         """ Generate the graph using the currently selected data source plugin. """
         if self.__data_source_plugin and self.__data_file_string:
             self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
-            self.__data_file_string = ""
 
     def render_main_view(self) -> Tuple[str, str, str]:
         """

@@ -65,4 +65,4 @@ class CommandService:
 
     def help(self) -> str:
         """ Return the help text. """
-        return "Possible commands are create, edit, delete, filter, search, undo, redo and help."
+        return "Possible commands are create, edit, delete, filter, search, reload, undo, redo and help."
