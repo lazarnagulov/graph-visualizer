@@ -36,6 +36,7 @@ class Workspace:
         self.__data_source_plugin: Optional[DataSourcePlugin] = None
         self.__graph: Graph = Graph()
         self.__data_file_string: str = ""
+        self.__graph_generated: bool = False  # Flag to prevent graph from being reloaded when empty
 
     def set_visualizer_plugin(self, identifier: str) -> None:
         """
@@ -49,7 +50,10 @@ class Workspace:
         Set data source plugin via its identifier.
         :param identifier: plugin identifier
         """
+        old_identifier: str = self.__data_source_plugin.identifier()
         self.__data_source_plugin = self.__plugin_service.get_data_source_plugin(identifier)
+        if old_identifier != identifier:
+            self.generate_graph()
 
     def __set_default_plugins(self) -> None:
         """ Set plugins to first available. """
@@ -77,6 +81,7 @@ class Workspace:
         :type data_file_string: str
         """
         self.__data_file_string = data_file_string
+        self.generate_graph()
 
     def execute_command(self, command_input: str) -> CommandResult:
         """
@@ -116,6 +121,8 @@ class Workspace:
         """ Generate the graph using the currently selected data source plugin. """
         if self.__data_source_plugin and self.__data_file_string:
             self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
+            self.__graph_generated = True
+
 
     def render_main_view(self) -> Tuple[str, str, str]:
         """
@@ -124,7 +131,7 @@ class Workspace:
         """
         if self.__visualizer_plugin is None or self.__data_source_plugin is None:
             self.__set_default_plugins()
-        if self.__graph is None or self.__graph.is_empty():
+        if not self.__graph_generated and (self.__graph is None or self.__graph.is_empty()):
             self.generate_graph()
 
         return main_view.render(self.__graph, self.__visualizer_plugin)
