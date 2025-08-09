@@ -1,23 +1,50 @@
 <div id="app-header">
-  <label for="select-visualizer">Select visualizer: </label>
-  <select name="plugin_id" id="select-visualizer"
-    hx-get="/change-visualizer"
-    hx-trigger="change"
-    hx-target="#main-view"
-    hx-swap="outerHTML"></select>
-  <label for="select-data-source">Select data source: </label>
-  <select name="plugin_id" id="select-data-source"
-    hx-get="/change-data-source"
-    hx-trigger="change"
-    hx-target="#main-view"
-    hx-swap="outerHTML"></select>
-  <label for="file-input">Upload File: </label>
-  <input type="file" id="file-input" name="file_input"
-      hx-post="/upload-data-file/"
-      hx-target="#main-view"
-      hx-trigger="change"
-      hx-swap="outerHTML"
-      hx-encoding="multipart/form-data">
+  <div class="tab">
+    <button class="tablinks active" onclick="openTab(event, 'main-tab', 'app-header-tabs')">Main</button>
+    <button class="tablinks" onclick="openTab(event, 'filter-tab', 'app-header-tabs')">Filters</button>
+  </div>
+
+  <div id="app-header-tabs">
+    <div id="filter-tab" class="tabcontent">
+      <form id="filter-form" hx-post="/filter/" hx-target="#main-view" hx-swap="outerHTML" hx-trigger="change delay:200ms">
+        <label>Filter:</label>
+        <input type="text" name="key" id="filter-key" placeholder="Key" hx-include="#filter-form"/>
+        <select name="operator" id="filter-operator" hx-include="#filter-form">
+          <option value="==">==</option>
+          <option value="!=">!=</option>
+          <option value="<">&lt;</option>
+          <option value="<=">&lt;=</option>
+          <option value=">">&gt;</option>
+          <option value=">=">&gt;=</option>
+        </select>
+        <input type="text" name="value" id="filter-value" placeholder="Value"hx-include="#filter-form"/>
+      </form>
+      <label for="search-input">Search:</label>
+      <input type="text" name="query" id="search-input" placeholder="Search..."/>
+    </div>
+
+    <div id="main-tab" class="tabcontent active">
+      <label for="select-visualizer">Select visualizer: </label>
+      <select name="plugin_id" id="select-visualizer"
+        hx-get="/change-visualizer"
+        hx-trigger="change"
+        hx-target="#main-view"
+        hx-swap="outerHTML"></select>
+      <label for="select-data-source">Select data source: </label>
+      <select name="plugin_id" id="select-data-source"
+        hx-get="/change-data-source"
+        hx-trigger="change"
+        hx-target="#main-view"
+        hx-swap="outerHTML"></select>
+      <label for="file-input">Upload File: </label>
+      <input type="file" id="file-input" name="file_input"
+          hx-post="/upload-data-file/"
+          hx-target="#main-view"
+          hx-trigger="change"
+          hx-swap="outerHTML"
+          hx-encoding="multipart/form-data">
+    </div>
+  </div>
 </div>
 <script>
   document.body.addEventListener('htmx:configRequest', function (event) {
@@ -49,4 +76,12 @@
     .attr('value', d => d.id)
     .text(d => d.name)
     .property('selected', d => d.id === initial_data_source);
+
+  function openTab(evt, tabId, tabContainerId) {
+    evt.target.parentNode.querySelector(".active")?.classList.remove("active");
+    evt.target.classList.add("active");
+
+    document.querySelector(`#${tabContainerId} > .active`)?.classList.remove("active");
+    document.querySelector(`#${tabId}`)?.classList.add("active");
+  }
 </script>

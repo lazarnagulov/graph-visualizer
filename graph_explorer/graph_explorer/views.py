@@ -73,6 +73,14 @@ def generate_graph(_request):
     _,_, main_view_html = workspace.render_main_view()
     return HttpResponse(main_view_html)
 
+def filter(request):
+    print(request.POST.get('key'))
+    print(request.POST.get('operator'))
+    print(request.POST.get('value'))
+    workspace: Workspace = __get_workspace()
+    _,_, main_view_html = workspace.render_main_view()
+    return HttpResponse(main_view_html)
+
 def __get_workspace() -> Workspace:
     return apps.get_app_config('graph_explorer').platform.get_selected_workspace()
 

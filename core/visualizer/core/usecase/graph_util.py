@@ -1,5 +1,4 @@
 import ast
-import copy
 from typing import List, Set
 
 from visualizer.api.model.edge import Edge
