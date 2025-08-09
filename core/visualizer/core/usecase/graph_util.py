@@ -51,7 +51,7 @@ def filter_graph(graph: Graph, key: str, operator: str, compare_value: any) -> N
     nodes = graph.get_nodes()
     try:
         compare_value = ast.literal_eval(compare_value)
-    except ValueError:
+    except (ValueError, SyntaxError):
         pass # leave it as string
     if isinstance(compare_value, str):
         compare_value = compare_value.lower()
