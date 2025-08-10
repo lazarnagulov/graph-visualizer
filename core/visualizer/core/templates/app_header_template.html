@@ -6,7 +6,8 @@
 
   <div id="app-header-tabs">
     <div id="filter-tab" class="tabcontent">
-      <form id="filter-form" hx-post="/filter/" hx-target="#main-view" hx-swap="outerHTML" hx-trigger="change delay:200ms">
+      <form id="filter-form" hx-post="/filter-graph/" hx-target="#main-view" -swap="outerHTML" hx-trigger="submit"
+            class="inline-block" oninput="document.getElementById('filter-error').innerHTML='';">
         <label>Filter:</label>
         <input type="text" name="key" id="filter-key" placeholder="Key" hx-include="#filter-form"/>
         <select name="operator" id="filter-operator" hx-include="#filter-form">
@@ -17,10 +18,21 @@
           <option value=">">&gt;</option>
           <option value=">=">&gt;=</option>
         </select>
-        <input type="text" name="value" id="filter-value" placeholder="Value"hx-include="#filter-form"/>
+        <input type="text" name="value" id="filter-value" placeholder="Value" hx-include="#filter-form"/>
+        <button type="submit" id="filter-apply">Apply</button>
+        <div class="tooltip">
+            <img src="static/mark.png" alt="error" class="tooltip-icon" width="20" height="20"/>
+            <span class="inline-block tooltiptext" id="filter-error"></span>
+        </div>
       </form>
-      <label for="search-input">Search:</label>
-      <input type="text" name="query" id="search-input" placeholder="Search..."/>
+      <div class="inline-block">
+          <label for="search-input">Search:</label>
+          <input type="text" name="query" id="search-input" placeholder="Search..."/>
+          <button type="button" id="search-apply" hx-post="/search-graph/" hx-include="#search-input"
+                 hx-target="#main-view" hx-swap="outerHTML">Apply</button>
+      </div>
+      <button type="button" id="filter-reload" hx-get="/reload-graph"
+              hx-target="#main-view" hx-swap="outerHTML">Reload</button>
     </div>
 
     <div id="main-tab" class="tabcontent active">
@@ -47,6 +59,10 @@
   </div>
 </div>
 <script>
+  document.body.addEventListener("showFilterError", function(event){
+    console.log(event)
+  })
+
   document.body.addEventListener('htmx:configRequest', function (event) {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
     if (csrfToken) {
@@ -77,9 +93,9 @@
     .text(d => d.name)
     .property('selected', d => d.id === initial_data_source);
 
-  function openTab(evt, tabId, tabContainerId) {
-    evt.target.parentNode.querySelector(".active")?.classList.remove("active");
-    evt.target.classList.add("active");
+  function openTab(event, tabId, tabContainerId) {
+    event.target.parentNode.querySelector(".active")?.classList.remove("active");
+    event.target.classList.add("active");
 
     document.querySelector(`#${tabContainerId} > .active`)?.classList.remove("active");
     document.querySelector(`#${tabId}`)?.classList.add("active");
