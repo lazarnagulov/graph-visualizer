@@ -108,13 +108,9 @@ class JsonLoader(DataSourcePlugin):
                     self.__parse_reference(graph, parent_node, relation_name, parsed_json)
                     return
 
-                if not self.__get_node_by_id(str(parsed_json)):
-                    node: Node = Node(parsed_json)
-                    self.__insert_node(str(parsed_json), node)
-                    graph.insert_node(node)
-                    if parent_node and relation_name:
-                        edge: Edge = Edge(parent_node, node, **{relation_name: True})
-                        graph.insert_edge(edge)
+                literal_node: Node = Node(None, type="literal", value=parsed_json)
+                graph.insert_node(literal_node)
+                graph.insert_edge(Edge(parent_node, literal_node, **{relation_name: True}))
 
     def __parse_dict_pair(self, graph: Graph, node: Node, key: str, value: Any) -> None:
         if key == self.id:
