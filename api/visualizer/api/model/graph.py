@@ -130,9 +130,10 @@ class Graph:
         if not node:
             raise ValueError(f"Cannot update node ID: No node found with id '{old_id}'.")
 
+        self.remove_node(node)
         node.id = new_id
-        self.__nodes_by_id[new_id] = node
-        del self.__nodes_by_id[old_id]
+        self.insert_node(node)
+
 
     def insert_node(self, node: Node) -> None:
         """
@@ -338,20 +339,31 @@ class Graph:
             return None
         return self.outgoing[source].get(destination, None)
 
+    @overload
     def contains_node(self, node: Node) -> bool:
+        ...
+
+    @overload
+    def contains_node(self, node_id: str) -> bool:
+        ...
+
+    def contains_node(self, node_or_id: Union[Node, str]) -> bool:
         """
         Check if a node exists in the graph.
 
         This method checks if the given node is present in the graph by looking for it
         in the `outgoing` dictionary.
 
-        :param node: The node to check for existence in the graph.
-        :type node: Node
+        :param node_or_id: The node to check for existence in the graph.
+        :type node_or_id: Union[Node, str]
 
         :return: `True` if the node exists, `False` otherwise.
         :rtype: bool
         """
-        return node in self.outgoing
+        if isinstance(node_or_id, Node):
+            return node_or_id in self.outgoing
+        else:
+            return node_or_id in self.__nodes_by_id
 
     def contains_edge(self, edge: Edge) -> bool:
         """
