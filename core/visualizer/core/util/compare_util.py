@@ -31,6 +31,8 @@ class CompareUtil:
         """
         if operator not in CompareUtil.__operators:
             raise CompareException(operator)
+        if ((operand1 is None) or (operand2 is None)) and operator != '==' and operator != '!=':
+            return False
         try:
             return CompareUtil.__operators[operator](operand1, operand2)
         except TypeError:
@@ -44,5 +46,7 @@ class CompareUtil:
             return "text"
         elif type_name == "int" or type_name == "float" or type_name == "complex":
             return "a number"
+        elif type_name == "NoneType":
+            return "None"
         else:
             return type_name

@@ -47,6 +47,15 @@ def filter_graph(graph: Graph, key: str, operator: str, compare_value: any) -> N
     This function will modify the graph directly.
     If compare value is a string, it will be safely evaluated.
     """
+    try:
+        CompareUtil.compare(operator, 1, 2)
+    except CompareException as e:
+        raise e
+
+    if operator != "==" and operator != "!=" and compare_value == "None":
+        raise Exception(f"Cannot compare None using '{operator}'.")
+
+
     nodes = graph.get_nodes()
     try:
         compare_value = ast.literal_eval(compare_value)
@@ -55,10 +64,6 @@ def filter_graph(graph: Graph, key: str, operator: str, compare_value: any) -> N
     if isinstance(compare_value, str):
         compare_value = compare_value.lower()
 
-    try:
-        CompareUtil.compare(operator, 1, 2)
-    except CompareException as e:
-        raise e
 
     good_nodes = set()
     for node in nodes:
