@@ -29,5 +29,7 @@ urlpatterns = [
     path('change-data-source/', views.data_source_change, name='change-data-source'),
     path('upload-data-file/', views.data_file_upload, name='upload-data-file'),
     path('execute-command/', views.execute_command, name='execute-command'),
-    path('filter/', views.filter, name='filter'),
+    path('filter-graph/', views.filter_graph, name='filter-graph'),
+    path('search-graph/', views.search_graph, name='search-graph'),
+    path('reload-graph/', views.reload_graph, name='reload-graph'),
 ]
