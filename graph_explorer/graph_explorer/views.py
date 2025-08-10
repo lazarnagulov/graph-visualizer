@@ -35,16 +35,14 @@ def index(request):
 def visualizer_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
-    __get_workspace().set_visualizer_plugin(plugin_id)
+    workspace.set_visualizer_plugin(plugin_id)
     _,plugin_head,main_view_body = workspace.render_main_view()
     return HttpResponse(plugin_head + main_view_body)
 
 def data_source_change(request):
     plugin_id: str = request.GET.get('plugin_id')
-    workspace: Workspace = __get_workspace()
     __get_workspace().set_data_source_plugin(plugin_id)
-    _,_,main_view_body = workspace.render_main_view()
-    return HttpResponse(main_view_body) # we will not update the head since the visualizer hasn't changed
+    return generate_graph(request) # we will not update the head since the visualizer hasn't changed
 
 def data_file_upload(request):
     workspace: Workspace = __get_workspace()
@@ -72,6 +70,32 @@ def generate_graph(_request):
     workspace: Workspace = __get_workspace()
     _,_, main_view_html = workspace.render_main_view()
     return HttpResponse(main_view_html)
+
+def filter_graph(request):
+    workspace: Workspace = __get_workspace()
+    error = workspace.filter_graph(
+        request.POST.get('key'),
+        request.POST.get('operator'),
+        request.POST.get('value')
+    )
+    if error:
+        response = HttpResponse(error)
+        response["HX-Reswap"] = "innerHTML"
+        response["HX-Retarget"] = "#filter-error"
+        return response
+    else:
+        _,_, main_view_html = workspace.render_main_view()
+        return HttpResponse(main_view_html)
+
+def search_graph(request):
+    workspace: Workspace = __get_workspace()
+    workspace.search_graph(request.POST.get('query'))
+    return generate_graph(request)
+
+def reload_graph(request):
+    workspace: Workspace = __get_workspace()
+    workspace.generate_graph()
+    return generate_graph(request)
 
 def __get_workspace() -> Workspace:
     return apps.get_app_config('graph_explorer').platform.get_selected_workspace()

@@ -9,9 +9,11 @@ class CommandStatus(str, Enum):
     Attributes:
         OK: Indicates the command completed successfully.
         ERROR: Indicates the command encountered an error.
+        INFO: Indicates the command outputted information.
     """
     OK = "ok"
     ERROR = "error"
+    INFO = "info"
 
 
 @dataclass
@@ -28,3 +30,8 @@ class CommandResult:
     """
     status: CommandStatus
     output: str
+
+    @staticmethod
+    def success() -> "CommandResult":
+        """ Return the success message with OK status. """
+        return CommandResult(CommandStatus.OK, "Success")

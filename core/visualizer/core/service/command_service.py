@@ -62,3 +62,7 @@ class CommandService:
             self.__undo_stack.append(command)
         else:
             raise CommandHistoryEmptyError("Nothing to redo.")
+
+    def help(self) -> str:
+        """ Return the help text. """
+        return "Possible commands are create, edit, delete, filter, search, reload, undo, redo and help."
