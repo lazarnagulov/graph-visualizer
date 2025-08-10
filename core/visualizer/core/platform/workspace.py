@@ -11,6 +11,8 @@ import visualizer.core.view.main_view as main_view
 import os
 from typing import Dict, List, Tuple, Optional
 
+from visualizer.core.usecase import graph_util
+
 from ..cli.command_parser import parse_command
 from ..command import Command
 from ..command.command_result import CommandResult, CommandStatus
@@ -123,6 +125,15 @@ class Workspace:
             self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
             self.__graph_generated = True
 
+    def filter_graph(self, key: str, operator: str, value: any) -> str:
+        try:
+            graph_util.filter_graph(self.__graph, key, operator, value)
+            return ""
+        except Exception as e:
+            return str(e)
+
+    def search_graph(self, query: str) -> None:
+        graph_util.search_graph(self.__graph, query)
 
     def render_main_view(self) -> Tuple[str, str, str]:
         """
