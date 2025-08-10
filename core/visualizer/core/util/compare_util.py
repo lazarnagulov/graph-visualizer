@@ -31,6 +31,18 @@ class CompareUtil:
         """
         if operator not in CompareUtil.__operators:
             raise CompareException(operator)
-        return CompareUtil.__operators[operator](operand1, operand2)
+        try:
+            return CompareUtil.__operators[operator](operand1, operand2)
+        except TypeError:
+            raise TypeError(f"Cannot compare {CompareUtil.__full_type_name(operand1)} " +
+                            f"with {CompareUtil.__full_type_name(operand2)} using '{operator}'.")
 
-
+    @staticmethod
+    def __full_type_name(variable: any) -> str:
+        type_name = type(variable).__name__
+        if type_name == "str":
+            return "text"
+        elif type_name == "int" or type_name == "float" or type_name == "complex":
+            return "a number"
+        else:
+            return type_name
