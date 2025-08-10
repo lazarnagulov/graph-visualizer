@@ -47,10 +47,8 @@ def filter_graph(graph: Graph, key: str, operator: str, compare_value: any) -> N
     This function will modify the graph directly.
     If compare value is a string, it will be safely evaluated.
     """
-    try:
-        CompareUtil.compare(operator, 1, 2)
-    except CompareException as e:
-        raise e
+    # Test if the operator is invalid to get the exception early
+    CompareUtil.compare(operator, 1, 2)
 
     if operator != "==" and operator != "!=" and compare_value == "None":
         raise Exception(f"Cannot compare None using '{operator}'.")

@@ -6,7 +6,7 @@ from visualizer.core.usecase import graph_util
 
 class FilterCommand(Command):
 
-    __slots__ = ["__graph"]
+    __slots__ = ["__graph", "__key", "__operator", "__compare_value"]
 
     def __init__(self, graph: Graph, key: str, operator: str, compare_value: str) -> None:
         self.__graph = graph

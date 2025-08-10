@@ -6,7 +6,7 @@ from visualizer.core.usecase import graph_util
 
 class SearchCommand(Command):
 
-    __slots__ = ["__graph"]
+    __slots__ = ["__graph", "__query"]
 
     def __init__(self, graph: Graph, query: str)-> None:
         self.__graph = graph

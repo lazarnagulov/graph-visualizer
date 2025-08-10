@@ -59,10 +59,6 @@
   </div>
 </div>
 <script>
-  document.body.addEventListener("showFilterError", function(event){
-    console.log(event)
-  })
-
   document.body.addEventListener('htmx:configRequest', function (event) {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
     if (csrfToken) {
