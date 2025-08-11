@@ -17,6 +17,8 @@ from ..cli.command_parser import parse_command
 from ..command import Command
 from ..command.command_result import CommandResult, CommandStatus
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
+from ..view import tree_view
+
 
 class Workspace:
     def __init__(self, plugin_service: PluginService, command_service: CommandService):
@@ -147,6 +149,12 @@ class Workspace:
 
         return main_view.render(self.__graph, self.__visualizer_plugin)
 
+    def render_tree_view(self) -> Tuple[str, str]:
+        """
+        Render the tree view. Assumes the graph is already generated.
+        :return: (head, body) html string that should be included in page
+        """
+        return tree_view.render(self.__graph)
 
     def render_app_header(self) -> Tuple[str, str]:
         """

@@ -15,7 +15,7 @@
         <title>{{title}}</title>
         {% block head_content %}{% endblock %}
     </head>
-    <body>
+    <body hx-ext="multi-swap">
         {% block content %}{% endblock %}
         <script>
           document.body.addEventListener('htmx:configRequest', (event) => {

@@ -1,5 +1,6 @@
 <script>
     function swapHeadContent(event) {
+        console.log("swapHeadContent");
         window.getGraphSimulation = undefined;
         if (event.detail.pathInfo.requestPath === "/change-visualizer")
         {
@@ -31,6 +32,7 @@
         }
     }
     function addMainViewFunctionality(event) {
+        console.log("adding main view functionality");
         if (!window.getGraphSimulation)
             return;
 

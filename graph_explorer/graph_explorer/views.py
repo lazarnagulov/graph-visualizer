@@ -29,7 +29,7 @@ def index(request):
         'title': 'Graph Explorer',
         'app_header': app_header,
         'main_view': main_view_body,
-        'head': main_view_head + plugin_head + tree_view_body,
+        'head': main_view_head + plugin_head + tree_view_head,
         'tree_view': tree_view_body,
     })
 
@@ -88,7 +88,7 @@ def filter_graph(request):
 def search_graph(request):
     workspace: Workspace = __get_workspace()
     workspace.search_graph(request.POST.get('query'))
-    return generate_graph(request)
+    return __build_views_response(workspace)
 
 def reload_graph(request):
     workspace: Workspace = __get_workspace()
