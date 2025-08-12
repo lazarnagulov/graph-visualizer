@@ -1,13 +1,14 @@
+from typing import Tuple, Optional, Any
+
 from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
-from typing import Tuple, Optional
-
 from visualizer.core.usecase import graph_util
 
 from ..command.command_result import CommandResult
 from ..usecase.graph_manager import GraphManager
 from ..usecase.plugin_manager import PluginManager
 from ..view import app_header_view, main_view
+
 
 class Workspace:
 
@@ -93,7 +94,7 @@ class Workspace:
         """ Generate the graph using the currently selected data source plugin. """
         self.__graph_manager.generate()
 
-    def apply_filter(self, key: str, operator: str, value: any) -> str:
+    def apply_filter(self, key: str, operator: str, value: Any) -> str:
         try:
             graph_util.filter_graph(self.__graph_manager.graph, key, operator, value)
             return ""
@@ -123,4 +124,4 @@ class Workspace:
 
         :return: (header,body) html string that should be included in page.
         """
-        return app_header_view.render(self.__graph_manager.graph)
+        return app_header_view.render(self.__plugin_manager)

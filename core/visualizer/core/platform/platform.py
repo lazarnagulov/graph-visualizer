@@ -1,7 +1,6 @@
 from typing import List
 
 from visualizer.core.platform.workspace import Workspace
-from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
 
 

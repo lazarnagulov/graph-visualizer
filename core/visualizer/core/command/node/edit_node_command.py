@@ -3,8 +3,6 @@ from typing import Any, Dict, Optional
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
 from visualizer.core.command import Command
-from visualizer.core.usecase.event_bus import EventBus
-from visualizer.core.cli.exception.parser_exception import ParserError
 
 
 class EditNodeCommand(Command):

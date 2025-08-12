@@ -1,6 +1,6 @@
 from django.apps import AppConfig
-from visualizer.core.service.plugin_service import PluginService
 from visualizer.core.platform.platform import Platform
+from visualizer.core.service.plugin_service import PluginService
 
 datasource_group = 'visualizer.datasource'
 visualizer_group = "visualizer.visualizer"

@@ -1,11 +1,11 @@
+import os
+import sys
 from typing import Tuple
 
 from jinja2 import Template
+from visualizer.api.model.graph import Graph
 from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 
-from visualizer.api.model.graph import Graph
-import os
-import sys
 
 def render(graph: Graph, visualizer: VisualizerPlugin, **kwargs) -> Tuple[str, str, str]:
     """

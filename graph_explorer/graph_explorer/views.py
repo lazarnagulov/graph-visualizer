@@ -3,11 +3,12 @@ from django.core.files.uploadedfile import UploadedFile
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from visualizer.core.command.command_result import CommandResult, CommandStatus
 from visualizer.core.platform.workspace import Workspace
 from visualizer.core.service.plugin_service import PluginService
-from visualizer.core.command.command_result import CommandResult, CommandStatus
 
 from .apps import datasource_group, visualizer_group
+
 
 def plugins(request):
     plugin_service: PluginService = apps.get_app_config('graph_explorer').plugin_service

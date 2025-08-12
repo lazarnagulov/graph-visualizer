@@ -1,9 +1,8 @@
 from importlib.metadata import entry_points
 from typing import List, Dict, cast
 
-from visualizer.api.service.plugin import Plugin
-
 from visualizer.api.service.data_source_plugin import DataSourcePlugin
+from visualizer.api.service.plugin import Plugin
 from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 
 DATA_SOURCE_PLUGIN: str = "visualizer.datasource"

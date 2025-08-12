@@ -1,9 +1,6 @@
-from typing import Optional
-
 from django.db import NotSupportedError
 from visualizer.api.model.graph import Graph
 from visualizer.core.command import Command
-from visualizer.core.usecase.event_bus import EventBus
 
 
 class ClearCommand(Command):

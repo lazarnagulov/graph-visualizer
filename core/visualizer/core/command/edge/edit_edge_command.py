@@ -1,10 +1,9 @@
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 from visualizer.api.model.edge import Edge
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
 from visualizer.core.command import Command
-from visualizer.core.usecase.event_bus import EventBus
 
 
 class EditEdgeCommand(Command):
