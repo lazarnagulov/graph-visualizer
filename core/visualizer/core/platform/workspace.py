@@ -1,7 +1,6 @@
 import sys
 
 from jinja2 import Template
-from visualizer.api.model.graph import Graph
 from visualizer.api.service.plugin import Plugin
 from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
@@ -11,8 +10,9 @@ from typing import Dict, List, Tuple
 
 from visualizer.core.usecase import graph_util
 
-from ..command.command_result import CommandResult, CommandStatus
+from ..command.command_result import CommandResult
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
+from ..usecase.graph_manager import GraphManager
 from ..usecase.plugin_manager import PluginManager
 
 
@@ -31,9 +31,7 @@ class Workspace:
         """
         self.__command_service = CommandService(self.generate_graph)
         self.__plugin_manager = PluginManager(plugin_service)
-        self.__graph: Graph = Graph()
-        self.__data_file_string: str = ""
-        self.__graph_generated: bool = False  # Flag to prevent graph from being reloaded when empty
+        self.__graph_manager = GraphManager(self.__plugin_manager)
 
     def set_visualizer_plugin(self, identifier: str) -> None:
         """
@@ -64,7 +62,7 @@ class Workspace:
         :return: The string content of the data file.
         :rtype: str
         """
-        return self.__data_file_string
+        return self.__graph_manager.data_file_string
 
     @data_file_string.setter
     def data_file_string(self, data_file_string: str) -> None:
@@ -74,7 +72,7 @@ class Workspace:
         :param data_file_string: The string representation of the input data file.
         :type data_file_string: str
         """
-        self.__data_file_string = data_file_string
+        self.__graph_manager.data_file_string = data_file_string
         self.generate_graph()
 
     def execute_command(self, command_input: str) -> CommandResult:
@@ -91,23 +89,21 @@ class Workspace:
         :return: A `CommandResult` indicating the outcome of the execution.
         :rtype: CommandResult
         """
-        return self.__command_service.execute_command(self.__graph, command_input)
+        return self.__command_service.execute_command(self.__graph_manager.graph, command_input)
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
-        if self.__plugin_manager.data_source_plugin and self.__data_file_string:
-            self.__graph = self.__plugin_manager.data_source_plugin.load(file_string=self.__data_file_string)
-            self.__graph_generated = True
+        self.__graph_manager.generate()
 
     def filter_graph(self, key: str, operator: str, value: any) -> str:
         try:
-            graph_util.filter_graph(self.__graph, key, operator, value)
+            graph_util.filter_graph(self.__graph_manager.graph, key, operator, value)
             return ""
         except Exception as e:
             return str(e)
 
     def search_graph(self, query: str) -> None:
-        graph_util.search_graph(self.__graph, query)
+        graph_util.search_graph(self.__graph_manager.graph, query)
 
     def render_main_view(self) -> Tuple[str, str, str]:
         """
@@ -116,10 +112,10 @@ class Workspace:
         """
         if self.__plugin_manager.visualizer_plugin is None or self.__plugin_manager.data_source_plugin is None:
             self.__set_default_plugins()
-        if not self.__graph_generated and (self.__graph is None or self.__graph.is_empty()):
+        if not self.__graph_manager.graph_generated and (self.__graph_manager.graph is None or self.__graph_manager.graph.is_empty()):
             self.generate_graph()
 
-        return main_view.render(self.__graph, self.__plugin_manager.visualizer_plugin)
+        return main_view.render(self.__graph_manager.graph, self.__plugin_manager.visualizer_plugin)
 
 
     def render_app_header(self) -> Tuple[str, str]:
