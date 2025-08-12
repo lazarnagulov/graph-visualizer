@@ -1,24 +1,22 @@
-import sys
-
-from jinja2 import Template
-from visualizer.api.service.plugin import Plugin
 from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
-import visualizer.core.view.main_view as main_view
-import os
-from typing import Dict, List, Tuple
+from typing import Tuple, Optional
 
 from visualizer.core.usecase import graph_util
 
 from ..command.command_result import CommandResult
-from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 from ..usecase.graph_manager import GraphManager
 from ..usecase.plugin_manager import PluginManager
-
+from ..view import app_header_view, main_view
 
 class Workspace:
 
-    def __init__(self, plugin_service: PluginService):
+    def __init__(
+        self,
+        plugin_service: PluginService,
+        command_service: Optional[CommandService] = None,
+        graph_manager: Optional[GraphManager] = None
+    ):
         """
         Initialize the Workspace with plugin and command services.
 
@@ -29,9 +27,9 @@ class Workspace:
         :param plugin_service: The service responsible for managing available plugins.
         :type plugin_service: PluginService
         """
-        self.__command_service = CommandService(self.generate_graph)
+        self.__command_service = command_service or CommandService(self.generate_graph)
         self.__plugin_manager = PluginManager(plugin_service)
-        self.__graph_manager = GraphManager(self.__plugin_manager)
+        self.__graph_manager = graph_manager or GraphManager(self.__plugin_manager)
 
     def set_visualizer_plugin(self, identifier: str) -> None:
         """
@@ -95,7 +93,7 @@ class Workspace:
         """ Generate the graph using the currently selected data source plugin. """
         self.__graph_manager.generate()
 
-    def filter_graph(self, key: str, operator: str, value: any) -> str:
+    def apply_filter(self, key: str, operator: str, value: any) -> str:
         try:
             graph_util.filter_graph(self.__graph_manager.graph, key, operator, value)
             return ""
@@ -125,22 +123,4 @@ class Workspace:
 
         :return: (header,body) html string that should be included in page.
         """
-
-        with open(os.path.join(sys.prefix, 'templates/app_header_template.html'), 'r', encoding='utf-8') as file:
-            body_template = file.read()
-
-        visualizer_plugins: List[Plugin] = self.__plugin_manager.plugin_service.plugins[VISUALIZER_PLUGIN]
-        data_source_plugins: List[Plugin]  = self.__plugin_manager.plugin_service.plugins[DATA_SOURCE_PLUGIN]
-
-        visualizer_plugins_js: List[Dict[str,str]] = [
-            {"name": plugin.name(), "id": plugin.identifier()}
-            for plugin in visualizer_plugins]
-        data_source_plugins_js: List[Dict[str,str]]  = [
-            {"name": plugin.name(), "id": plugin.identifier()}
-            for plugin in data_source_plugins]
-
-        body_html = Template(body_template).render(visualizer_plugins=visualizer_plugins_js,
-                                                   data_source_plugins=data_source_plugins_js,
-                                                   selected_visualizer=self.__plugin_manager.visualizer_plugin.identifier(),
-                                                   selected_data_source=self.__plugin_manager.data_source_plugin.identifier())
-        return "", body_html
+        return app_header_view.render(self.__graph_manager.graph)
