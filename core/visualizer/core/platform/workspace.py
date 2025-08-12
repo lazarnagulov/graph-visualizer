@@ -2,21 +2,22 @@ import sys
 
 from jinja2 import Template
 from visualizer.api.model.graph import Graph
-from visualizer.api.service.data_source_plugin import DataSourcePlugin
-from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 from visualizer.api.service.plugin import Plugin
 from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
 import visualizer.core.view.main_view as main_view
 import os
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple
 
 from visualizer.core.usecase import graph_util
 
 from ..command.command_result import CommandResult, CommandStatus
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
+from ..usecase.plugin_manager import PluginManager
+
 
 class Workspace:
+
     def __init__(self, plugin_service: PluginService):
         """
         Initialize the Workspace with plugin and command services.
@@ -28,11 +29,9 @@ class Workspace:
         :param plugin_service: The service responsible for managing available plugins.
         :type plugin_service: PluginService
         """
-        self.__plugin_service = plugin_service
-        self.__visualizer_plugin: Optional[VisualizerPlugin] = None
-        self.__data_source_plugin: Optional[DataSourcePlugin] = None
-        self.__graph: Graph = Graph()
         self.__command_service = CommandService(self.generate_graph)
+        self.__plugin_manager = PluginManager(plugin_service)
+        self.__graph: Graph = Graph()
         self.__data_file_string: str = ""
         self.__graph_generated: bool = False  # Flag to prevent graph from being reloaded when empty
 
@@ -41,24 +40,21 @@ class Workspace:
         Set visualizer plugin via its identifier.
         :param identifier: plugin identifier
         """
-        self.__visualizer_plugin = self.__plugin_service.get_visualizer_plugin(identifier)
+        self.__plugin_manager.set_visualizer(identifier)
 
     def set_data_source_plugin(self, identifier: str) -> None:
         """
         Set data source plugin via its identifier.
         :param identifier: plugin identifier
         """
-        old_identifier: str = self.__data_source_plugin.identifier()
-        self.__data_source_plugin = self.__plugin_service.get_data_source_plugin(identifier)
+        old_identifier: str = self.__plugin_manager.data_source_plugin.identifier()
+        self.__plugin_manager.set_data_source(identifier)
         if old_identifier != identifier:
             self.generate_graph()
 
     def __set_default_plugins(self) -> None:
         """ Set plugins to first available. """
-        if self.__visualizer_plugin is None and len(self.__plugin_service.plugins[VISUALIZER_PLUGIN]) > 0:
-            self.__visualizer_plugin = self.__plugin_service.plugins[VISUALIZER_PLUGIN][0]
-        if self.__data_source_plugin is None and len(self.__plugin_service.plugins[DATA_SOURCE_PLUGIN]) > 0:
-            self.__data_source_plugin = self.__plugin_service.plugins[DATA_SOURCE_PLUGIN][0]
+        self.__plugin_manager.set_defaults()
 
     @property
     def data_file_string(self) -> str:
@@ -99,8 +95,8 @@ class Workspace:
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
-        if self.__data_source_plugin and self.__data_file_string:
-            self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
+        if self.__plugin_manager.data_source_plugin and self.__data_file_string:
+            self.__graph = self.__plugin_manager.data_source_plugin.load(file_string=self.__data_file_string)
             self.__graph_generated = True
 
     def filter_graph(self, key: str, operator: str, value: any) -> str:
@@ -118,12 +114,12 @@ class Workspace:
         Render the main view. Generates a graph if empty.
         :return: (main_view_head, plugin_head, body) html string that should be included in page
         """
-        if self.__visualizer_plugin is None or self.__data_source_plugin is None:
+        if self.__plugin_manager.visualizer_plugin is None or self.__plugin_manager.data_source_plugin is None:
             self.__set_default_plugins()
         if not self.__graph_generated and (self.__graph is None or self.__graph.is_empty()):
             self.generate_graph()
 
-        return main_view.render(self.__graph, self.__visualizer_plugin)
+        return main_view.render(self.__graph, self.__plugin_manager.visualizer_plugin)
 
 
     def render_app_header(self) -> Tuple[str, str]:
@@ -137,8 +133,8 @@ class Workspace:
         with open(os.path.join(sys.prefix, 'templates/app_header_template.html'), 'r', encoding='utf-8') as file:
             body_template = file.read()
 
-        visualizer_plugins: List[Plugin] = self.__plugin_service.plugins[VISUALIZER_PLUGIN]
-        data_source_plugins: List[Plugin]  = self.__plugin_service.plugins[DATA_SOURCE_PLUGIN]
+        visualizer_plugins: List[Plugin] = self.__plugin_manager.plugin_service.plugins[VISUALIZER_PLUGIN]
+        data_source_plugins: List[Plugin]  = self.__plugin_manager.plugin_service.plugins[DATA_SOURCE_PLUGIN]
 
         visualizer_plugins_js: List[Dict[str,str]] = [
             {"name": plugin.name(), "id": plugin.identifier()}
@@ -149,6 +145,6 @@ class Workspace:
 
         body_html = Template(body_template).render(visualizer_plugins=visualizer_plugins_js,
                                                    data_source_plugins=data_source_plugins_js,
-                                                   selected_visualizer=self.__visualizer_plugin.identifier(),
-                                                   selected_data_source=self.__data_source_plugin.identifier())
+                                                   selected_visualizer=self.__plugin_manager.visualizer_plugin.identifier(),
+                                                   selected_data_source=self.__plugin_manager.data_source_plugin.identifier())
         return "", body_html
