@@ -95,6 +95,17 @@ class Workspace:
         self.__graph_manager.generate()
 
     def apply_filter(self, key: str, operator: str, value: Any) -> str:
+        """
+        Apply a filter to the graph based on a key, operator, and value.
+
+        This method modifies the current graph by applying a filter condition.
+        If an error occurs during filtering, the error message is returned.
+
+        :param key: The attribute key to filter on.
+        :param operator: The comparison operator to use (e.g., '==', '!=', '<').
+        :param value: The value to compare against.
+        :return: An empty string if successful, otherwise an error message.
+        """
         try:
             graph_util.filter_graph(self.__graph_manager.graph, key, operator, value)
             return ""
@@ -102,6 +113,13 @@ class Workspace:
             return str(e)
 
     def search_graph(self, query: str) -> None:
+        """
+        Perform a search operation on the current graph using the provided query.
+
+        This method highlights or otherwise marks nodes/edges in the graph that match the query.
+
+        :param query: The search string used to find matching elements in the graph.
+        """
         graph_util.search_graph(self.__graph_manager.graph, query)
 
     def render_main_view(self) -> Tuple[str, str, str]:
