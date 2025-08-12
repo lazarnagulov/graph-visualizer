@@ -116,8 +116,6 @@ class Workspace:
         """
         Perform a search operation on the current graph using the provided query.
 
-        This method highlights or otherwise marks nodes/edges in the graph that match the query.
-
         :param query: The search string used to find matching elements in the graph.
         """
         graph_util.search_graph(self.__graph_manager.graph, query)
