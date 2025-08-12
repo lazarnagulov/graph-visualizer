@@ -1,5 +1,5 @@
-import os
 import ast
+import os
 
 from visualizer.api.model.graph import Graph
 from visualizer.api.service.data_source_plugin import DataSourcePlugin

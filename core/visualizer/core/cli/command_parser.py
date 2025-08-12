@@ -1,5 +1,4 @@
 from typing import List, Optional, Dict, Any, Tuple
-from unittest import case
 
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
@@ -9,6 +8,7 @@ from visualizer.core.command import (
     CreateEdgeCommand, EditEdgeCommand, DeleteEdgeCommand, ClearCommand,
     SearchCommand, FilterCommand
 )
+
 
 def parse_command(graph: Graph, input_line: str) -> Command:
     tokens = input_line.strip().split()

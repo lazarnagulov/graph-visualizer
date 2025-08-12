@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from typing import Optional, Any, Dict, List, Tuple
 
 from visualizer.api.model.edge import Edge

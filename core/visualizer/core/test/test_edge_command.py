@@ -4,8 +4,8 @@ from unittest import TestCase
 from visualizer.api.model.edge import Edge
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
-from visualizer.core.cli.exception.parser_exception import ParserError
 from visualizer.core.cli.command_parser import parse_command
+from visualizer.core.cli.exception.parser_exception import ParserError
 
 
 class TestEdgeCommand(TestCase):

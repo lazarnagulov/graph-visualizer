@@ -1,7 +1,7 @@
 import ast
 from _ast import FunctionDef, Call, ClassDef, expr
 from ast import NodeVisitor
-from typing import Any, Optional, cast
+from typing import Any, Optional
 
 from visualizer.api.model.edge import Edge
 from visualizer.api.model.graph import Graph

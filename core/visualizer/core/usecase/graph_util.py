@@ -4,8 +4,7 @@ from typing import List, Set
 from visualizer.api.model.edge import Edge
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
-
-from visualizer.core.util.compare_util import CompareUtil, CompareException
+from visualizer.core.util.compare_util import CompareUtil
 
 
 def search_graph(graph: Graph, query: str) -> None:

@@ -1,4 +1,3 @@
-import json
 from typing import Tuple
 
 from visualizer.api.model.graph import Graph

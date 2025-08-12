@@ -4,6 +4,7 @@ from typing import Dict, Any, TypedDict
 
 from typing_extensions import Optional
 
+
 class NodeDict(TypedDict):
     """
     Dictionary representation of a node
