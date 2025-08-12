@@ -6,8 +6,8 @@ from visualizer.core.service.plugin_service import PluginService
 
 
 class Platform:
-    def __init__(self, plugin_service: PluginService, command_service: CommandService):
-        self.workspaces: List[Workspace] = [Workspace(plugin_service, command_service)]
+    def __init__(self, plugin_service: PluginService):
+        self.workspaces: List[Workspace] = [Workspace(plugin_service)]
 
     def get_selected_workspace(self) -> Workspace:
         return self.workspaces[0] # TODO: add workspace selection

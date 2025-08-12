@@ -1,6 +1,9 @@
-from typing import List
+from typing import List, Callable
 
+from visualizer.api.model.graph import Graph
+from visualizer.core.cli.command_parser import parse_command
 from visualizer.core.command import Command
+from visualizer.core.command.command_result import CommandResult, CommandStatus
 
 
 class CommandHistoryEmptyError(Exception): 
@@ -9,17 +12,51 @@ class CommandHistoryEmptyError(Exception):
 
 class CommandService:
 
-    __slots__ = ["__undo_stack", "__redo_stack"]
+    __slots__ = ["__undo_stack", "__redo_stack", "__graph_generator"]
 
-    def __init__(self) -> None:
+    def __init__(self, graph_generator: Callable[[], None]) -> None:
         """
         Initialize the CommandService with undo and redo stacks.
 
         This sets up internal stacks to manage command history, allowing support for undoing
         and redoing commands.
         """
+        self.__graph_generator: Callable[[], None] = graph_generator
         self.__undo_stack: List[Command] = []
         self.__redo_stack: List[Command] = []
+
+    def execute_command(self, graph: Graph, command_input: str) -> CommandResult:
+        """
+        Parse and execute a command string.
+
+        :param graph: The graph object on which the command will be executed.
+        :param command_input: The command string to parse and execute.
+        :return: A `CommandResult` indicating the outcome.
+        """
+        try:
+            match command_input:
+                case "undo":
+                    self.undo()
+                    return CommandResult(CommandStatus.OK, "Undo successful")
+
+                case "redo":
+                    self.redo()
+                    return CommandResult(CommandStatus.OK, "Redo successful")
+
+                case "help":
+                    return CommandResult(CommandStatus.INFO, self.help())
+
+                case "reload":
+                    self.__graph_generator()
+                    return CommandResult.success()
+
+                case _:
+                    command: Command = parse_command(graph, command_input)
+                    self.execute(command)
+                    return CommandResult.success()
+
+        except Exception as e:
+            return CommandResult(CommandStatus.ERROR, str(e))
 
     def execute(self, command: Command) -> None:
         """

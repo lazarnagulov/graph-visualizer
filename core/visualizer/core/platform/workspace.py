@@ -13,13 +13,11 @@ from typing import Dict, List, Tuple, Optional
 
 from visualizer.core.usecase import graph_util
 
-from ..cli.command_parser import parse_command
-from ..command import Command
 from ..command.command_result import CommandResult, CommandStatus
 from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
 
 class Workspace:
-    def __init__(self, plugin_service: PluginService, command_service: CommandService):
+    def __init__(self, plugin_service: PluginService):
         """
         Initialize the Workspace with plugin and command services.
 
@@ -29,14 +27,12 @@ class Workspace:
 
         :param plugin_service: The service responsible for managing available plugins.
         :type plugin_service: PluginService
-        :param command_service: The service responsible for executing and undoing commands.
-        :type command_service: CommandService
         """
         self.__plugin_service = plugin_service
-        self.__command_service = command_service
         self.__visualizer_plugin: Optional[VisualizerPlugin] = None
         self.__data_source_plugin: Optional[DataSourcePlugin] = None
         self.__graph: Graph = Graph()
+        self.__command_service = CommandService(self.generate_graph)
         self.__data_file_string: str = ""
         self.__graph_generated: bool = False  # Flag to prevent graph from being reloaded when empty
 
@@ -87,10 +83,11 @@ class Workspace:
 
     def execute_command(self, command_input: str) -> CommandResult:
         """
-        Parse and execute a command string on the current graph.
+        Execute a command string on the current graph.
 
-        This method uses the CLI command parser to parse the input, executes the resulting command,
-        and returns a `CommandResult` indicating success or error.
+        This method delegates command execution to the command service, which handles
+        parsing and running the command on the current graph instance. It returns a
+        `CommandResult` indicating the outcome.
 
         :param command_input: The command string to execute.
         :type command_input: str
@@ -98,26 +95,7 @@ class Workspace:
         :return: A `CommandResult` indicating the outcome of the execution.
         :rtype: CommandResult
         """
-        try:
-            match command_input:
-                case "undo":
-                    self.__command_service.undo()
-                    return CommandResult(CommandStatus.OK, "Undo successful")
-                case "redo":
-                    self.__command_service.redo()
-                    return CommandResult(CommandStatus.OK, "Redo successful")
-                case "help":
-                    output = self.__command_service.help()
-                    return CommandResult(CommandStatus.INFO, output)
-                case "reload":
-                    self.generate_graph()
-                    return CommandResult.success()
-                case _:
-                    command: Command = parse_command(self.__graph, command_input)
-                    self.__command_service.execute(command)
-                    return CommandResult.success()
-        except Exception as e:
-            return CommandResult(CommandStatus.ERROR, str(e))
+        return self.__command_service.execute_command(self.__graph, command_input)
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
