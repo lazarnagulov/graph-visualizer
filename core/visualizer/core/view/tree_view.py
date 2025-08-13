@@ -6,7 +6,7 @@ from visualizer.api.model.node import Node
 from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 from visualizer.core.service.plugin_service import PluginService
 
-from visualizer.api.model.graph import Graph
+from visualizer.api.model.graph import Graph, GraphDict
 import os
 import sys
 
@@ -24,6 +24,13 @@ def render(graph: Graph) -> Tuple[str, str]:
     if not graph or graph.is_empty():
         return head, '<div id="tree-view"><p style=\"margin: 1rem\">-----------</p></div>'
 
+    graph_dict = __prepare_data(graph)
+
+    rendered_body = Template(body).render(graph=graph_dict)
+    return head, rendered_body
+
+
+def __prepare_data(graph: Graph) -> GraphDict:
     graph_dict = graph.to_dict()
 
     # since tree view doesn't show edge data, we will remove it and embed it into nodes
@@ -45,8 +52,8 @@ def render(graph: Graph) -> Tuple[str, str]:
 
     graph_dict.pop('edges')
 
-    rendered_body = Template(body).render(graph=graph_dict)
-    return head, rendered_body
+    return graph_dict
+
 
 def __bfs(graph: Graph, start_node: Node, visited: Set[Node]) -> None:
     queue = deque([start_node])
