@@ -94,7 +94,7 @@ class Workspace:
         """ Generate the graph using the currently selected data source plugin. """
         self.__graph_manager.generate()
 
-    def apply_filter(self, key: str, operator: str, value: Any) -> str:
+    def filter_graph(self, key: str, operator: str, value: Any) -> str:
         """
         Apply a filter to the graph based on a key, operator, and value.
 
