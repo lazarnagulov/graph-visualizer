@@ -55,13 +55,14 @@
                         // .classed("tree-property", true)
                         .text(`- ${key}: ${value}`)
                 });
-                node_body.selectAll(".tree-node-header")
-                    .data(node.children)
-                    .enter()
-                    .append("div")
-                    .classed("tree-node", true)
-                    .attr("tree_state", "not-generated")
-                    .each(function (d) {createHeader(this, d)})
+                if (node.children)
+                    node_body.selectAll(".tree-node-header")
+                        .data(node.children)
+                        .enter()
+                        .append("div")
+                        .classed("tree-node", true)
+                        .attr("tree_state", "not-generated")
+                        .each(function (d) {createHeader(this, d)})
                 containerElement.setAttribute("tree_state", "expanded");
                 container.select(".tree-arrow")
                     .attr("src", "static/images/arrow-down.svg");
