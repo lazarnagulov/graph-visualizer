@@ -1,6 +1,7 @@
 <div id="tree-view">
+    <div id="tree-view-inner"></div>
 
+    <script>
+        window.renderTreeView({{ graph | tojson | safe }})
+    </script>
 </div>
-<script>
-    console.log("Tree view body")
-</script>

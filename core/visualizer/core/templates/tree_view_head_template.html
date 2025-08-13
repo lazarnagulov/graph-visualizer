@@ -1,3 +1,104 @@
+<style>
+    .tree-node .tree-node { /* Skip root nodes */
+        margin-left: 30px
+    }
+    .tree-property-id {
+        margin-left: 1px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .tree-node-properties {
+        margin-left: 20px;
+    }
+    .tree-arrow-container {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+    }
+    .tree-arrow {
+        vertical-align: middle;
+    }
+    .tree-hidden {
+        display: none;
+    }
+    #tree-view {
+        overflow:auto;
+        width: 100%;
+        height: 100%;
+        text-wrap: nowrap;
+    }
+</style>
 <script>
-    console.log("Tree view head")
+    window.renderTreeView = function(graph) {
+        let tree_view = d3.select("#tree-view-inner")
+        let root_nodes = tree_view.selectAll("div")
+            .data(graph.start_nodes)
+            .enter()
+            .append("div")
+            .classed("tree-node", true)
+            .attr("tree_state", "not-generated")
+
+        root_nodes.each(function (d) {createHeader(this, d)});
+
+
+        function toggleNodeState(containerElement, nodeIndex) {
+            let node = graph.nodes[nodeIndex];
+            let container = d3.select(containerElement);
+            let state = containerElement.getAttribute("tree_state");
+            if (state === "not-generated") {
+                let node_body = container.append("div")
+                    .classed("tree-node-body", true)
+                let node_properties = node_body.append("div")
+                    .classed("tree-node-properties", true)
+                Object.entries(node.properties).forEach(([key, value]) => {
+                    node_properties.append("div")
+                        // .classed("tree-property", true)
+                        .text(`- ${key}: ${value}`)
+                });
+                node_body.selectAll(".tree-node-header")
+                    .data(node.children)
+                    .enter()
+                    .append("div")
+                    .classed("tree-node", true)
+                    .attr("tree_state", "not-generated")
+                    .each(function (d) {createHeader(this, d)})
+                containerElement.setAttribute("tree_state", "expanded");
+                container.select(".tree-arrow")
+                    .attr("src", "static/images/arrow-down.svg");
+            } else if (state === "expanded") {
+                container.select(".tree-node-body")
+                    .classed("tree-hidden", true);
+                container.select(".tree-arrow")
+                    .attr("src", "static/images/arrow-right.svg");
+                containerElement.setAttribute("tree_state", "collapsed");
+            } else {
+                container.select(".tree-node-body")
+                    .classed("tree-hidden", false);
+                container.select(".tree-arrow")
+                    .attr("src", "static/images/arrow-down.svg");
+                containerElement.setAttribute("tree_state", "expanded");
+            }
+        }
+
+        function createHeader(containerElement, nodeIndex) {
+            let node = graph.nodes[nodeIndex];
+            let container = d3.select(containerElement)
+            let header = container.append("div")
+                .classed("tree-node-header", true)
+
+            header.append("div")
+                .classed("tree-arrow-container", true)
+                .on("click", (event) => toggleNodeState(containerElement, nodeIndex))
+                .append("img")
+                .classed("tree-arrow", true)
+                .attr("src", "static/images/arrow-right.svg")
+                .attr("width", "100%")
+                .attr("height", "100%");
+
+            header.append("div")
+                .classed("tree-property-id", true)
+                .text(`Id: ${node.id}`);
+        }
+    }
+
 </script>
