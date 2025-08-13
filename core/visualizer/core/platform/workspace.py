@@ -137,7 +137,7 @@ class Workspace:
         Render the tree view. Assumes the graph is already generated.
         :return: (head, body) html string that should be included in page
         """
-        return tree_view.render(self.__graph_manager.__graph)
+        return tree_view.render(self.__graph_manager.graph)
 
     def render_app_header(self) -> Tuple[str, str]:
         """
