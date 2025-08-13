@@ -1,27 +1,23 @@
-import sys
+from typing import Tuple, Optional, Any
 
-from jinja2 import Template
-from visualizer.api.model.graph import Graph
-from visualizer.api.service.data_source_plugin import DataSourcePlugin
-from visualizer.api.service.visualizer_plugin import VisualizerPlugin
-from visualizer.api.service.plugin import Plugin
 from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
-import visualizer.core.view.main_view as main_view
-import os
-from typing import Dict, List, Tuple, Optional
-
 from visualizer.core.usecase import graph_util
 
-from ..cli.command_parser import parse_command
-from ..command import Command
-from ..command.command_result import CommandResult, CommandStatus
-from ..service.plugin_service import DATA_SOURCE_PLUGIN, VISUALIZER_PLUGIN
-from ..view import tree_view
+from ..command.command_result import CommandResult
+from ..usecase.graph_manager import GraphManager
+from ..usecase.plugin_manager import PluginManager
+from ..view import app_header_view, main_view, tree_view
 
 
 class Workspace:
-    def __init__(self, plugin_service: PluginService, command_service: CommandService):
+
+    def __init__(
+        self,
+        plugin_service: PluginService,
+        command_service: Optional[CommandService] = None,
+        graph_manager: Optional[GraphManager] = None
+    ):
         """
         Initialize the Workspace with plugin and command services.
 
@@ -31,40 +27,31 @@ class Workspace:
 
         :param plugin_service: The service responsible for managing available plugins.
         :type plugin_service: PluginService
-        :param command_service: The service responsible for executing and undoing commands.
-        :type command_service: CommandService
         """
-        self.__plugin_service = plugin_service
-        self.__command_service = command_service
-        self.__visualizer_plugin: Optional[VisualizerPlugin] = None
-        self.__data_source_plugin: Optional[DataSourcePlugin] = None
-        self.__graph: Graph = Graph()
-        self.__data_file_string: str = ""
-        self.__graph_generated: bool = False  # Flag to prevent graph from being reloaded when empty
+        self.__command_service = command_service or CommandService(self.generate_graph)
+        self.__plugin_manager = PluginManager(plugin_service)
+        self.__graph_manager = graph_manager or GraphManager(self.__plugin_manager)
 
     def set_visualizer_plugin(self, identifier: str) -> None:
         """
         Set visualizer plugin via its identifier.
         :param identifier: plugin identifier
         """
-        self.__visualizer_plugin = self.__plugin_service.get_visualizer_plugin(identifier)
+        self.__plugin_manager.set_visualizer(identifier)
 
     def set_data_source_plugin(self, identifier: str) -> None:
         """
         Set data source plugin via its identifier.
         :param identifier: plugin identifier
         """
-        old_identifier: str = self.__data_source_plugin.identifier()
-        self.__data_source_plugin = self.__plugin_service.get_data_source_plugin(identifier)
+        old_identifier: str = self.__plugin_manager.data_source_plugin.identifier()
+        self.__plugin_manager.set_data_source(identifier)
         if old_identifier != identifier:
             self.generate_graph()
 
     def __set_default_plugins(self) -> None:
         """ Set plugins to first available. """
-        if self.__visualizer_plugin is None and len(self.__plugin_service.plugins[VISUALIZER_PLUGIN]) > 0:
-            self.__visualizer_plugin = self.__plugin_service.plugins[VISUALIZER_PLUGIN][0]
-        if self.__data_source_plugin is None and len(self.__plugin_service.plugins[DATA_SOURCE_PLUGIN]) > 0:
-            self.__data_source_plugin = self.__plugin_service.plugins[DATA_SOURCE_PLUGIN][0]
+        self.__plugin_manager.set_defaults()
 
     @property
     def data_file_string(self) -> str:
@@ -74,7 +61,7 @@ class Workspace:
         :return: The string content of the data file.
         :rtype: str
         """
-        return self.__data_file_string
+        return self.__graph_manager.data_file_string
 
     @data_file_string.setter
     def data_file_string(self, data_file_string: str) -> None:
@@ -84,15 +71,16 @@ class Workspace:
         :param data_file_string: The string representation of the input data file.
         :type data_file_string: str
         """
-        self.__data_file_string = data_file_string
+        self.__graph_manager.data_file_string = data_file_string
         self.generate_graph()
 
     def execute_command(self, command_input: str) -> CommandResult:
         """
-        Parse and execute a command string on the current graph.
+        Execute a command string on the current graph.
 
-        This method uses the CLI command parser to parse the input, executes the resulting command,
-        and returns a `CommandResult` indicating success or error.
+        This method delegates command execution to the command service, which handles
+        parsing and running the command on the current graph instance. It returns a
+        `CommandResult` indicating the outcome.
 
         :param command_input: The command string to execute.
         :type command_input: str
@@ -100,61 +88,56 @@ class Workspace:
         :return: A `CommandResult` indicating the outcome of the execution.
         :rtype: CommandResult
         """
-        try:
-            match command_input:
-                case "undo":
-                    self.__command_service.undo()
-                    return CommandResult(CommandStatus.OK, "Undo successful")
-                case "redo":
-                    self.__command_service.redo()
-                    return CommandResult(CommandStatus.OK, "Redo successful")
-                case "help":
-                    output = self.__command_service.help()
-                    return CommandResult(CommandStatus.INFO, output)
-                case "reload":
-                    self.generate_graph()
-                    return CommandResult.success()
-                case _:
-                    command: Command = parse_command(self.__graph, command_input)
-                    self.__command_service.execute(command)
-                    return CommandResult.success()
-        except Exception as e:
-            return CommandResult(CommandStatus.ERROR, str(e))
+        return self.__command_service.execute_command(self.__graph_manager.graph, command_input)
 
     def generate_graph(self) -> None:
         """ Generate the graph using the currently selected data source plugin. """
-        if self.__data_source_plugin and self.__data_file_string:
-            self.__graph = self.__data_source_plugin.load(file_string=self.__data_file_string)
-            self.__graph_generated = True
+        self.__graph_manager.generate()
 
-    def filter_graph(self, key: str, operator: str, value: any) -> str:
+    def apply_filter(self, key: str, operator: str, value: Any) -> str:
+        """
+        Apply a filter to the graph based on a key, operator, and value.
+
+        This method modifies the current graph by applying a filter condition.
+        If an error occurs during filtering, the error message is returned.
+
+        :param key: The attribute key to filter on.
+        :param operator: The comparison operator to use (e.g., '==', '!=', '<').
+        :param value: The value to compare against.
+        :return: An empty string if successful, otherwise an error message.
+        """
         try:
-            graph_util.filter_graph(self.__graph, key, operator, value)
+            graph_util.filter_graph(self.__graph_manager.graph, key, operator, value)
             return ""
         except Exception as e:
             return str(e)
 
     def search_graph(self, query: str) -> None:
-        graph_util.search_graph(self.__graph, query)
+        """
+        Perform a search operation on the current graph using the provided query.
+
+        :param query: The search string used to find matching elements in the graph.
+        """
+        graph_util.search_graph(self.__graph_manager.graph, query)
 
     def render_main_view(self) -> Tuple[str, str, str]:
         """
         Render the main view. Generates a graph if empty.
         :return: (main_view_head, plugin_head, body) html string that should be included in page
         """
-        if self.__visualizer_plugin is None or self.__data_source_plugin is None:
+        if self.__plugin_manager.visualizer_plugin is None or self.__plugin_manager.data_source_plugin is None:
             self.__set_default_plugins()
-        if not self.__graph_generated and (self.__graph is None or self.__graph.is_empty()):
+        if not self.__graph_manager.graph_generated and (self.__graph_manager.graph is None or self.__graph_manager.graph.is_empty()):
             self.generate_graph()
 
-        return main_view.render(self.__graph, self.__visualizer_plugin)
+        return main_view.render(self.__graph_manager.graph, self.__plugin_manager.visualizer_plugin)
 
     def render_tree_view(self) -> Tuple[str, str]:
         """
         Render the tree view. Assumes the graph is already generated.
         :return: (head, body) html string that should be included in page
         """
-        return tree_view.render(self.__graph)
+        return tree_view.render(self.__graph_manager.__graph)
 
     def render_app_header(self) -> Tuple[str, str]:
         """
@@ -163,22 +146,4 @@ class Workspace:
 
         :return: (header,body) html string that should be included in page.
         """
-
-        with open(os.path.join(sys.prefix, 'templates/app_header_template.html'), 'r', encoding='utf-8') as file:
-            body_template = file.read()
-
-        visualizer_plugins: List[Plugin] = self.__plugin_service.plugins[VISUALIZER_PLUGIN]
-        data_source_plugins: List[Plugin]  = self.__plugin_service.plugins[DATA_SOURCE_PLUGIN]
-
-        visualizer_plugins_js: List[Dict[str,str]] = [
-            {"name": plugin.name(), "id": plugin.identifier()}
-            for plugin in visualizer_plugins]
-        data_source_plugins_js: List[Dict[str,str]]  = [
-            {"name": plugin.name(), "id": plugin.identifier()}
-            for plugin in data_source_plugins]
-
-        body_html = Template(body_template).render(visualizer_plugins=visualizer_plugins_js,
-                                                   data_source_plugins=data_source_plugins_js,
-                                                   selected_visualizer=self.__visualizer_plugin.identifier(),
-                                                   selected_data_source=self.__data_source_plugin.identifier())
-        return "", body_html
+        return app_header_view.render(self.__plugin_manager)

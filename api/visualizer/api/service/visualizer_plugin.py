@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Tuple
 
-from ..model.graph import Graph
 from .plugin import Plugin
+from ..model.graph import Graph
 
 
 class VisualizerPlugin(Plugin):

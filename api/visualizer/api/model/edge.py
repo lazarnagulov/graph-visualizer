@@ -3,6 +3,7 @@ from typing import Dict, Tuple, Any, TypedDict
 
 from .node import Node
 
+
 class EdgeDict(TypedDict):
     """
     Dictionary representation of an edge

@@ -1,5 +1,7 @@
 import math
+
 import matplotlib.pyplot as plt
+
 
 class DataGenerator:
     def __init__(self, start: int, end: int) -> None:
