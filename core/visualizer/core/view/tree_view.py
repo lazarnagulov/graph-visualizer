@@ -1,6 +1,8 @@
-from typing import Tuple
+from collections import deque
+from typing import Tuple, List, Set
 
 from jinja2 import Template
+from visualizer.api.model.node import Node
 from visualizer.api.service.visualizer_plugin import VisualizerPlugin
 from visualizer.core.service.plugin_service import PluginService
 
@@ -34,7 +36,23 @@ def render(graph: Graph) -> Tuple[str, str]:
             source_node['children'] = []
         source_node['children'].append(destination_node_index)
 
+    visited = set()
+    graph_dict['start_nodes'] = []
+    for node in graph.get_nodes():
+        if node not in visited:
+            graph_dict['start_nodes'].append(node_table[node.id])
+            __bfs(graph, node, visited)
+
     graph_dict.pop('edges')
 
     rendered_body = Template(body).render(graph=graph_dict)
     return head, rendered_body
+
+def __bfs(graph: Graph, start_node: Node, visited: Set[Node]) -> None:
+    queue = deque([start_node])
+    while queue:
+        node = queue.popleft()
+        visited.add(node)
+        for edge in graph.get_incident_edges(node):
+            if edge.destination not in visited:
+                queue.append(edge.destination)
