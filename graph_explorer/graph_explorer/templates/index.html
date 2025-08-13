@@ -11,8 +11,7 @@
         <div class="workspace-content">
             <div class="sidebar">
                 <div class="tree-view">
-                    todo: tree_view
-<!--                    {{ tree_view|safe }}-->
+                    {{ tree_view|safe }}
                 </div>
                 <div class="minimap-view">
                     todo: minimap
@@ -38,8 +37,7 @@
                     <div
                         hx-get="/generate-graph"
                         hx-trigger="graph-updated from:body"
-                        hx-target="#main-view"
-                        hx-swap="outerHTML">
+                        hx-swap="multi:#main-view,#tree-view:outerHTML">
                     </div>
                 </div>
             </div>

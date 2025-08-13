@@ -7,7 +7,7 @@ from visualizer.core.usecase import graph_util
 from ..command.command_result import CommandResult
 from ..usecase.graph_manager import GraphManager
 from ..usecase.plugin_manager import PluginManager
-from ..view import app_header_view, main_view
+from ..view import app_header_view, main_view, tree_view
 
 
 class Workspace:
@@ -94,7 +94,7 @@ class Workspace:
         """ Generate the graph using the currently selected data source plugin. """
         self.__graph_manager.generate()
 
-    def apply_filter(self, key: str, operator: str, value: Any) -> str:
+    def filter_graph(self, key: str, operator: str, value: Any) -> str:
         """
         Apply a filter to the graph based on a key, operator, and value.
 
@@ -132,6 +132,12 @@ class Workspace:
 
         return main_view.render(self.__graph_manager.graph, self.__plugin_manager.visualizer_plugin)
 
+    def render_tree_view(self) -> Tuple[str, str]:
+        """
+        Render the tree view. Assumes the graph is already generated.
+        :return: (head, body) html string that should be included in page
+        """
+        return tree_view.render(self.__graph_manager.graph)
 
     def render_app_header(self) -> Tuple[str, str]:
         """

@@ -23,13 +23,15 @@ def plugins(request):
 def index(request):
     workspace: Workspace = __get_workspace()
     main_view_head, plugin_head, main_view_body = workspace.render_main_view()
+    tree_view_head, tree_view_body = workspace.render_tree_view()
     _,app_header = workspace.render_app_header()
 
     return render(request, 'index.html', {
         'title': 'Graph Explorer',
         'app_header': app_header,
         'main_view': main_view_body,
-        'head': main_view_head + plugin_head,
+        'head': main_view_head + plugin_head + tree_view_head,
+        'tree_view': tree_view_body,
     })
 
 
@@ -37,13 +39,13 @@ def visualizer_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
     workspace.set_visualizer_plugin(plugin_id)
-    _,plugin_head,main_view_body = workspace.render_main_view()
-    return HttpResponse(plugin_head + main_view_body)
+    return __build_views_response(workspace, True) # we only include visualizer head when it's changed
 
 def data_source_change(request):
     plugin_id: str = request.GET.get('plugin_id')
-    __get_workspace().set_data_source_plugin(plugin_id)
-    return generate_graph(request) # we will not update the head since the visualizer hasn't changed
+    workspace: Workspace = __get_workspace()
+    workspace.set_data_source_plugin(plugin_id)
+    return __build_views_response(workspace)
 
 def data_file_upload(request):
     workspace: Workspace = __get_workspace()
@@ -53,8 +55,7 @@ def data_file_upload(request):
         workspace.data_file_string = file_string
         workspace.generate_graph()
 
-    _,_,main_view_body = workspace.render_main_view()
-    return HttpResponse(main_view_body) # we will not update the head since the visualizer hasn't changed
+    return __build_views_response(workspace)
 
 def execute_command(request):
     command: str = request.POST.get('command').strip()
@@ -68,9 +69,7 @@ def execute_command(request):
     return __build_cli_response(result.output, result.status, trigger)
 
 def generate_graph(_request):
-    workspace: Workspace = __get_workspace()
-    _,_, main_view_html = workspace.render_main_view()
-    return HttpResponse(main_view_html)
+    return __build_views_response()
 
 def filter_graph(request):
     workspace: Workspace = __get_workspace()
@@ -85,18 +84,17 @@ def filter_graph(request):
         response["HX-Retarget"] = "#filter-error"
         return response
     else:
-        _,_, main_view_html = workspace.render_main_view()
-        return HttpResponse(main_view_html)
+        return __build_views_response(workspace)
 
 def search_graph(request):
     workspace: Workspace = __get_workspace()
     workspace.search_graph(request.POST.get('query'))
-    return generate_graph(request)
+    return __build_views_response(workspace)
 
 def reload_graph(request):
     workspace: Workspace = __get_workspace()
     workspace.generate_graph()
-    return generate_graph(request)
+    return __build_views_response(workspace)
 
 def __get_workspace() -> Workspace:
     return apps.get_app_config('graph_explorer').platform.get_selected_workspace()
@@ -111,3 +109,18 @@ def __build_cli_response(output: str, status: CommandStatus, trigger: str = None
     response["HX-Reswap"] = "innerHTML"
     response["HX-Retarget"] = "#terminal-output"
     return response
+
+def __build_views_response(workspace: Workspace = None, include_plugin_head = False, include_all_heads = False) -> HttpResponse:
+    if not workspace:
+        workspace: Workspace = __get_workspace()
+    main_view_head, plugin_head, main_view_body = workspace.render_main_view()
+    tree_view_head, tree_view_body = workspace.render_tree_view()
+    if include_all_heads:
+        head = main_view_head + plugin_head + tree_view_head
+    elif include_plugin_head:
+        head = plugin_head
+    else:
+        head = ""
+    body = main_view_body + tree_view_body
+
+    return HttpResponse(head + body)
