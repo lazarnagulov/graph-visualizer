@@ -8,6 +8,9 @@
             height = height || rect.height;
         }
 
+        rectWidth = 100;
+        rectHeight = 60;
+
         // The force simulation mutates links and nodes, so create a copy so that re-evaluating this cell produces the same result.
         const links = graph.edges.map(d => ({...d}));
         const nodes = graph.nodes.map(d => ({...d}));
@@ -32,12 +35,12 @@
             .attr("height", height)
             .attr("viewBox", [-width / 2, -height / 2, width, height])
             .attr("style", "max-width: 100%; height: auto;");
-
+        
         svg.append("defs")
             .append("marker")
                 .attr("id", "arrow")
                 .attr("viewBox", "0 -5 10 10")
-                .attr("refX", 30) // node radius (40) + arrow padding
+                .attr("refX", 0)
                 .attr("refY", 0)
                 .attr("markerWidth", 6)
                 .attr("markerHeight", 6)
@@ -48,7 +51,7 @@
 
         svg.select("#arrow").clone(true)
             .attr("id", "loop-arrow")
-            .attr("refX", 9)
+            .attr("refX", 0)
         
         // Use paths for links instead of lines
         const link = svg.append("g")
@@ -62,7 +65,7 @@
             .attr("class", "link")
             .attr("source", d => d.source.id)
             .attr("destination", d => d.target.id)
-            .attr("marker-end", d =>
+            .attr("marker-mid", d =>
                 !graph.directed
                     ? undefined
                     : (d.loop
@@ -80,8 +83,8 @@
             .attr("drag", true)
 
         node.append("rect")
-            .attr("width", 100)
-            .attr("height", 60)
+            .attr("width", rectWidth)
+            .attr("height", rectHeight)
             .attr("stroke", "#000")
             .attr("stroke-width", 1.5)
             .attr("fill", d => "#fff");
@@ -100,33 +103,50 @@
 
 
         function linkPath(d) {
-            if (d.loop) { // loop edge
-                const nodeR = 40;
-                const loopR = 50;
-                const startAngle = -Math.PI / 2;
-                const endAngle = startAngle + 2.5;
+            const sx = d.source.x;
+            const sy = d.source.y;
+            const tx = d.target.x;
+            const ty = d.target.y;
 
-                const sx = d.source.x + nodeR * Math.cos(startAngle);
-                const sy = d.source.y + nodeR * Math.sin(startAngle);
-                const tx = d.source.x + nodeR * Math.cos(endAngle);
-                const ty = d.source.y + nodeR * Math.sin(endAngle);
+            const elipseRadius = 1;
+            const doubleEdgeSpacing = 10
 
+            // Loop edge
+            if (d.loop) {
                 return `
-                    M${sx},${sy}
-                    A${loopR},${loopR} 0 1,1 ${tx},${ty}
+                    M${sx + rectWidth - rectHeight * 0.3535},${sy + rectHeight * 0.3535}
+                    A${elipseRadius},${elipseRadius} 0 1,1 ${sx + rectWidth + rectHeight * 0.3535},${sy - rectHeight * 0.3535}  
+                    A${elipseRadius},${elipseRadius} 0 1,1 ${sx + rectWidth - rectHeight * 0.3535},${sy + rectHeight * 0.3535}  
                 `;
             }
 
-            if (graph.directed && d.double) { // double edge
-                let offset = Victor(d.target.x - d.source.x, d.target.y - d.source.y)
-                    .normalize()
-                    .rotateDeg(90)
-                    .multiplyScalar(10);
-                return `M${d.source.x+offset.x},${d.source.y+offset.y}
-                        L${d.target.x+offset.x},${d.target.y+offset.y}`;
+            // Double edge
+            if (graph.directed && d.double) {
+                if (sx < tx && sy < ty) { // Source is above and to the left of the target.
+                    return `M${sx + rectWidth / 2 - doubleEdgeSpacing},${sy + rectHeight / 2 + doubleEdgeSpacing}
+                            L${(sx + tx + rectWidth - doubleEdgeSpacing * 2) / 2},${(sy + ty + rectHeight + doubleEdgeSpacing * 2) / 2}
+                            L${tx + rectWidth / 2 - doubleEdgeSpacing},${ty + rectHeight / 2 + doubleEdgeSpacing}`;
+                } else if (sx < tx && sy > ty) { // Source is below and to the left of the target.
+                    return `M${sx + rectWidth / 2 - doubleEdgeSpacing},${sy + rectHeight / 2 - doubleEdgeSpacing}
+                            L${(sx + tx + rectWidth - doubleEdgeSpacing * 2) / 2},${(sy + ty + rectHeight - doubleEdgeSpacing * 2) / 2}
+                            L${tx + rectWidth / 2 - doubleEdgeSpacing},${ty + rectHeight / 2 - doubleEdgeSpacing}`;
+                } else if (sx > tx && sy < ty) { // Source is above and to the right of the target.
+                    return `M${sx + rectWidth / 2 + doubleEdgeSpacing},${sy + rectHeight / 2 + doubleEdgeSpacing}
+                            L${(sx + tx + rectWidth + doubleEdgeSpacing * 2) / 2},${(sy + ty + rectHeight + doubleEdgeSpacing * 2) / 2}
+                            L${tx + rectWidth / 2 + doubleEdgeSpacing},${ty + rectHeight / 2 + doubleEdgeSpacing}`;
+                } else if (sx > tx && sy > ty) { // Source is below and to the right of the target.
+                    return `M${sx + rectWidth / 2 + doubleEdgeSpacing},${sy + rectHeight / 2 - doubleEdgeSpacing}
+                            L${(sx + tx + rectWidth + doubleEdgeSpacing * 2) / 2},${(sy + ty + rectHeight - doubleEdgeSpacing * 2) / 2}
+                            L${tx + rectWidth / 2 + doubleEdgeSpacing},${ty + rectHeight / 2 - doubleEdgeSpacing}`;
+                }
+
+                return `M${sx + rectWidth / 2},${sy + rectHeight / 2} L${tx + rectWidth / 2},${ty + rectHeight / 2}`;
             }
 
-            return `M${d.source.x},${d.source.y} L${d.target.x},${d.target.y}`; // normal edge
+            // Normal edge
+            return `M${sx + rectWidth / 2},${sy + rectHeight / 2}
+                    L${(sx + tx + rectWidth) / 2},${(sy + ty + rectHeight) / 2}
+                    L${tx + rectWidth / 2},${ty + rectHeight / 2}`;
         }
     }
     
