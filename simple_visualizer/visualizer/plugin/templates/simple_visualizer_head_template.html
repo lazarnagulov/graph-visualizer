@@ -1,4 +1,5 @@
 <style class="plugin-visualizer-head"></style>
+
 <script class="plugin-visualizer-head">
     function renderSimpleVisualizer(graph, width, height) {
         if (!width || !height) {
@@ -91,12 +92,20 @@
             .attr("clip-path", "circle(40)")
             .text(d => d.id);
 
+        // Zoom and pan functionality logic.
+        (function initZoom() {
+            svg.call(d3.zoom().on("zoom", e => d3.selectAll('svg > g').attr('transform', e.transform)));
+
+            // Selects all <g> tags which have <svg> tag as the parent.
+            // There are two. The first one holds the link data, and the second one the node data.
+            // d3.zoom().on("zoom") recognizes the zoom event and applies the transformation it gets from the cursor to the <g> tags.
+        })();
+
         // Set the position attributes of links and nodes each time the simulation ticks.
         simulation.on("tick", () => {
             link.attr("d", linkPath)
             node.attr("transform", d => `translate(${d.x}, ${d.y})`);
         });
-
 
         function linkPath(d) {
             if (d.loop) { // loop edge
