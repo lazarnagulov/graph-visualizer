@@ -1,6 +1,54 @@
-<style class="plugin-visualizer-head"></style>
+<style class="plugin-visualizer-head">
+    #data-display {
+        height: auto;
+        width: auto;
+        min-height: 20px;
+        min-width: 80px;
+        padding: 3px;
+        background-color: white;
+        border: 2px solid black;
+        position: fixed;
+        z-index: 1;
+        visibility: hidden;
+        white-space: pre-wrap;
+        text-align: center;
+    }
+</style>
 
 <script class="plugin-visualizer-head">
+    function mouseOver(id) {
+        const node = document.getElementById(id);
+        if (node === null) {
+            console.log(`ERROR: Couldn't find node with ID ${id}`);
+            return;
+        }
+
+        const properties = node.__data__.properties;
+
+        let text = "";
+        for (const key in properties) {
+            if (Object.keys(properties).length == 2 && "type" in properties && "value" in properties) {
+                text += `${properties["value"]}\n`; // Beautifing output in case of a List literal.
+                break;
+            } else {
+                text += `${key}: ${properties[key]}\n`;
+            }
+        }
+
+        var nodeBouds = node.getBoundingClientRect();
+        var dataDisplay = document.getElementById("data-display")
+
+        dataDisplay.textContent = text;
+        dataDisplay.style.left = `${nodeBouds.left + nodeBouds.width / 2 + 70}px`;
+        dataDisplay.style.top = `${nodeBouds.top}px`;
+        dataDisplay.style.visibility = "visible";
+    }
+
+    function mouseOut() {
+        var dataDisplay = document.getElementById("data-display")
+        dataDisplay.style.visibility = "hidden";
+    }
+
     function renderSimpleVisualizer(graph, width, height) {
         if (!width || !height) {
             let rect = document.getElementById('simple-visualizer-main-div').getBoundingClientRect();
@@ -86,10 +134,16 @@
             .attr("r", 40)
             .attr("fill", d => "#fff");
 
+        const dataDisplay = document.createElement("div");
+        dataDisplay.id = "data-display";
+        document.getElementById("simple-visualizer-main-div").appendChild(dataDisplay);
+
         node.append("text")
             .attr("text-anchor", "middle")
             .attr("dy", ".35em")
             .attr("clip-path", "circle(40)")
+            .attr("onmouseover", d => `mouseOver(${JSON.stringify(d.id)})`)
+            .attr("onmouseout", d => `mouseOut()`)
             .text(d => d.id);
 
         // Zoom and pan functionality logic.
