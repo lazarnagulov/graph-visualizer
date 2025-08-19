@@ -16,31 +16,44 @@
 </style>
 
 <script class="plugin-visualizer-head">
-    function mouseOver(id) {
-        const node = document.getElementById(id);
-        if (node === null) {
-            console.log(`ERROR: Couldn't find node with ID ${id}`);
-            return;
-        }
-
-        const properties = node.__data__.properties;
+    function mouseOver(element) {
+        const properties = element.properties;
+        let dataDisplay = document.getElementById("data-display")
 
         let text = "";
-        for (const key in properties) {
-            if (Object.keys(properties).length == 2 && "type" in properties && "value" in properties) {
-                text += `${properties["value"]}\n`; // Beautifing output in case of a List literal.
-                break;
-            } else {
-                text += `${key}: ${properties[key]}\n`;
+        if ("id" in element) { // Element is a node.
+            for (const key in properties) {
+                if (Object.keys(properties).length == 2 && "type" in properties && "value" in properties) {
+                    text += `${properties["value"]}\n`; // Beautifing output in case of a List literal.
+                    break;
+                } else {
+                    text += `${key}: ${properties[key]}\n`;
+                }
             }
+            let nodeBouds = document.getElementById(element.id).getBoundingClientRect();
+            
+            dataDisplay.style.left = `${nodeBouds.left + nodeBouds.width / 2 + 70}px`;
+            dataDisplay.style.top = `${nodeBouds.top}px`;
+
+        } else { // Element is a link.
+            for (const key in properties) {
+                if (Object.keys(properties).length == 1 && typeof(properties[key]) === "boolean") {
+                    text += `${key}\n`; // Beautifing output in case of a link with no additional properties.
+                    break;
+                } else {
+                    text += `${key}: ${properties[key]}\n`;
+                }
+            }
+            let sourceNodeBounds = document.getElementById(element.source.id).getBoundingClientRect();
+            let targetNodeBounds = document.getElementById(element.target.id).getBoundingClientRect();
+            let sourceNodeMiddlePoint = [sourceNodeBounds.left + sourceNodeBounds.width / 2, sourceNodeBounds.top + sourceNodeBounds.height / 2];
+            let targetNodeMiddlePoint = [targetNodeBounds.left + targetNodeBounds.width / 2, targetNodeBounds.top + targetNodeBounds.height / 2];
+
+            dataDisplay.style.left = `${(sourceNodeMiddlePoint[0] + targetNodeMiddlePoint[0]) / 2}px`;
+            dataDisplay.style.top = `${(sourceNodeMiddlePoint[1] + targetNodeMiddlePoint[1]) / 2}px`;
         }
 
-        var nodeBouds = node.getBoundingClientRect();
-        var dataDisplay = document.getElementById("data-display")
-
         dataDisplay.textContent = text;
-        dataDisplay.style.left = `${nodeBouds.left + nodeBouds.width / 2 + 70}px`;
-        dataDisplay.style.top = `${nodeBouds.top}px`;
         dataDisplay.style.visibility = "visible";
     }
 
@@ -116,8 +129,9 @@
                     ? undefined
                     : (d.loop
                         ? "url(#loop-arrow)"
-                        : "url(#arrow)")
-            );
+                        : "url(#arrow)"))
+            .attr("onmouseover", d => `mouseOver(${JSON.stringify(d)})`)
+            .attr("onmouseout", d => `mouseOut()`);
 
         const node = svg.append("g")
             .selectAll("g")
@@ -134,17 +148,17 @@
             .attr("r", 40)
             .attr("fill", d => "#fff");
 
-        const dataDisplay = document.createElement("div");
-        dataDisplay.id = "data-display";
-        document.getElementById("simple-visualizer-main-div").appendChild(dataDisplay);
-
         node.append("text")
             .attr("text-anchor", "middle")
             .attr("dy", ".35em")
             .attr("clip-path", "circle(40)")
-            .attr("onmouseover", d => `mouseOver(${JSON.stringify(d.id)})`)
+            .attr("onmouseover", d => `mouseOver(${JSON.stringify(d)})`)
             .attr("onmouseout", d => `mouseOut()`)
             .text(d => d.id);
+        
+        const dataDisplay = document.createElement("div");
+        dataDisplay.id = "data-display";
+        document.getElementById("simple-visualizer-main-div").appendChild(dataDisplay);
 
         // Zoom and pan functionality logic.
         (function initZoom() {
