@@ -44,11 +44,11 @@
                 .attr("orient", "auto")
             .append("path")
                 .attr("fill", "#999")
-                .attr("d", "M0,-5L10,0L0,5")
+                .attr("d", "M0,-5L10,0L0,5");
 
         svg.select("#arrow").clone(true)
             .attr("id", "loop-arrow")
-            .attr("refX", 9)
+            .attr("refX", 9);
             // Use paths for links instead of lines
 
         const link = svg.append("g")
@@ -56,6 +56,7 @@
             .attr("stroke", "#000")
             .attr("stroke-opacity", 0.5)
             .attr("stroke-width", 3.2)
+            .attr("zoom-and-pan", true)
             .selectAll("path")
             .data(links)
             .join("path")
@@ -67,10 +68,11 @@
                     ? undefined
                     : (d.loop
                         ? "url(#loop-arrow)"
-                        : "url(#arrow)")
-            );
+                        : "url(#arrow)"))
+            .attr("mouse-over", true);
 
         const node = svg.append("g")
+            .attr("zoom-and-pan", true)
             .selectAll("g")
             .data(nodes)
             .enter()
@@ -78,6 +80,7 @@
             .attr("class", "node")
             .attr("id", d => d.id)
             .attr("drag", true)
+            .attr("mouse-over", true);
 
         node.append("circle")
             .attr("stroke", "#000")
@@ -96,7 +99,6 @@
             link.attr("d", linkPath)
             node.attr("transform", d => `translate(${d.x}, ${d.y})`);
         });
-
 
         function linkPath(d) {
             if (d.loop) { // loop edge

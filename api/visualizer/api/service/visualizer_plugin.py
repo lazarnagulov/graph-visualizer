@@ -22,8 +22,12 @@ class VisualizerPlugin(Plugin):
 
         All visualized nodes should have the ``node`` class, and all edges the ``link`` class.
         To be identifiable, nodes should define an id attribute and edges source and destination attributes.
-        All draggable nodes should be tagged with ``"drag"=true``.
+        All nodes that implement the "Drag & drop" functionality must be tagged with ``"drag"=true``.
+        All nodes and edges that implement the zoom and pan functionalities must have a <g> element that is tagged
+            with ``"zoom-and-pan"=true`` as an ancestor.
+        All nodes and edges that implement the "Mouse over" functionality must be tagged with ``"mouse-over"=true``.
 
+        Visualizer plugin must have exactly 1 <svg> element.
         Visualizer plugin should define a global getGraphSimulation() function for accessing the d3 simulation object.
 
         For example::
