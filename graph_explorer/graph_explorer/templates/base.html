@@ -24,7 +24,9 @@
               event.detail.headers['X-CSRFToken'] = csrfToken;
             }
           });
-          window.onload = () => addMainViewFunctionality()
+          document.addEventListener("DOMContentLoaded", () => {
+              addMainViewFunctionality();
+          });
         </script>
     </body>
 </html>
