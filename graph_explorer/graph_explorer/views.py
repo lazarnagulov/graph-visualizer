@@ -91,7 +91,7 @@ def search_graph(request):
     workspace.search_graph(request.POST.get('query'))
     return __build_views_response(workspace)
 
-def reload_graph(request):
+def reload_graph(_request):
     workspace: Workspace = __get_workspace()
     workspace.generate_graph()
     return __build_views_response(workspace)

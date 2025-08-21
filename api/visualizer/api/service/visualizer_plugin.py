@@ -22,7 +22,10 @@ class VisualizerPlugin(Plugin):
 
         All visualized nodes should have the ``node`` class, and all edges the ``link`` class.
         To be identifiable, nodes should define an id attribute and edges source and destination attributes.
-        All draggable nodes should be tagged with ``"drag"=true``.
+        All nodes that implement the "Drag & drop" functionality must be tagged with ``"drag"=true``.
+        All nodes and edges that implement the zoom and pan functionalities must have a <g> element that is tagged
+            with ``"zoom-and-pan"=true`` as an ancestor.
+        All nodes and edges that implement the "Mouse over" functionality must be tagged with ``"mouse-over"=true``.
 
         Visualizer plugin must have exactly one <div> element tagged with ``"id"="[visualizer type]visualizer-main-div"``.
         Visualizer plugin must have exactly one <svg> element.

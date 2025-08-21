@@ -1,3 +1,20 @@
+<style>
+    #data-display {
+        height: auto;
+        width: auto;
+        min-height: 20px;
+        min-width: 80px;
+        padding: 3px;
+        background-color: white;
+        border: 2px solid black;
+        position: fixed;
+        z-index: 1;
+        visibility: hidden;
+        white-space: pre-wrap;
+        text-align: center;
+    }
+</style>
+
 <script>
     function swapHeadContent(event) {
         window.getGraphSimulation = undefined;
@@ -84,5 +101,53 @@
             event.subject.fx = null;
             event.subject.fy = null;
         }
+
+        function mouseOver(element) {
+            const properties = element.properties;
+            let dataDisplay = document.getElementById("data-display")
+
+            let text = "";
+            if ("id" in element) { // Element is a node.
+                for (const key in properties) {
+                    if (Object.keys(properties).length == 2 && "type" in properties && "value" in properties) {
+                        text += `${properties["value"]}\n`; // Beautifing output in case of a List literal.
+                        break;
+                    } else {
+                        text += `${key}: ${properties[key]}\n`;
+                    }
+                }
+                let nodeBouds = document.getElementById(element.id).getBoundingClientRect();
+                
+                dataDisplay.style.left = `${nodeBouds.left + nodeBouds.width / 2 + 70}px`;
+                dataDisplay.style.top = `${nodeBouds.top}px`;
+
+            } else { // Element is a link.
+                for (const key in properties) {
+                    if (Object.keys(properties).length == 1 && typeof(properties[key]) === "boolean") {
+                        text += `${key}\n`; // Beautifing output in case of a link with no additional properties.
+                        break;
+                    } else {
+                        text += `${key}: ${properties[key]}\n`;
+                    }
+                }
+                let sourceNodeBounds = document.getElementById(element.source.id).getBoundingClientRect();
+                let targetNodeBounds = document.getElementById(element.target.id).getBoundingClientRect();
+                let sourceNodeMiddlePoint = [sourceNodeBounds.left + sourceNodeBounds.width / 2, sourceNodeBounds.top + sourceNodeBounds.height / 2];
+                let targetNodeMiddlePoint = [targetNodeBounds.left + targetNodeBounds.width / 2, targetNodeBounds.top + targetNodeBounds.height / 2];
+
+                dataDisplay.style.left = `${(sourceNodeMiddlePoint[0] + targetNodeMiddlePoint[0]) / 2}px`;
+                dataDisplay.style.top = `${(sourceNodeMiddlePoint[1] + targetNodeMiddlePoint[1]) / 2}px`;
+            }
+
+            dataDisplay.textContent = text;
+            dataDisplay.style.visibility = "visible";
+        }
+        window.mouseOver = mouseOver;
+
+        function mouseOut() {
+            var dataDisplay = document.getElementById("data-display")
+            dataDisplay.style.visibility = "hidden";
+        }
+        window.mouseOut = mouseOut;
     }
 </script>

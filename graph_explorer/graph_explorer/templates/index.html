@@ -49,5 +49,10 @@
           const input = document.getElementById("terminal-input");
           if (input) input.value = "";
         });
+
+        document.body.addEventListener("htmx:afterSwap", _ => {
+            if (document.querySelector("#main-view"))
+                addMainViewFunctionality();
+        });
     </script>
 {% endblock %}
