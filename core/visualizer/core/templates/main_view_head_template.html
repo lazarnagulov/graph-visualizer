@@ -48,10 +48,18 @@
         }
     }
     function addMainViewFunctionality(event) {
-        if (!window.getGraphSimulation)
+        if (!window.getGraphSimulation) {
+            console.log("ERROR: Graph simulation does not exist.");
             return;
+        }
 
-        let simulation = window.getGraphSimulation()
+        const mainDivElements = document.querySelectorAll("[id$='visualizer-main-div']");
+        if (mainDivElements.length != 1) {
+            console.log("ERROR: There must be exactly one <[visualizer type]visualizer-main-div> element.");
+            return;
+        }
+
+        let simulation = window.getGraphSimulation();
 
         // Drag functionality logic.
         d3.selectAll("g.node[drag='true']").call(d3.drag()
@@ -71,7 +79,7 @@
 
         const dataDisplay = document.createElement("div");
         dataDisplay.id = "data-display";
-        document.getElementById("simple-visualizer-main-div").appendChild(dataDisplay);
+        mainDivElements[0].appendChild(dataDisplay);
 
         // Reheat the simulation when drag starts, and fix the subject position.
         function dragstarted(event) {
