@@ -8,6 +8,8 @@ version = "0.0.1"
 description = "RDF loader"
 dependencies = [
     "graph-visualizer-api==0.1.1",
+    "rdflib>=6.0.0",
+    "typing-extensions>=4.0.0"
 ]
 
 
