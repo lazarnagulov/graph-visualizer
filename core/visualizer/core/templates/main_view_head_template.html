@@ -31,15 +31,38 @@
         }
     }
     function addMainViewFunctionality(event) {
-        if (!window.getGraphSimulation)
+        if (!window.getGraphSimulation) {
+            console.log("ERROR: Graph simulation does not exist.");
             return;
+        }
 
-        let simulation = window.getGraphSimulation()
-        // Add a drag behavior.
+        const mainDivElements = document.querySelectorAll("[id$='visualizer-main-div']");
+        if (mainDivElements.length != 1) {
+            console.log("ERROR: There must be exactly one <[visualizer type]visualizer-main-div> element.");
+            return;
+        }
+
+        let simulation = window.getGraphSimulation();
+
+        // Drag functionality logic.
         d3.selectAll("g.node[drag='true']").call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended));
+        
+        // Zoom and pan functionality logic.
+        (function initZoom() {
+            d3.select("svg").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
+            // d3.zoom().on("zoom") recognizes the zoom event and applies the transformation it gets to the appropriate <g> elements.
+        })();
+
+        // "Mouse over" functionality logic.
+        d3.selectAll("*[mouse-over='true']").attr("onmouseover", d => `mouseOver(${JSON.stringify(d)})`);
+        d3.selectAll("*[mouse-over='true']").attr("onmouseout", d => `mouseOut()`)
+
+        const dataDisplay = document.createElement("div");
+        dataDisplay.id = "data-display";
+        mainDivElements[0].appendChild(dataDisplay);
 
         // Reheat the simulation when drag starts, and fix the subject position.
         function dragstarted(event) {

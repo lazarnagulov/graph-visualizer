@@ -24,6 +24,11 @@ class VisualizerPlugin(Plugin):
         To be identifiable, nodes should define an id attribute and edges source and destination attributes.
         All draggable nodes should be tagged with ``"drag"=true``.
 
+        Visualizer plugin must have exactly one <div> element tagged with ``"id"="[visualizer type]visualizer-main-div"``.
+        Visualizer plugin must have exactly one <svg> element.
+        It is recommended that these two elements be implemented so that the <svg> element is a child of the <div> element.
+            Otherwise, correct behaviour of the program cannot be guaranteed.
+
         Visualizer plugin should define a global getGraphSimulation() function for accessing the d3 simulation object.
 
         For example::
