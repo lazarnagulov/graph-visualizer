@@ -27,7 +27,11 @@ class VisualizerPlugin(Plugin):
             with ``"zoom-and-pan"=true`` as an ancestor.
         All nodes and edges that implement the "Mouse over" functionality must be tagged with ``"mouse-over"=true``.
 
-        Visualizer plugin must have exactly 1 <svg> element.
+        Visualizer plugin must have exactly one <div> element tagged with ``"id"="[visualizer type]visualizer-main-div"``.
+        Visualizer plugin must have exactly one <svg> element.
+        It is recommended that these two elements be implemented so that the <svg> element is a child of the <div> element.
+            Otherwise, correct behaviour of the program cannot be guaranteed.
+
         Visualizer plugin should define a global getGraphSimulation() function for accessing the d3 simulation object.
 
         For example::

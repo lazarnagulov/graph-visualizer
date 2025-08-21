@@ -13,3 +13,6 @@ dependencies = [
 
 [project.entry-points."visualizer.visualizer"]
 block_visualizer = "visualizer.plugin.block_visualizer:BlockVisualizer"
+
+[tool.setuptools.data-files]
+templates = ["visualizer/plugin/templates/*"]
