@@ -1,4 +1,5 @@
 from typing import Tuple, Optional, Any
+import uuid
 
 from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
@@ -16,7 +17,8 @@ class Workspace:
         self,
         plugin_service: PluginService,
         command_service: Optional[CommandService] = None,
-        graph_manager: Optional[GraphManager] = None
+        graph_manager: Optional[GraphManager] = None,
+        workspace_id: str = None
     ):
         """
         Initialize the Workspace with plugin and command services.
@@ -28,6 +30,7 @@ class Workspace:
         :param plugin_service: The service responsible for managing available plugins.
         :type plugin_service: PluginService
         """
+        self.id = workspace_id or str(uuid.uuid4())
         self.__command_service = command_service or CommandService(self.generate_graph)
         self.__plugin_manager = PluginManager(plugin_service)
         self.__graph_manager = graph_manager or GraphManager(self.__plugin_manager)

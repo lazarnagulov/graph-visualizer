@@ -2,6 +2,17 @@
   <div class="tab">
     <button class="tablinks active" onclick="openTab(event, 'main-tab', 'app-header-tabs')">Main</button>
     <button class="tablinks" onclick="openTab(event, 'filter-tab', 'app-header-tabs')">Filters</button>
+   
+    <div id="workspace-controls">
+  <label for="current-workspace">Current Workspace:</label>
+  <input type="text" id="current-workspace" value="{{ selected_workspace }}" readonly />
+
+  <button hx-get="/create-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">CREATE</button>
+  <button hx-get="/delete-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">DELETE</button>
+  <button hx-get="/switch-workspace-back/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">BACK</button>
+  <button hx-get="/switch-workspace-next/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">NEXT</button>
+</div>
+
   </div>
 
   <div id="app-header-tabs"

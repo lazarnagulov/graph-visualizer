@@ -32,4 +32,11 @@ urlpatterns = [
     path('filter-graph/', views.filter_graph, name='filter-graph'),
     path('search-graph/', views.search_graph, name='search-graph'),
     path('reload-graph/', views.reload_graph, name='reload-graph'),
+
+    path('create-workspace/', views.create_workspace, name='create-workspace'),
+    path('delete-workspace/', views.delete_workspace, name='delete-workspace'),
+    path('switch-workspace-back/', views.switch_workspace_back, name='switch-workspace-back'),
+    path('switch-workspace-next/', views.switch_workspace_next, name='switch-workspace-next'),
+
+
 ]

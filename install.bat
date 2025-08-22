@@ -23,9 +23,6 @@ if errorlevel 1 exit /b 1
 call :install_component "Block visualizer" "./block_visualizer"
 if errorlevel 1 exit /b 1
 
-call :install_component "Json loader" "./json_loader"
-if errorlevel 1 exit /b 1
-
 call :install_component "Graph explorer" "./graph_explorer"
 if errorlevel 1 exit /b 1
 

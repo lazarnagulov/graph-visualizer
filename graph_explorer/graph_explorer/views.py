@@ -124,3 +124,38 @@ def __build_views_response(workspace: Workspace = None, include_plugin_head = Fa
     body = main_view_body + tree_view_body
 
     return HttpResponse(head + body)
+
+# WORKSPACE FUNC
+
+def create_workspace(request):
+    platform = apps.get_app_config('graph_explorer').platform
+    platform.create_workspace()
+    workspace = platform.get_selected_workspace()
+    return __build_views_response(workspace, include_all_heads=True)
+
+def delete_workspace(request):
+    platform = apps.get_app_config('graph_explorer').platform
+    current_id = platform.current_workspace_id
+    platform.delete_workspace(current_id)
+    workspace = platform.get_selected_workspace()
+    return __build_views_response(workspace, include_all_heads=True)
+
+def switch_workspace_back(request):
+    platform = apps.get_app_config('graph_explorer').platform
+    ids = list(platform.workspaces.keys())
+    if platform.current_workspace_id and ids:
+        idx = ids.index(platform.current_workspace_id)
+        new_idx = max(0, idx - 1)
+        platform.switch_workspace(ids[new_idx])
+    workspace = platform.get_selected_workspace()
+    return __build_views_response(workspace, include_all_heads=True)
+
+def switch_workspace_next(request):
+    platform = apps.get_app_config('graph_explorer').platform
+    ids = list(platform.workspaces.keys())
+    if platform.current_workspace_id and ids:
+        idx = ids.index(platform.current_workspace_id)
+        new_idx = min(len(ids) - 1, idx + 1)
+        platform.switch_workspace(ids[new_idx])
+    workspace = platform.get_selected_workspace()
+    return __build_views_response(workspace, include_all_heads=True)
