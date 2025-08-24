@@ -39,7 +39,7 @@ class Platform:
         """Return the currently selected workspace."""
         if self.current_workspace_id:
             return self.workspaces[self.current_workspace_id]
-        return None
+        return self.create_workspace()
 
     def switch_workspace(self, workspace_id: str) -> bool:
         """
