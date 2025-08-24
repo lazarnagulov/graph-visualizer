@@ -151,6 +151,7 @@
 
 
         function linkPath(d) {
+            if (!document.getElementById(d.source.id) || !document.getElementById(d.target.id)) return;
             const sx = d.source.x;
             const sy = d.source.y;
             const sw = document.getElementById(d.source.id).getBBox().width;
