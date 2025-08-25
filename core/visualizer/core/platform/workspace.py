@@ -7,7 +7,7 @@ from visualizer.core.usecase import graph_util
 from ..command.command_result import CommandResult
 from ..usecase.graph_manager import GraphManager
 from ..usecase.plugin_manager import PluginManager
-from ..view import app_header_view, main_view, tree_view
+from ..view import app_header_view, main_view, bird_view, tree_view
 
 
 class Workspace:
@@ -131,6 +131,13 @@ class Workspace:
             self.generate_graph()
 
         return main_view.render(self.__graph_manager.graph, self.__plugin_manager.visualizer_plugin)
+    
+    def render_bird_view(self) -> Tuple[str, str]:
+        """
+        Render the bird view. Assumes the graph is already generated.
+        :return: (bird_view_head, bird_view_body) HTML string that should be included in page
+        """
+        return bird_view.render()
 
     def render_tree_view(self) -> Tuple[str, str]:
         """

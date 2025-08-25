@@ -24,14 +24,16 @@ def index(request):
     workspace: Workspace = __get_workspace()
     main_view_head, plugin_head, main_view_body = workspace.render_main_view()
     tree_view_head, tree_view_body = workspace.render_tree_view()
+    bird_view_head, bird_view_body = workspace.render_bird_view()
     _,app_header = workspace.render_app_header()
 
     return render(request, 'index.html', {
         'title': 'Graph Explorer',
         'app_header': app_header,
         'main_view': main_view_body,
-        'head': main_view_head + plugin_head + tree_view_head,
+        'head': main_view_head + plugin_head + tree_view_head + bird_view_head,
         'tree_view': tree_view_body,
+        'bird_view': bird_view_body
     })
 
 
