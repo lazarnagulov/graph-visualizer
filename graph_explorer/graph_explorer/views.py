@@ -52,8 +52,11 @@ def data_file_upload(request):
     if request.method == "POST" and 'file_input' in request.FILES:
         uploaded_file:UploadedFile = request.FILES['file_input']
         file_string = uploaded_file.read()
+        keys = request.POST.getlist("extra_keys")
+        values = request.POST.getlist("extra_values")
+        extra_props = {k: v for k, v in zip(keys, values) if k.strip()}
         workspace.data_file_string = file_string
-        workspace.generate_graph()
+        workspace.generate_graph(**extra_props)
 
     return __build_views_response(workspace)
 
