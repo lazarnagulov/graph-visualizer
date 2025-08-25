@@ -52,10 +52,18 @@
             console.log("ERROR: Graph simulation does not exist.");
             return;
         }
-
         const mainDivElements = document.querySelectorAll("[id$='visualizer-main-div']");
         if (mainDivElements.length != 1) {
             console.log("ERROR: There must be exactly one <[visualizer type]visualizer-main-div> element.");
+            return;
+        }
+        const visualizerContainer = document.getElementById("visualizer-container");
+        if (visualizerContainer === null) {
+            console.log("ERROR: There must be exactly one <svg id=\"visualizer-container\"> element.");
+            return;
+        }
+        if (visualizerContainer.tagName != "svg") {
+            console.log("ERROR: visualizer-container element must be an <svg> element.");
             return;
         }
 
@@ -69,7 +77,8 @@
         
         // Zoom and pan functionality logic.
         (function initZoom() {
-            d3.select("svg").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
+            d3.select("#visualizer-container").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
+            //d3.selectAll("svg").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
             // d3.zoom().on("zoom") recognizes the zoom event and applies the transformation it gets to the appropriate <g> elements.
         })();
 
