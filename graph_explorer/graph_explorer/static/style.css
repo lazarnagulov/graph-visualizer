@@ -309,3 +309,61 @@ body {
 .tooltip:has(> .tooltiptext:empty) {
   visibility: hidden;
 }
+
+#main-tab {
+  display: flex;
+  flex-direction: row;
+}
+
+#app-header-tabs .tabcontent {
+  display: none;
+}
+
+#app-header-tabs .tabcontent.active {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+#app-header-tabs #main-tab.tabcontent.active {
+  display: flex;
+}
+
+#advanced-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#advanced-modal-content {
+  background: #fff;
+  margin: 10% auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+#advanced-close {
+  float: right;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
