@@ -1,5 +1,5 @@
 from rdflib import Graph as RDFGraph, URIRef, Literal
-from rdflib.namespace import RDF
+from rdflib.namespace import RDF, split_uri
 
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
@@ -27,7 +27,11 @@ class RDFLoader(DataSourcePlugin):
                 subj_node.add_property("type", str(obj))
                 continue
 
-            pred_name = str(pred).split("#")[-1].split("/")[-1]
+            # Extract predicate name robustly using rdflib's split_uri
+            try:
+                _, pred_name = split_uri(pred)
+            except ValueError:
+                pred_name = str(pred)
 
             if isinstance(obj, Literal):
                 subj_node.add_property(pred_name, obj.value)
