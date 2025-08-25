@@ -2,6 +2,7 @@ import json
 import os
 from typing import Optional, Any, Dict, List, Tuple
 
+from visualizer.api.exception.data_source_exception import MissingRequiredParameterError, InvalidParameterValueError
 from visualizer.api.model.edge import Edge
 from visualizer.api.model.graph import Graph
 from visualizer.api.model.node import Node
@@ -46,15 +47,19 @@ class JsonLoader(DataSourcePlugin):
     def name(self) -> str:
         return "Json Loader"
 
-    def load(self, file_string: Optional[str], **kwargs) -> Graph:
-        if not file_string:
-            raise ValueError("file_string must be provided")
+    def load(self, **kwargs) -> Graph:
+        file_content: Optional[str] = kwargs.get("file_content", None)
+        if not file_content:
+            raise MissingRequiredParameterError("file_content must be provided")
         graph: Graph = Graph()
         self.__nodes = {}
         self.__unresolved_edges = []
 
-        self.__generate_graph(graph, self.__load_json(file_string))
-        self.__resolve_edges(graph)
+        try:
+            self.__generate_graph(graph, self.__load_json(file_content))
+            self.__resolve_edges(graph)
+        except json.JSONDecodeError:
+            raise InvalidParameterValueError("Provided file_content is not valid JSON.")
 
         return graph
 

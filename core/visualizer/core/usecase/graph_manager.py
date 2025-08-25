@@ -38,9 +38,9 @@ class GraphManager:
         self.__data_file_string = file_string
         self.generate()
 
-    def generate(self):
+    def generate(self, **kwargs):
         if self.data_source_plugin and self.__data_file_string:
-            self.__graph = self.data_source_plugin.load(file_string=self.__data_file_string)
+            self.__graph = self.data_source_plugin.load(**kwargs)
             self.__graph_generated = True
 
     def filter(self, key: str, operator: str, value: any) -> str:

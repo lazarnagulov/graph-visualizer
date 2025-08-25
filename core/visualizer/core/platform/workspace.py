@@ -39,7 +39,7 @@ class Workspace:
         """
         self.__plugin_manager.set_visualizer(identifier)
 
-    def set_data_source_plugin(self, identifier: str) -> None:
+    def set_data_source_plugin(self, identifier: str, **kwargs) -> None:
         """
         Set data source plugin via its identifier.
         :param identifier: plugin identifier
@@ -47,7 +47,7 @@ class Workspace:
         old_identifier: str = self.__plugin_manager.data_source_plugin.identifier()
         self.__plugin_manager.set_data_source(identifier)
         if old_identifier != identifier:
-            self.generate_graph()
+            self.generate_graph(**kwargs)
 
     def __set_default_plugins(self) -> None:
         """ Set plugins to first available. """
@@ -72,7 +72,6 @@ class Workspace:
         :type data_file_string: str
         """
         self.__graph_manager.data_file_string = data_file_string
-        self.generate_graph()
 
     def execute_command(self, command_input: str) -> CommandResult:
         """
@@ -90,9 +89,9 @@ class Workspace:
         """
         return self.__command_service.execute_command(self.__graph_manager.graph, command_input)
 
-    def generate_graph(self) -> None:
+    def generate_graph(self, **kwargs) -> None:
         """ Generate the graph using the currently selected data source plugin. """
-        self.__graph_manager.generate()
+        self.__graph_manager.generate(file_content=self.__graph_manager.data_file_string, **kwargs)
 
     def filter_graph(self, key: str, operator: str, value: Any) -> str:
         """
