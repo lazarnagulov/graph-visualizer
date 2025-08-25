@@ -182,7 +182,7 @@ body {
   min-width: 0;
 }
 
-.minimap-view {
+.bird-view {
   height: 12.5rem; /* 200px */
   flex-shrink: 0;
   overflow: hidden;
