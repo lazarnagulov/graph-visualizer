@@ -15,33 +15,36 @@
 <details> 
     <summary>Table of Contents</summary> 
     <ol> 
-        <li> <a href="#-about-the-project">About The Project</a> 
+        <li> <a href="#about-the-project">About The Project</a> 
             <ul> 
-                <li><a href="#-built-with">Built With</a></li> 
+                <li><a href="#built-with">Built With</a></li> 
             </ul> 
         </li> 
-        <li> <a href="#-getting-started">Getting Started</a> 
+        <li> <a href="#getting-started">Getting Started</a> 
             <ul> 
-                <li><a href="#-installation-steps">Installation Steps</a></li> 
+                <li><a href="#installation-steps">Installation Steps</a></li> 
             </ul> 
         </li> 
-        <li><a href="#-plugins">Plugins</a>
+        <li><a href="#running-the-server">Running the Server</a></li> 
+        <li><a href="#plugins">Plugins</a>
             <ul>
-                <li><a href="#-json-data-source">JSON Data Source</a></li> 
-                <li><a href="#-python-data-source">Python Data Source</a></li> 
+                <li><a href="#json-data-source">JSON Data Source</a></li> 
+                <li><a href="#python-data-source">Python Data Source</a></li> 
+                <li><a href="#rdf-data-source">RDF Data Source</a></li> 
+                <li><a href="#simple-visualizer">Simple Visualizer</a></li> 
+                <li><a href="#block-visualizer">Block Visualizer</a></li> 
             </ul>
         </li> 
-        <li><a href="#-running-the-server">Running the Server</a></li> 
-        <li><a href="#-authors">Authors</a></li> 
+        <li><a href="#authors">Authors</a></li> 
     </ol> 
 </details>
 
-## 📋 About The Project
+## About The Project
 Graph Visualizer is a modular and extensible web platform designed to load and render graphs.
 It allows you to visualize complex data structures using plugin-based data sources and visual renderers. 
 The backend is powered by Django, while the core logic is implemented in Python.
 <br/>
-### 🔧 Built With
+### Built With
 This project uses the following core technologies:
 
 [![Python][Python-img]][Python-url]  
@@ -54,7 +57,7 @@ This project uses the following core technologies:
 
 <br/>
 
-## 🚀 Getting Started
+## Getting Started
 Before running the project, ensure you have Python 3.10+ installed.
 
 Check your version:
@@ -62,7 +65,7 @@ Check your version:
 python --version
 ```
 
-### 🛠️ Installation Steps
+###  Installation Steps
 1. Clone the repository:
 ```bash
 git clone https://github.com/lazarnagulov/graph-visualizer.git
@@ -80,21 +83,33 @@ call install.bat                      # Windows (use CMD)
 ```
 <br/>
 
-## 🧩 Plugins
+## Running the Server
+Run the Django server:
+```
+chmod +x run.sh && ./run.sh     # Linux / macOS
+call run.bat                    # Windows (use CMD)
+```
+Default server URL:
+📍 http://localhost:8000
+<br/>
+
+
+##  Plugins
 Graph Visualizer uses a plugin-based architecture. There are two plugin types:
 
-#### 🔌 Data Source Plugins
+####  Data Source Plugins
 These convert raw files into graph data.
 - JSON
 - Python
+- RDF
 
-#### 🖼️ Visualizer Plugins
+#### Visualizer Plugins
 These render the graph in different ways.
 - Block Visualizer
 - Simple Visualizer
 <br/>
 
-### 🧾 JSON Data Source
+### JSON Data Source
 The JSON plugin supports cyclic graph definitions using a custom referencing system.
 #### 🔗 Syntax Overview
 Each node can include a unique ID field (default: "@id").
@@ -138,21 +153,33 @@ Or modify directly in config.json:
 }
 ```
 
-### 🐍 Python Data Source
+### Python Data Source
 The Python plugin generates graphs by analyzing the AST, representing functions and classes as nodes 
 and calls as edges.</br>
 
-## ▶️ Running the Server
-Run the Django server:
-```
-chmod +x run.sh && ./run.sh     # Linux / macOS
-call run.bat                    # Windows (use CMD)
-```
-Default server URL:
-📍 http://localhost:8000
-<br/>
+### RDF Data Source
+The RDF plugin supports loading RDF graphs in standard serialization formats, with primary support for **Turtle syntax**.
 
-## 👤 Authors:
+Parsing and handling of RDF data is performed using the rdflib library.
+
+> [!IMPORTANT]
+> No extended syntax or transformation is applied. Input must be valid RDF.
+
+### Simple Visualizer
+
+Displays nodes arranged in a circular layout, labeled with their respective IDs.
+An example using a JSON data source from README is shown below:
+
+![img](./img/simple_readme_example.png)
+
+### Block Visualizer
+
+Displays nodes in a structured, table-like format.
+An example using a JSON data source from README is shown below:
+
+![img](./img/block_readme_example.png)
+
+## Authors:
 - [Lazar Nagulov](https://github.com/lazarnagulov)
 - [Filip Tot](https://github.com/FilipT03)
 - [Stefan Lekić](https://github.com/SirBoi)
