@@ -151,19 +151,15 @@
 
 
         function linkPath(d) {
-            const source = document.getElementById(d.source.id);
-            const target = document.getElementById(d.target.id);
-
-            if (source === null | target === null) return;
-
+            if (!document.getElementById(d.source.id) || !document.getElementById(d.target.id)) return;
             const sx = d.source.x;
             const sy = d.source.y;
-            const sw = source.getBBox().width;
-            const sh = source.getBBox().height;
+            const sw = document.getElementById(d.source.id).getBBox().width;
+            const sh = document.getElementById(d.source.id).getBBox().height;
             const tx = d.target.x;
             const ty = d.target.y;
-            const tw = target.getBBox().width;
-            const th = target.getBBox().height;
+            const tw = document.getElementById(d.target.id).getBBox().width;
+            const th = document.getElementById(d.target.id).getBBox().height;
 
             const elipseRadius = 1;
             const doubleEdgeSpacing = 10
