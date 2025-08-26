@@ -14,9 +14,6 @@ if errorlevel 1 exit /b 1
 call :install_component "Simple visualizer" "./simple_visualizer"
 if errorlevel 1 exit /b 1
 
-call :install_component "Json loader" "./json_loader"
-if errorlevel 1 exit /b 1
-
 call :install_component "Python loader" "./python_loader"
 if errorlevel 1 exit /b 1
 
@@ -27,6 +24,9 @@ call :install_component "Json loader" "./json_loader"
 if errorlevel 1 exit /b 1
 
 call :install_component "Graph explorer" "./graph_explorer"
+if errorlevel 1 exit /b 1
+
+call :install_component "RDF Loader" "./rdf_loader"
 if errorlevel 1 exit /b 1
 
 echo All components installed successfully.
