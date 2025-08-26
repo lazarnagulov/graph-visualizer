@@ -1,0 +1,1565 @@
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:Node104 a ex:Node ;
+    ex:connectedTo ex:Node58 ;
+    ex:description "This is node number 104." ;
+    ex:name "Node 104" ;
+    ex:value 896 .
+
+ex:Node136 a ex:Node ;
+    ex:connectedTo ex:Node110,
+        ex:Node153,
+        ex:Node184,
+        ex:Node48,
+        ex:Node77 ;
+    ex:description "This is node number 136." ;
+    ex:name "Node 136" ;
+    ex:value 458 .
+
+ex:Node146 a ex:Node ;
+    ex:connectedTo ex:Node179,
+        ex:Node31 ;
+    ex:description "This is node number 146." ;
+    ex:name "Node 146" ;
+    ex:value 172 .
+
+ex:Node172 a ex:Node ;
+    ex:connectedTo ex:Node26 ;
+    ex:description "This is node number 172." ;
+    ex:name "Node 172" ;
+    ex:value 288 .
+
+ex:Node43 a ex:Node ;
+    ex:connectedTo ex:Node125,
+        ex:Node143,
+        ex:Node189,
+        ex:Node27 ;
+    ex:description "This is node number 43." ;
+    ex:name "Node 43" ;
+    ex:value 654 .
+
+ex:Node5 a ex:Node ;
+    ex:connectedTo ex:Node1,
+        ex:Node16,
+        ex:Node197 ;
+    ex:description "This is node number 5." ;
+    ex:name "Node 5" ;
+    ex:value 944 .
+
+ex:Node54 a ex:Node ;
+    ex:connectedTo ex:Node101,
+        ex:Node56 ;
+    ex:description "This is node number 54." ;
+    ex:name "Node 54" ;
+    ex:value 346 .
+
+ex:Node103 a ex:Node ;
+    ex:connectedTo ex:Node153,
+        ex:Node158,
+        ex:Node198 ;
+    ex:description "This is node number 103." ;
+    ex:name "Node 103" ;
+    ex:value 39 .
+
+ex:Node106 a ex:Node ;
+    ex:connectedTo ex:Node12,
+        ex:Node130,
+        ex:Node9 ;
+    ex:description "This is node number 106." ;
+    ex:name "Node 106" ;
+    ex:value 712 .
+
+ex:Node109 a ex:Node ;
+    ex:connectedTo ex:Node158,
+        ex:Node79 ;
+    ex:description "This is node number 109." ;
+    ex:name "Node 109" ;
+    ex:value 298 .
+
+ex:Node122 a ex:Node ;
+    ex:connectedTo ex:Node174,
+        ex:Node177,
+        ex:Node45 ;
+    ex:description "This is node number 122." ;
+    ex:name "Node 122" ;
+    ex:value 303 .
+
+ex:Node123 a ex:Node ;
+    ex:connectedTo ex:Node188,
+        ex:Node92 ;
+    ex:description "This is node number 123." ;
+    ex:name "Node 123" ;
+    ex:value 569 .
+
+ex:Node127 a ex:Node ;
+    ex:connectedTo ex:Node150,
+        ex:Node41,
+        ex:Node7 ;
+    ex:description "This is node number 127." ;
+    ex:name "Node 127" ;
+    ex:value 418 .
+
+ex:Node135 a ex:Node ;
+    ex:connectedTo ex:Node23,
+        ex:Node26,
+        ex:Node47,
+        ex:Node48 ;
+    ex:description "This is node number 135." ;
+    ex:name "Node 135" ;
+    ex:value 693 .
+
+ex:Node14 a ex:Node ;
+    ex:connectedTo ex:Node138,
+        ex:Node167,
+        ex:Node38 ;
+    ex:description "This is node number 14." ;
+    ex:name "Node 14" ;
+    ex:value 282 .
+
+ex:Node140 a ex:Node ;
+    ex:connectedTo ex:Node100,
+        ex:Node133,
+        ex:Node155,
+        ex:Node48 ;
+    ex:description "This is node number 140." ;
+    ex:name "Node 140" ;
+    ex:value 142 .
+
+ex:Node161 a ex:Node ;
+    ex:connectedTo ex:Node113 ;
+    ex:description "This is node number 161." ;
+    ex:name "Node 161" ;
+    ex:value 531 .
+
+ex:Node166 a ex:Node ;
+    ex:connectedTo ex:Node144,
+        ex:Node151,
+        ex:Node157,
+        ex:Node34 ;
+    ex:description "This is node number 166." ;
+    ex:name "Node 166" ;
+    ex:value 959 .
+
+ex:Node170 a ex:Node ;
+    ex:connectedTo ex:Node132,
+        ex:Node35 ;
+    ex:description "This is node number 170." ;
+    ex:name "Node 170" ;
+    ex:value 777 .
+
+ex:Node183 a ex:Node ;
+    ex:connectedTo ex:Node118,
+        ex:Node12,
+        ex:Node3,
+        ex:Node85 ;
+    ex:description "This is node number 183." ;
+    ex:name "Node 183" ;
+    ex:value 237 .
+
+ex:Node185 a ex:Node ;
+    ex:connectedTo ex:Node148,
+        ex:Node32,
+        ex:Node96 ;
+    ex:description "This is node number 185." ;
+    ex:name "Node 185" ;
+    ex:value 572 .
+
+ex:Node186 a ex:Node ;
+    ex:connectedTo ex:Node15,
+        ex:Node195,
+        ex:Node84 ;
+    ex:description "This is node number 186." ;
+    ex:name "Node 186" ;
+    ex:value 894 .
+
+ex:Node19 a ex:Node ;
+    ex:connectedTo ex:Node156,
+        ex:Node90 ;
+    ex:description "This is node number 19." ;
+    ex:name "Node 19" ;
+    ex:value 588 .
+
+ex:Node191 a ex:Node ;
+    ex:connectedTo ex:Node128,
+        ex:Node180,
+        ex:Node79 ;
+    ex:description "This is node number 191." ;
+    ex:name "Node 191" ;
+    ex:value 902 .
+
+ex:Node24 a ex:Node ;
+    ex:connectedTo ex:Node11,
+        ex:Node124,
+        ex:Node130 ;
+    ex:description "This is node number 24." ;
+    ex:name "Node 24" ;
+    ex:value 781 .
+
+ex:Node27 a ex:Node ;
+    ex:connectedTo ex:Node133,
+        ex:Node37 ;
+    ex:description "This is node number 27." ;
+    ex:name "Node 27" ;
+    ex:value 788 .
+
+ex:Node38 a ex:Node ;
+    ex:connectedTo ex:Node175,
+        ex:Node28,
+        ex:Node8,
+        ex:Node89,
+        ex:Node94 ;
+    ex:description "This is node number 38." ;
+    ex:name "Node 38" ;
+    ex:value 753 .
+
+ex:Node50 a ex:Node ;
+    ex:connectedTo ex:Node159,
+        ex:Node160,
+        ex:Node75 ;
+    ex:description "This is node number 50." ;
+    ex:name "Node 50" ;
+    ex:value 638 .
+
+ex:Node52 a ex:Node ;
+    ex:connectedTo ex:Node175,
+        ex:Node20,
+        ex:Node87 ;
+    ex:description "This is node number 52." ;
+    ex:name "Node 52" ;
+    ex:value 323 .
+
+ex:Node55 a ex:Node ;
+    ex:connectedTo ex:Node107 ;
+    ex:description "This is node number 55." ;
+    ex:name "Node 55" ;
+    ex:value 688 .
+
+ex:Node57 a ex:Node ;
+    ex:connectedTo ex:Node108,
+        ex:Node138,
+        ex:Node180,
+        ex:Node34,
+        ex:Node99 ;
+    ex:description "This is node number 57." ;
+    ex:name "Node 57" ;
+    ex:value 451 .
+
+ex:Node58 a ex:Node ;
+    ex:connectedTo ex:Node131,
+        ex:Node159,
+        ex:Node188 ;
+    ex:description "This is node number 58." ;
+    ex:name "Node 58" ;
+    ex:value 334 .
+
+ex:Node61 a ex:Node ;
+    ex:connectedTo ex:Node24,
+        ex:Node59 ;
+    ex:description "This is node number 61." ;
+    ex:name "Node 61" ;
+    ex:value 442 .
+
+ex:Node69 a ex:Node ;
+    ex:connectedTo ex:Node129,
+        ex:Node151,
+        ex:Node187 ;
+    ex:description "This is node number 69." ;
+    ex:name "Node 69" ;
+    ex:value 195 .
+
+ex:Node78 a ex:Node ;
+    ex:connectedTo ex:Node171,
+        ex:Node182,
+        ex:Node192 ;
+    ex:description "This is node number 78." ;
+    ex:name "Node 78" ;
+    ex:value 400 .
+
+ex:Node83 a ex:Node ;
+    ex:connectedTo ex:Node151,
+        ex:Node23 ;
+    ex:description "This is node number 83." ;
+    ex:name "Node 83" ;
+    ex:value 590 .
+
+ex:Node91 a ex:Node ;
+    ex:connectedTo ex:Node158,
+        ex:Node20 ;
+    ex:description "This is node number 91." ;
+    ex:name "Node 91" ;
+    ex:value 462 .
+
+ex:Node93 a ex:Node ;
+    ex:connectedTo ex:Node157,
+        ex:Node190,
+        ex:Node64,
+        ex:Node65,
+        ex:Node94 ;
+    ex:description "This is node number 93." ;
+    ex:name "Node 93" ;
+    ex:value 136 .
+
+ex:Node95 a ex:Node ;
+    ex:connectedTo ex:Node114,
+        ex:Node179,
+        ex:Node65 ;
+    ex:description "This is node number 95." ;
+    ex:name "Node 95" ;
+    ex:value 506 .
+
+ex:Node97 a ex:Node ;
+    ex:connectedTo ex:Node162,
+        ex:Node17,
+        ex:Node64 ;
+    ex:description "This is node number 97." ;
+    ex:name "Node 97" ;
+    ex:value 630 .
+
+ex:Node98 a ex:Node ;
+    ex:connectedTo ex:Node26 ;
+    ex:description "This is node number 98." ;
+    ex:name "Node 98" ;
+    ex:value 597 .
+
+ex:Node102 a ex:Node ;
+    ex:connectedTo ex:Node17,
+        ex:Node185,
+        ex:Node7,
+        ex:Node86 ;
+    ex:description "This is node number 102." ;
+    ex:name "Node 102" ;
+    ex:value 286 .
+
+ex:Node105 a ex:Node ;
+    ex:connectedTo ex:Node120,
+        ex:Node81 ;
+    ex:description "This is node number 105." ;
+    ex:name "Node 105" ;
+    ex:value 707 .
+
+ex:Node116 a ex:Node ;
+    ex:connectedTo ex:Node94 ;
+    ex:description "This is node number 116." ;
+    ex:name "Node 116" ;
+    ex:value 304 .
+
+ex:Node119 a ex:Node ;
+    ex:connectedTo ex:Node7 ;
+    ex:description "This is node number 119." ;
+    ex:name "Node 119" ;
+    ex:value 158 .
+
+ex:Node120 a ex:Node ;
+    ex:connectedTo ex:Node119,
+        ex:Node194,
+        ex:Node91 ;
+    ex:description "This is node number 120." ;
+    ex:name "Node 120" ;
+    ex:value 414 .
+
+ex:Node121 a ex:Node ;
+    ex:connectedTo ex:Node100,
+        ex:Node128,
+        ex:Node197,
+        ex:Node30,
+        ex:Node42 ;
+    ex:description "This is node number 121." ;
+    ex:name "Node 121" ;
+    ex:value 156 .
+
+ex:Node125 a ex:Node ;
+    ex:connectedTo ex:Node112,
+        ex:Node166,
+        ex:Node73 ;
+    ex:description "This is node number 125." ;
+    ex:name "Node 125" ;
+    ex:value 414 .
+
+ex:Node131 a ex:Node ;
+    ex:connectedTo ex:Node1,
+        ex:Node126,
+        ex:Node160,
+        ex:Node31 ;
+    ex:description "This is node number 131." ;
+    ex:name "Node 131" ;
+    ex:value 535 .
+
+ex:Node137 a ex:Node ;
+    ex:connectedTo ex:Node8,
+        ex:Node99 ;
+    ex:description "This is node number 137." ;
+    ex:name "Node 137" ;
+    ex:value 687 .
+
+ex:Node147 a ex:Node ;
+    ex:connectedTo ex:Node150,
+        ex:Node22 ;
+    ex:description "This is node number 147." ;
+    ex:name "Node 147" ;
+    ex:value 341 .
+
+ex:Node15 a ex:Node ;
+    ex:connectedTo ex:Node190 ;
+    ex:description "This is node number 15." ;
+    ex:name "Node 15" ;
+    ex:value 583 .
+
+ex:Node162 a ex:Node ;
+    ex:connectedTo ex:Node192,
+        ex:Node198,
+        ex:Node26 ;
+    ex:description "This is node number 162." ;
+    ex:name "Node 162" ;
+    ex:value 917 .
+
+ex:Node164 a ex:Node ;
+    ex:connectedTo ex:Node141,
+        ex:Node144,
+        ex:Node167,
+        ex:Node186,
+        ex:Node3 ;
+    ex:description "This is node number 164." ;
+    ex:name "Node 164" ;
+    ex:value 678 .
+
+ex:Node165 a ex:Node ;
+    ex:connectedTo ex:Node130,
+        ex:Node79,
+        ex:Node88 ;
+    ex:description "This is node number 165." ;
+    ex:name "Node 165" ;
+    ex:value 369 .
+
+ex:Node168 a ex:Node ;
+    ex:connectedTo ex:Node29,
+        ex:Node79 ;
+    ex:description "This is node number 168." ;
+    ex:name "Node 168" ;
+    ex:value 611 .
+
+ex:Node171 a ex:Node ;
+    ex:connectedTo ex:Node143,
+        ex:Node144,
+        ex:Node159 ;
+    ex:description "This is node number 171." ;
+    ex:name "Node 171" ;
+    ex:value 586 .
+
+ex:Node173 a ex:Node ;
+    ex:connectedTo ex:Node111,
+        ex:Node74,
+        ex:Node77 ;
+    ex:description "This is node number 173." ;
+    ex:name "Node 173" ;
+    ex:value 507 .
+
+ex:Node176 a ex:Node ;
+    ex:connectedTo ex:Node134,
+        ex:Node169,
+        ex:Node20,
+        ex:Node39,
+        ex:Node62 ;
+    ex:description "This is node number 176." ;
+    ex:name "Node 176" ;
+    ex:value 612 .
+
+ex:Node178 a ex:Node ;
+    ex:connectedTo ex:Node6,
+        ex:Node89 ;
+    ex:description "This is node number 178." ;
+    ex:name "Node 178" ;
+    ex:value 314 .
+
+ex:Node18 a ex:Node ;
+    ex:connectedTo ex:Node139,
+        ex:Node36,
+        ex:Node84 ;
+    ex:description "This is node number 18." ;
+    ex:name "Node 18" ;
+    ex:value 616 .
+
+ex:Node187 a ex:Node ;
+    ex:connectedTo ex:Node80 ;
+    ex:description "This is node number 187." ;
+    ex:name "Node 187" ;
+    ex:value 174 .
+
+ex:Node194 a ex:Node ;
+    ex:connectedTo ex:Node143,
+        ex:Node151,
+        ex:Node163 ;
+    ex:description "This is node number 194." ;
+    ex:name "Node 194" ;
+    ex:value 591 .
+
+ex:Node198 a ex:Node ;
+    ex:connectedTo ex:Node10,
+        ex:Node111,
+        ex:Node44,
+        ex:Node84 ;
+    ex:description "This is node number 198." ;
+    ex:name "Node 198" ;
+    ex:value 11 .
+
+ex:Node199 a ex:Node ;
+    ex:connectedTo ex:Node118 ;
+    ex:description "This is node number 199." ;
+    ex:name "Node 199" ;
+    ex:value 29 .
+
+ex:Node200 a ex:Node ;
+    ex:connectedTo ex:Node73 ;
+    ex:description "This is node number 200." ;
+    ex:name "Node 200" ;
+    ex:value 966 .
+
+ex:Node30 a ex:Node ;
+    ex:connectedTo ex:Node160,
+        ex:Node187,
+        ex:Node200,
+        ex:Node44,
+        ex:Node8 ;
+    ex:description "This is node number 30." ;
+    ex:name "Node 30" ;
+    ex:value 634 .
+
+ex:Node4 a ex:Node ;
+    ex:connectedTo ex:Node11,
+        ex:Node115,
+        ex:Node193,
+        ex:Node25,
+        ex:Node70 ;
+    ex:description "This is node number 4." ;
+    ex:name "Node 4" ;
+    ex:value 181 .
+
+ex:Node40 a ex:Node ;
+    ex:connectedTo ex:Node117,
+        ex:Node147 ;
+    ex:description "This is node number 40." ;
+    ex:name "Node 40" ;
+    ex:value 471 .
+
+ex:Node44 a ex:Node ;
+    ex:connectedTo ex:Node129,
+        ex:Node134,
+        ex:Node139,
+        ex:Node196,
+        ex:Node74 ;
+    ex:description "This is node number 44." ;
+    ex:name "Node 44" ;
+    ex:value 251 .
+
+ex:Node46 a ex:Node ;
+    ex:connectedTo ex:Node156,
+        ex:Node56,
+        ex:Node67,
+        ex:Node68 ;
+    ex:description "This is node number 46." ;
+    ex:name "Node 46" ;
+    ex:value 881 .
+
+ex:Node49 a ex:Node ;
+    ex:connectedTo ex:Node163,
+        ex:Node32,
+        ex:Node37,
+        ex:Node73 ;
+    ex:description "This is node number 49." ;
+    ex:name "Node 49" ;
+    ex:value 136 .
+
+ex:Node6 a ex:Node ;
+    ex:connectedTo ex:Node52,
+        ex:Node74 ;
+    ex:description "This is node number 6." ;
+    ex:name "Node 6" ;
+    ex:value 975 .
+
+ex:Node60 a ex:Node ;
+    ex:connectedTo ex:Node167,
+        ex:Node175,
+        ex:Node29 ;
+    ex:description "This is node number 60." ;
+    ex:name "Node 60" ;
+    ex:value 540 .
+
+ex:Node72 a ex:Node ;
+    ex:connectedTo ex:Node19,
+        ex:Node8,
+        ex:Node95 ;
+    ex:description "This is node number 72." ;
+    ex:name "Node 72" ;
+    ex:value 185 .
+
+ex:Node75 a ex:Node ;
+    ex:connectedTo ex:Node128,
+        ex:Node94 ;
+    ex:description "This is node number 75." ;
+    ex:name "Node 75" ;
+    ex:value 567 .
+
+ex:Node82 a ex:Node ;
+    ex:connectedTo ex:Node105,
+        ex:Node107 ;
+    ex:description "This is node number 82." ;
+    ex:name "Node 82" ;
+    ex:value 545 .
+
+ex:Node85 a ex:Node ;
+    ex:connectedTo ex:Node157 ;
+    ex:description "This is node number 85." ;
+    ex:name "Node 85" ;
+    ex:value 119 .
+
+ex:Node86 a ex:Node ;
+    ex:connectedTo ex:Node142,
+        ex:Node178,
+        ex:Node21,
+        ex:Node49,
+        ex:Node97 ;
+    ex:description "This is node number 86." ;
+    ex:name "Node 86" ;
+    ex:value 592 .
+
+ex:Node87 a ex:Node ;
+    ex:connectedTo ex:Node81 ;
+    ex:description "This is node number 87." ;
+    ex:name "Node 87" ;
+    ex:value 862 .
+
+ex:Node88 a ex:Node ;
+    ex:connectedTo ex:Node108 ;
+    ex:description "This is node number 88." ;
+    ex:name "Node 88" ;
+    ex:value 844 .
+
+ex:Node100 a ex:Node ;
+    ex:connectedTo ex:Node10 ;
+    ex:description "This is node number 100." ;
+    ex:name "Node 100" ;
+    ex:value 682 .
+
+ex:Node107 a ex:Node ;
+    ex:connectedTo ex:Node128,
+        ex:Node13,
+        ex:Node156,
+        ex:Node34,
+        ex:Node53 ;
+    ex:description "This is node number 107." ;
+    ex:name "Node 107" ;
+    ex:value 131 .
+
+ex:Node108 a ex:Node ;
+    ex:connectedTo ex:Node4,
+        ex:Node99 ;
+    ex:description "This is node number 108." ;
+    ex:name "Node 108" ;
+    ex:value 969 .
+
+ex:Node111 a ex:Node ;
+    ex:connectedTo ex:Node108,
+        ex:Node41,
+        ex:Node62 ;
+    ex:description "This is node number 111." ;
+    ex:name "Node 111" ;
+    ex:value 596 .
+
+ex:Node112 a ex:Node ;
+    ex:connectedTo ex:Node107,
+        ex:Node129,
+        ex:Node165,
+        ex:Node180,
+        ex:Node80 ;
+    ex:description "This is node number 112." ;
+    ex:name "Node 112" ;
+    ex:value 794 .
+
+ex:Node113 a ex:Node ;
+    ex:connectedTo ex:Node193,
+        ex:Node2 ;
+    ex:description "This is node number 113." ;
+    ex:name "Node 113" ;
+    ex:value 405 .
+
+ex:Node114 a ex:Node ;
+    ex:connectedTo ex:Node196,
+        ex:Node22,
+        ex:Node61 ;
+    ex:description "This is node number 114." ;
+    ex:name "Node 114" ;
+    ex:value 16 .
+
+ex:Node115 a ex:Node ;
+    ex:connectedTo ex:Node105,
+        ex:Node173,
+        ex:Node189,
+        ex:Node46,
+        ex:Node72 ;
+    ex:description "This is node number 115." ;
+    ex:name "Node 115" ;
+    ex:value 884 .
+
+ex:Node117 a ex:Node ;
+    ex:connectedTo ex:Node102,
+        ex:Node200,
+        ex:Node37,
+        ex:Node98 ;
+    ex:description "This is node number 117." ;
+    ex:name "Node 117" ;
+    ex:value 890 .
+
+ex:Node118 a ex:Node ;
+    ex:connectedTo ex:Node148,
+        ex:Node161 ;
+    ex:description "This is node number 118." ;
+    ex:name "Node 118" ;
+    ex:value 915 .
+
+ex:Node124 a ex:Node ;
+    ex:connectedTo ex:Node178,
+        ex:Node66,
+        ex:Node78,
+        ex:Node80 ;
+    ex:description "This is node number 124." ;
+    ex:name "Node 124" ;
+    ex:value 490 .
+
+ex:Node129 a ex:Node ;
+    ex:connectedTo ex:Node109,
+        ex:Node160 ;
+    ex:description "This is node number 129." ;
+    ex:name "Node 129" ;
+    ex:value 657 .
+
+ex:Node130 a ex:Node ;
+    ex:connectedTo ex:Node168,
+        ex:Node182 ;
+    ex:description "This is node number 130." ;
+    ex:name "Node 130" ;
+    ex:value 699 .
+
+ex:Node132 a ex:Node ;
+    ex:connectedTo ex:Node53,
+        ex:Node90,
+        ex:Node96 ;
+    ex:description "This is node number 132." ;
+    ex:name "Node 132" ;
+    ex:value 568 .
+
+ex:Node133 a ex:Node ;
+    ex:connectedTo ex:Node134,
+        ex:Node154,
+        ex:Node191,
+        ex:Node71,
+        ex:Node87 ;
+    ex:description "This is node number 133." ;
+    ex:name "Node 133" ;
+    ex:value 832 .
+
+ex:Node134 a ex:Node ;
+    ex:connectedTo ex:Node163,
+        ex:Node176,
+        ex:Node193,
+        ex:Node55 ;
+    ex:description "This is node number 134." ;
+    ex:name "Node 134" ;
+    ex:value 763 .
+
+ex:Node138 a ex:Node ;
+    ex:connectedTo ex:Node143 ;
+    ex:description "This is node number 138." ;
+    ex:name "Node 138" ;
+    ex:value 840 .
+
+ex:Node139 a ex:Node ;
+    ex:connectedTo ex:Node11,
+        ex:Node119,
+        ex:Node77,
+        ex:Node80,
+        ex:Node82 ;
+    ex:description "This is node number 139." ;
+    ex:name "Node 139" ;
+    ex:value 505 .
+
+ex:Node142 a ex:Node ;
+    ex:connectedTo ex:Node154,
+        ex:Node168,
+        ex:Node93 ;
+    ex:description "This is node number 142." ;
+    ex:name "Node 142" ;
+    ex:value 131 .
+
+ex:Node149 a ex:Node ;
+    ex:connectedTo ex:Node46 ;
+    ex:description "This is node number 149." ;
+    ex:name "Node 149" ;
+    ex:value 717 .
+
+ex:Node150 a ex:Node ;
+    ex:connectedTo ex:Node122,
+        ex:Node25,
+        ex:Node76,
+        ex:Node89 ;
+    ex:description "This is node number 150." ;
+    ex:name "Node 150" ;
+    ex:value 620 .
+
+ex:Node152 a ex:Node ;
+    ex:connectedTo ex:Node45 ;
+    ex:description "This is node number 152." ;
+    ex:name "Node 152" ;
+    ex:value 403 .
+
+ex:Node158 a ex:Node ;
+    ex:connectedTo ex:Node113,
+        ex:Node141,
+        ex:Node60 ;
+    ex:description "This is node number 158." ;
+    ex:name "Node 158" ;
+    ex:value 493 .
+
+ex:Node167 a ex:Node ;
+    ex:connectedTo ex:Node132,
+        ex:Node153,
+        ex:Node89 ;
+    ex:description "This is node number 167." ;
+    ex:name "Node 167" ;
+    ex:value 631 .
+
+ex:Node169 a ex:Node ;
+    ex:connectedTo ex:Node140,
+        ex:Node16,
+        ex:Node63 ;
+    ex:description "This is node number 169." ;
+    ex:name "Node 169" ;
+    ex:value 621 .
+
+ex:Node177 a ex:Node ;
+    ex:connectedTo ex:Node149,
+        ex:Node66,
+        ex:Node71 ;
+    ex:description "This is node number 177." ;
+    ex:name "Node 177" ;
+    ex:value 83 .
+
+ex:Node180 a ex:Node ;
+    ex:connectedTo ex:Node148,
+        ex:Node163,
+        ex:Node17 ;
+    ex:description "This is node number 180." ;
+    ex:name "Node 180" ;
+    ex:value 169 .
+
+ex:Node190 a ex:Node ;
+    ex:connectedTo ex:Node12,
+        ex:Node132,
+        ex:Node26,
+        ex:Node9,
+        ex:Node99 ;
+    ex:description "This is node number 190." ;
+    ex:name "Node 190" ;
+    ex:value 810 .
+
+ex:Node192 a ex:Node ;
+    ex:connectedTo ex:Node1,
+        ex:Node141,
+        ex:Node36,
+        ex:Node66,
+        ex:Node70 ;
+    ex:description "This is node number 192." ;
+    ex:name "Node 192" ;
+    ex:value 486 .
+
+ex:Node197 a ex:Node ;
+    ex:connectedTo ex:Node117 ;
+    ex:description "This is node number 197." ;
+    ex:name "Node 197" ;
+    ex:value 424 .
+
+ex:Node2 a ex:Node ;
+    ex:connectedTo ex:Node100,
+        ex:Node67 ;
+    ex:description "This is node number 2." ;
+    ex:name "Node 2" ;
+    ex:value 16 .
+
+ex:Node20 a ex:Node ;
+    ex:connectedTo ex:Node2,
+        ex:Node40,
+        ex:Node51,
+        ex:Node92 ;
+    ex:description "This is node number 20." ;
+    ex:name "Node 20" ;
+    ex:value 595 .
+
+ex:Node21 a ex:Node ;
+    ex:connectedTo ex:Node176,
+        ex:Node81,
+        ex:Node90 ;
+    ex:description "This is node number 21." ;
+    ex:name "Node 21" ;
+    ex:value 470 .
+
+ex:Node22 a ex:Node ;
+    ex:connectedTo ex:Node145,
+        ex:Node152 ;
+    ex:description "This is node number 22." ;
+    ex:name "Node 22" ;
+    ex:value 370 .
+
+ex:Node25 a ex:Node ;
+    ex:connectedTo ex:Node154,
+        ex:Node177,
+        ex:Node68 ;
+    ex:description "This is node number 25." ;
+    ex:name "Node 25" ;
+    ex:value 807 .
+
+ex:Node28 a ex:Node ;
+    ex:connectedTo ex:Node110,
+        ex:Node155,
+        ex:Node174,
+        ex:Node194 ;
+    ex:description "This is node number 28." ;
+    ex:name "Node 28" ;
+    ex:value 150 .
+
+ex:Node3 a ex:Node ;
+    ex:connectedTo ex:Node115 ;
+    ex:description "This is node number 3." ;
+    ex:name "Node 3" ;
+    ex:value 248 .
+
+ex:Node32 a ex:Node ;
+    ex:connectedTo ex:Node164,
+        ex:Node21 ;
+    ex:description "This is node number 32." ;
+    ex:name "Node 32" ;
+    ex:value 607 .
+
+ex:Node35 a ex:Node ;
+    ex:connectedTo ex:Node151,
+        ex:Node33,
+        ex:Node37,
+        ex:Node71,
+        ex:Node96 ;
+    ex:description "This is node number 35." ;
+    ex:name "Node 35" ;
+    ex:value 656 .
+
+ex:Node39 a ex:Node ;
+    ex:connectedTo ex:Node112,
+        ex:Node2,
+        ex:Node6,
+        ex:Node92 ;
+    ex:description "This is node number 39." ;
+    ex:name "Node 39" ;
+    ex:value 761 .
+
+ex:Node42 a ex:Node ;
+    ex:connectedTo ex:Node126,
+        ex:Node142,
+        ex:Node196,
+        ex:Node31 ;
+    ex:description "This is node number 42." ;
+    ex:name "Node 42" ;
+    ex:value 935 .
+
+ex:Node45 a ex:Node ;
+    ex:connectedTo ex:Node10,
+        ex:Node145,
+        ex:Node18,
+        ex:Node39 ;
+    ex:description "This is node number 45." ;
+    ex:name "Node 45" ;
+    ex:value 900 .
+
+ex:Node47 a ex:Node ;
+    ex:connectedTo ex:Node68 ;
+    ex:description "This is node number 47." ;
+    ex:name "Node 47" ;
+    ex:value 58 .
+
+ex:Node48 a ex:Node ;
+    ex:connectedTo ex:Node18,
+        ex:Node32,
+        ex:Node47,
+        ex:Node62,
+        ex:Node70 ;
+    ex:description "This is node number 48." ;
+    ex:name "Node 48" ;
+    ex:value 689 .
+
+ex:Node51 a ex:Node ;
+    ex:connectedTo ex:Node14,
+        ex:Node181,
+        ex:Node192,
+        ex:Node56 ;
+    ex:description "This is node number 51." ;
+    ex:name "Node 51" ;
+    ex:value 987 .
+
+ex:Node53 a ex:Node ;
+    ex:connectedTo ex:Node26 ;
+    ex:description "This is node number 53." ;
+    ex:name "Node 53" ;
+    ex:value 918 .
+
+ex:Node63 a ex:Node ;
+    ex:connectedTo ex:Node149,
+        ex:Node35,
+        ex:Node42,
+        ex:Node59 ;
+    ex:description "This is node number 63." ;
+    ex:name "Node 63" ;
+    ex:value 192 .
+
+ex:Node65 a ex:Node ;
+    ex:connectedTo ex:Node113 ;
+    ex:description "This is node number 65." ;
+    ex:name "Node 65" ;
+    ex:value 28 .
+
+ex:Node67 a ex:Node ;
+    ex:connectedTo ex:Node189,
+        ex:Node9 ;
+    ex:description "This is node number 67." ;
+    ex:name "Node 67" ;
+    ex:value 284 .
+
+ex:Node7 a ex:Node ;
+    ex:connectedTo ex:Node184,
+        ex:Node188,
+        ex:Node96 ;
+    ex:description "This is node number 7." ;
+    ex:name "Node 7" ;
+    ex:value 818 .
+
+ex:Node70 a ex:Node ;
+    ex:connectedTo ex:Node179,
+        ex:Node74,
+        ex:Node76,
+        ex:Node82 ;
+    ex:description "This is node number 70." ;
+    ex:name "Node 70" ;
+    ex:value 443 .
+
+ex:Node71 a ex:Node ;
+    ex:connectedTo ex:Node3,
+        ex:Node64,
+        ex:Node99 ;
+    ex:description "This is node number 71." ;
+    ex:name "Node 71" ;
+    ex:value 264 .
+
+ex:Node73 a ex:Node ;
+    ex:connectedTo ex:Node152 ;
+    ex:description "This is node number 73." ;
+    ex:name "Node 73" ;
+    ex:value 274 .
+
+ex:Node76 a ex:Node ;
+    ex:connectedTo ex:Node10,
+        ex:Node101,
+        ex:Node29 ;
+    ex:description "This is node number 76." ;
+    ex:name "Node 76" ;
+    ex:value 449 .
+
+ex:Node77 a ex:Node ;
+    ex:connectedTo ex:Node102,
+        ex:Node125,
+        ex:Node174,
+        ex:Node193 ;
+    ex:description "This is node number 77." ;
+    ex:name "Node 77" ;
+    ex:value 900 .
+
+ex:Node81 a ex:Node ;
+    ex:connectedTo ex:Node117,
+        ex:Node23,
+        ex:Node42 ;
+    ex:description "This is node number 81." ;
+    ex:name "Node 81" ;
+    ex:value 412 .
+
+ex:Node84 a ex:Node ;
+    ex:connectedTo ex:Node101,
+        ex:Node13,
+        ex:Node22,
+        ex:Node25 ;
+    ex:description "This is node number 84." ;
+    ex:name "Node 84" ;
+    ex:value 497 .
+
+ex:Node9 a ex:Node ;
+    ex:connectedTo ex:Node179,
+        ex:Node196,
+        ex:Node34,
+        ex:Node51 ;
+    ex:description "This is node number 9." ;
+    ex:name "Node 9" ;
+    ex:value 107 .
+
+ex:Node90 a ex:Node ;
+    ex:connectedTo ex:Node141 ;
+    ex:description "This is node number 90." ;
+    ex:name "Node 90" ;
+    ex:value 372 .
+
+ex:Node92 a ex:Node ;
+    ex:connectedTo ex:Node145,
+        ex:Node181,
+        ex:Node67 ;
+    ex:description "This is node number 92." ;
+    ex:name "Node 92" ;
+    ex:value 189 .
+
+ex:Node1 a ex:Node ;
+    ex:connectedTo ex:Node123,
+        ex:Node17,
+        ex:Node31,
+        ex:Node60 ;
+    ex:description "This is node number 1." ;
+    ex:name "Node 1" ;
+    ex:value 502 .
+
+ex:Node101 a ex:Node ;
+    ex:connectedTo ex:Node154,
+        ex:Node30,
+        ex:Node68 ;
+    ex:description "This is node number 101." ;
+    ex:name "Node 101" ;
+    ex:value 111 .
+
+ex:Node110 a ex:Node ;
+    ex:connectedTo ex:Node1,
+        ex:Node11,
+        ex:Node13,
+        ex:Node138,
+        ex:Node164 ;
+    ex:description "This is node number 110." ;
+    ex:name "Node 110" ;
+    ex:value 639 .
+
+ex:Node126 a ex:Node ;
+    ex:connectedTo ex:Node12,
+        ex:Node29 ;
+    ex:description "This is node number 126." ;
+    ex:name "Node 126" ;
+    ex:value 137 .
+
+ex:Node128 a ex:Node ;
+    ex:connectedTo ex:Node114,
+        ex:Node28,
+        ex:Node69 ;
+    ex:description "This is node number 128." ;
+    ex:name "Node 128" ;
+    ex:value 442 .
+
+ex:Node13 a ex:Node ;
+    ex:connectedTo ex:Node10 ;
+    ex:description "This is node number 13." ;
+    ex:name "Node 13" ;
+    ex:value 251 .
+
+ex:Node141 a ex:Node ;
+    ex:connectedTo ex:Node153,
+        ex:Node169 ;
+    ex:description "This is node number 141." ;
+    ex:name "Node 141" ;
+    ex:value 499 .
+
+ex:Node145 a ex:Node ;
+    ex:connectedTo ex:Node116,
+        ex:Node127,
+        ex:Node155,
+        ex:Node56,
+        ex:Node64 ;
+    ex:description "This is node number 145." ;
+    ex:name "Node 145" ;
+    ex:value 206 .
+
+ex:Node153 a ex:Node ;
+    ex:connectedTo ex:Node184 ;
+    ex:description "This is node number 153." ;
+    ex:name "Node 153" ;
+    ex:value 202 .
+
+ex:Node154 a ex:Node ;
+    ex:connectedTo ex:Node148,
+        ex:Node157,
+        ex:Node193,
+        ex:Node50 ;
+    ex:description "This is node number 154." ;
+    ex:name "Node 154" ;
+    ex:value 228 .
+
+ex:Node155 a ex:Node ;
+    ex:connectedTo ex:Node72,
+        ex:Node86 ;
+    ex:description "This is node number 155." ;
+    ex:name "Node 155" ;
+    ex:value 229 .
+
+ex:Node157 a ex:Node ;
+    ex:connectedTo ex:Node29,
+        ex:Node59 ;
+    ex:description "This is node number 157." ;
+    ex:name "Node 157" ;
+    ex:value 587 .
+
+ex:Node159 a ex:Node ;
+    ex:connectedTo ex:Node171,
+        ex:Node183,
+        ex:Node195,
+        ex:Node36 ;
+    ex:description "This is node number 159." ;
+    ex:name "Node 159" ;
+    ex:value 159 .
+
+ex:Node16 a ex:Node ;
+    ex:connectedTo ex:Node144 ;
+    ex:description "This is node number 16." ;
+    ex:name "Node 16" ;
+    ex:value 622 .
+
+ex:Node17 a ex:Node ;
+    ex:connectedTo ex:Node74 ;
+    ex:description "This is node number 17." ;
+    ex:name "Node 17" ;
+    ex:value 222 .
+
+ex:Node175 a ex:Node ;
+    ex:connectedTo ex:Node110,
+        ex:Node124 ;
+    ex:description "This is node number 175." ;
+    ex:name "Node 175" ;
+    ex:value 959 .
+
+ex:Node181 a ex:Node ;
+    ex:connectedTo ex:Node103,
+        ex:Node4,
+        ex:Node88 ;
+    ex:description "This is node number 181." ;
+    ex:name "Node 181" ;
+    ex:value 481 .
+
+ex:Node182 a ex:Node ;
+    ex:connectedTo ex:Node11,
+        ex:Node156,
+        ex:Node33,
+        ex:Node49 ;
+    ex:description "This is node number 182." ;
+    ex:name "Node 182" ;
+    ex:value 442 .
+
+ex:Node184 a ex:Node ;
+    ex:connectedTo ex:Node83 ;
+    ex:description "This is node number 184." ;
+    ex:name "Node 184" ;
+    ex:value 267 .
+
+ex:Node188 a ex:Node ;
+    ex:connectedTo ex:Node145,
+        ex:Node181,
+        ex:Node182 ;
+    ex:description "This is node number 188." ;
+    ex:name "Node 188" ;
+    ex:value 381 .
+
+ex:Node189 a ex:Node ;
+    ex:connectedTo ex:Node190,
+        ex:Node195,
+        ex:Node59 ;
+    ex:description "This is node number 189." ;
+    ex:name "Node 189" ;
+    ex:value 156 .
+
+ex:Node195 a ex:Node ;
+    ex:connectedTo ex:Node126,
+        ex:Node131,
+        ex:Node155,
+        ex:Node163 ;
+    ex:description "This is node number 195." ;
+    ex:name "Node 195" ;
+    ex:value 836 .
+
+ex:Node196 a ex:Node ;
+    ex:connectedTo ex:Node101,
+        ex:Node120,
+        ex:Node133,
+        ex:Node160,
+        ex:Node33 ;
+    ex:description "This is node number 196." ;
+    ex:name "Node 196" ;
+    ex:value 916 .
+
+ex:Node23 a ex:Node ;
+    ex:connectedTo ex:Node148,
+        ex:Node189,
+        ex:Node21,
+        ex:Node63,
+        ex:Node96 ;
+    ex:description "This is node number 23." ;
+    ex:name "Node 23" ;
+    ex:value 371 .
+
+ex:Node31 a ex:Node ;
+    ex:connectedTo ex:Node124,
+        ex:Node199 ;
+    ex:description "This is node number 31." ;
+    ex:name "Node 31" ;
+    ex:value 334 .
+
+ex:Node33 a ex:Node ;
+    ex:connectedTo ex:Node12,
+        ex:Node142 ;
+    ex:description "This is node number 33." ;
+    ex:name "Node 33" ;
+    ex:value 866 .
+
+ex:Node36 a ex:Node ;
+    ex:connectedTo ex:Node169,
+        ex:Node174,
+        ex:Node41,
+        ex:Node66 ;
+    ex:description "This is node number 36." ;
+    ex:name "Node 36" ;
+    ex:value 783 .
+
+ex:Node37 a ex:Node ;
+    ex:connectedTo ex:Node197,
+        ex:Node62 ;
+    ex:description "This is node number 37." ;
+    ex:name "Node 37" ;
+    ex:value 661 .
+
+ex:Node41 a ex:Node ;
+    ex:connectedTo ex:Node147,
+        ex:Node149,
+        ex:Node79,
+        ex:Node99 ;
+    ex:description "This is node number 41." ;
+    ex:name "Node 41" ;
+    ex:value 859 .
+
+ex:Node56 a ex:Node ;
+    ex:connectedTo ex:Node179 ;
+    ex:description "This is node number 56." ;
+    ex:name "Node 56" ;
+    ex:value 712 .
+
+ex:Node62 a ex:Node ;
+    ex:connectedTo ex:Node121 ;
+    ex:description "This is node number 62." ;
+    ex:name "Node 62" ;
+    ex:value 92 .
+
+ex:Node64 a ex:Node ;
+    ex:connectedTo ex:Node115,
+        ex:Node23,
+        ex:Node45 ;
+    ex:description "This is node number 64." ;
+    ex:name "Node 64" ;
+    ex:value 493 .
+
+ex:Node80 a ex:Node ;
+    ex:connectedTo ex:Node28,
+        ex:Node76 ;
+    ex:description "This is node number 80." ;
+    ex:name "Node 80" ;
+    ex:value 889 .
+
+ex:Node89 a ex:Node ;
+    ex:connectedTo ex:Node150,
+        ex:Node16 ;
+    ex:description "This is node number 89." ;
+    ex:name "Node 89" ;
+    ex:value 836 .
+
+ex:Node94 a ex:Node ;
+    ex:connectedTo ex:Node188 ;
+    ex:description "This is node number 94." ;
+    ex:name "Node 94" ;
+    ex:value 649 .
+
+ex:Node10 a ex:Node ;
+    ex:connectedTo ex:Node112,
+        ex:Node175,
+        ex:Node182 ;
+    ex:description "This is node number 10." ;
+    ex:name "Node 10" ;
+    ex:value 224 .
+
+ex:Node12 a ex:Node ;
+    ex:connectedTo ex:Node144 ;
+    ex:description "This is node number 12." ;
+    ex:name "Node 12" ;
+    ex:value 100 .
+
+ex:Node143 a ex:Node ;
+    ex:connectedTo ex:Node116,
+        ex:Node59 ;
+    ex:description "This is node number 143." ;
+    ex:name "Node 143" ;
+    ex:value 173 .
+
+ex:Node144 a ex:Node ;
+    ex:connectedTo ex:Node139,
+        ex:Node33 ;
+    ex:description "This is node number 144." ;
+    ex:name "Node 144" ;
+    ex:value 814 .
+
+ex:Node151 a ex:Node ;
+    ex:connectedTo ex:Node111,
+        ex:Node39 ;
+    ex:description "This is node number 151." ;
+    ex:name "Node 151" ;
+    ex:value 902 .
+
+ex:Node156 a ex:Node ;
+    ex:connectedTo ex:Node152,
+        ex:Node79 ;
+    ex:description "This is node number 156." ;
+    ex:name "Node 156" ;
+    ex:value 210 .
+
+ex:Node160 a ex:Node ;
+    ex:connectedTo ex:Node110 ;
+    ex:description "This is node number 160." ;
+    ex:name "Node 160" ;
+    ex:value 371 .
+
+ex:Node163 a ex:Node ;
+    ex:connectedTo ex:Node126,
+        ex:Node174 ;
+    ex:description "This is node number 163." ;
+    ex:name "Node 163" ;
+    ex:value 229 .
+
+ex:Node174 a ex:Node ;
+    ex:connectedTo ex:Node148,
+        ex:Node170,
+        ex:Node68 ;
+    ex:description "This is node number 174." ;
+    ex:name "Node 174" ;
+    ex:value 650 .
+
+ex:Node179 a ex:Node ;
+    ex:connectedTo ex:Node29,
+        ex:Node47 ;
+    ex:description "This is node number 179." ;
+    ex:name "Node 179" ;
+    ex:value 342 .
+
+ex:Node193 a ex:Node ;
+    ex:connectedTo ex:Node118 ;
+    ex:description "This is node number 193." ;
+    ex:name "Node 193" ;
+    ex:value 70 .
+
+ex:Node34 a ex:Node ;
+    ex:connectedTo ex:Node173 ;
+    ex:description "This is node number 34." ;
+    ex:name "Node 34" ;
+    ex:value 560 .
+
+ex:Node59 a ex:Node ;
+    ex:connectedTo ex:Node199 ;
+    ex:description "This is node number 59." ;
+    ex:name "Node 59" ;
+    ex:value 974 .
+
+ex:Node66 a ex:Node ;
+    ex:connectedTo ex:Node114,
+        ex:Node51,
+        ex:Node57,
+        ex:Node65,
+        ex:Node68 ;
+    ex:description "This is node number 66." ;
+    ex:name "Node 66" ;
+    ex:value 398 .
+
+ex:Node74 a ex:Node ;
+    ex:connectedTo ex:Node121,
+        ex:Node137,
+        ex:Node177,
+        ex:Node195 ;
+    ex:description "This is node number 74." ;
+    ex:name "Node 74" ;
+    ex:value 991 .
+
+ex:Node8 a ex:Node ;
+    ex:connectedTo ex:Node106,
+        ex:Node13,
+        ex:Node165,
+        ex:Node85 ;
+    ex:description "This is node number 8." ;
+    ex:name "Node 8" ;
+    ex:value 325 .
+
+ex:Node96 a ex:Node ;
+    ex:connectedTo ex:Node159 ;
+    ex:description "This is node number 96." ;
+    ex:name "Node 96" ;
+    ex:value 117 .
+
+ex:Node11 a ex:Node ;
+    ex:connectedTo ex:Node184,
+        ex:Node41 ;
+    ex:description "This is node number 11." ;
+    ex:name "Node 11" ;
+    ex:value 1 .
+
+ex:Node148 a ex:Node ;
+    ex:connectedTo ex:Node162,
+        ex:Node35,
+        ex:Node63,
+        ex:Node8 ;
+    ex:description "This is node number 148." ;
+    ex:name "Node 148" ;
+    ex:value 373 .
+
+ex:Node26 a ex:Node ;
+    ex:connectedTo ex:Node137,
+        ex:Node143,
+        ex:Node156,
+        ex:Node36 ;
+    ex:description "This is node number 26." ;
+    ex:name "Node 26" ;
+    ex:value 107 .
+
+ex:Node29 a ex:Node ;
+    ex:connectedTo ex:Node135,
+        ex:Node79 ;
+    ex:description "This is node number 29." ;
+    ex:name "Node 29" ;
+    ex:value 81 .
+
+ex:Node68 a ex:Node ;
+    ex:connectedTo ex:Node11,
+        ex:Node181,
+        ex:Node34,
+        ex:Node40,
+        ex:Node53 ;
+    ex:description "This is node number 68." ;
+    ex:name "Node 68" ;
+    ex:value 170 .
+
+ex:Node99 a ex:Node ;
+    ex:connectedTo ex:Node15,
+        ex:Node75 ;
+    ex:description "This is node number 99." ;
+    ex:name "Node 99" ;
+    ex:value 493 .
+
+ex:Node79 a ex:Node ;
+    ex:connectedTo ex:Node16,
+        ex:Node66 ;
+    ex:description "This is node number 79." ;
+    ex:name "Node 79" ;
+    ex:value 155 .
+
