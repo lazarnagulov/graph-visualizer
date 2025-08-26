@@ -2,6 +2,7 @@ import ast
 import os
 from typing import Optional
 
+from visualizer.api.exception.data_source_exception import MissingRequiredParameterError
 from visualizer.api.model.graph import Graph
 from visualizer.api.service.data_source_plugin import DataSourcePlugin
 from visualizer.plugin.code_visitor import CodeVisitor
@@ -15,7 +16,7 @@ class PythonLoader(DataSourcePlugin):
     def load(self, **kwargs) -> Graph:
         file_content: Optional[str] = kwargs.get('file_content', None)
         if not file_content:
-            raise ValueError("file_content must be provided")
+            raise MissingRequiredParameterError("file_content must be provided")
 
         self.__visitor.graph = Graph()
         tree = ast.parse(file_content)

@@ -70,12 +70,12 @@
         {% endfor %}
       </select>
 
-      <label for="file-input">Upload File: </label>
-          <form id="data-file-form"
-            hx-post="/upload-data-file/"
-            hx-trigger="change from:#file-input"
-            hx-swap="multi:#main-view,#tree-view:outerHTML"
-            hx-encoding="multipart/form-data">
+        <form id="data-file-form"
+          hx-post="/upload-data-file/"
+          hx-trigger="change from:#file-input"
+          hx-swap="multi:#main-view,#tree-view:outerHTML"
+          hx-encoding="multipart/form-data"
+          oninput="document.getElementById('loader-error').innerHTML='';">
 
         <label for="file-input">Upload File:</label>
         <input type="file" id="file-input" name="file_input">
@@ -84,6 +84,10 @@
                 onclick="document.getElementById('advanced-modal').style.display='block'">
           Advanced Settings
         </button>
+        <div class="tooltip">
+          <img src="static/images/mark.png" alt="error" class="tooltip-icon" width="20" height="20"/>
+          <span class="inline-block tooltiptext" id="loader-error"></span>
+        </div>
       </form>
       <div id="advanced-modal" style="display:none;">
         <div id="advanced-modal-content">
