@@ -4,19 +4,21 @@
     <button class="tablinks" onclick="openTab(event, 'filter-tab', 'app-header-tabs')">Filters</button>
    
     <div id="workspace-controls">
-  <label for="current-workspace">Current Workspace:</label>
-  <input type="text" id="current-workspace" value="{{ selected_workspace }}" readonly />
+      <!-- <label for="current-workspace">Current Workspace:</label>
+      <input type="text" id="current-workspace" value="{{ selected_workspace }}" readonly /> -->
 
-  <button hx-get="/create-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">CREATE</button>
-  <button hx-get="/delete-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">DELETE</button>
-  <button hx-get="/switch-workspace-back/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">BACK</button>
-  <button hx-get="/switch-workspace-next/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">NEXT</button>
-</div>
-
+      <button hx-get="/create-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">CREATE</button>
+      <button hx-get="/delete-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">DELETE</button>
+      <button hx-get="/switch-workspace-back/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">BACK</button>
+      <button hx-get="/switch-workspace-next/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">NEXT</button>
+      
+      <!-- Workspace counter -->
+      <span id="workspace-counter">{{ current_workspace_index }}/{{ total_workspaces }}</span>
+    </div>
   </div>
 
   <div id="app-header-tabs"
-            hx-on::after-settle="addMainViewFunctionality(event)">
+       hx-on::after-settle="addMainViewFunctionality(event)">
     <div id="filter-tab" class="tabcontent">
       <form id="filter-form" hx-post="/filter-graph/" hx-swap="multi:#main-view,#tree-view:outerHTML"
             hx-trigger="submit" class="inline-block" oninput="document.getElementById('filter-error').innerHTML='';">
@@ -50,24 +52,52 @@
     <div id="main-tab" class="tabcontent active">
       <label for="select-visualizer">Select visualizer: </label>
       <select name="plugin_id" id="select-visualizer"
-        hx-get="/change-visualizer"
-        hx-trigger="change"
-        hx-on::before-swap="swapHeadContent(event)"
-        hx-swap="multi:#main-view,#tree-view:outerHTML"></select>
+              hx-get="/change-visualizer"
+              hx-trigger="change"
+              hx-on::before-swap="swapHeadContent(event)"
+              hx-swap="multi:#main-view,#tree-view:outerHTML">
+        {% for plugin in visualizer_plugins %}
+          <option value="{{ plugin.id }}" {% if plugin.id == selected_visualizer %}selected{% endif %}>
+            {{ plugin.name }}
+          </option>
+        {% endfor %}
+      </select>
+
       <label for="select-data-source">Select data source: </label>
       <select name="plugin_id" id="select-data-source"
-        hx-get="/change-data-source"
-        hx-trigger="change"
-        hx-swap="multi:#main-view,#tree-view:outerHTML"></select>
+              hx-get="/change-data-source"
+              hx-trigger="change"
+              hx-swap="multi:#main-view,#tree-view:outerHTML">
+        {% for plugin in data_source_plugins %}
+          <option value="{{ plugin.id }}" {% if plugin.id == selected_data_source %}selected{% endif %}>
+            {{ plugin.name }}
+          </option>
+        {% endfor %}
+      </select>
+
       <label for="file-input">Upload File: </label>
       <input type="file" id="file-input" name="file_input"
-          hx-post="/upload-data-file/"
-          hx-trigger="change"
-          hx-swap="multi:#main-view,#tree-view:outerHTML"
-          hx-encoding="multipart/form-data">
+             hx-post="/upload-data-file/"
+             hx-trigger="change"
+             hx-swap="multi:#main-view,#tree-view:outerHTML"
+             hx-encoding="multipart/form-data">
     </div>
   </div>
 </div>
+
+<style>
+  #workspace-counter {
+      display: inline-block;
+      margin-left: 300px;
+      font-weight: bold;
+      font-size: 1.0rem;
+      color: #333;
+      vertical-align: middle;
+      padding: 0.8rem;
+  }
+</style>
+
+
 <script>
   document.body.addEventListener('htmx:configRequest', function (event) {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
@@ -76,29 +106,7 @@
     }
   });
 
-  const visualizers = {{ visualizer_plugins|safe }};
-  const data_sources = {{ data_source_plugins|safe }};
-  const initial_visualizer = {{ selected_visualizer|tojson }};
-  const initial_data_source = {{ selected_data_source|tojson }};
-
-  d3.select('#select-visualizer')
-    .selectAll('option')
-    .data(visualizers)
-    .enter()
-    .append('option')
-    .attr('value', d => d.id)
-    .text(d => d.name)
-    .property('selected', d => d.id === initial_visualizer);
-
-  d3.select('#select-data-source')
-    .selectAll('option')
-    .data(data_sources)
-    .enter()
-    .append('option')
-    .attr('value', d => d.id)
-    .text(d => d.name)
-    .property('selected', d => d.id === initial_data_source);
-
+  // Keep tab switching functionality
   function openTab(event, tabId, tabContainerId) {
     event.target.parentNode.querySelector(".active")?.classList.remove("active");
     event.target.classList.add("active");
@@ -106,4 +114,6 @@
     document.querySelector(`#${tabContainerId} > .active`)?.classList.remove("active");
     document.querySelector(`#${tabId}`)?.classList.add("active");
   }
+
+  // Removed D3 visualizer/data source JS as it's now fully server-side
 </script>
