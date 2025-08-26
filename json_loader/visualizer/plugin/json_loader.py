@@ -48,9 +48,28 @@ class JsonLoader(DataSourcePlugin):
         return "Json Loader"
 
     def load(self, **kwargs) -> Graph:
+        """
+        Loads data from the data source and returns it as a Graph.
+        File content must always be provided via the 'file_content' keyword argument.
+
+        :param kwargs: Arbitrary keyword arguments for customization or filtering of the data loading process.
+            - file_content (str): [Required] The content of the file to load the graph from.
+            - ref_prefix (str, optional): A prefix to prepend to all reference IDs in the graph.
+            - id_field (str, optional): The field name used to uniquely identify nodes in the graph.
+
+        :type kwargs: any
+        :return: A Graph from the data source.
+        :rtype: Graph
+
+        :raises MissingRequiredParameterError: If a required parameter (e.g., 'file_content') is missing.
+        :raises InvalidParameterValueError: If a provided parameter is invalid (e.g., malformed file content or invalid field names).
+        """
         file_content: Optional[str] = kwargs.get("file_content", None)
         if not file_content:
             raise MissingRequiredParameterError("file_content must be provided")
+        self.__ref_prefix: Optional[str] = kwargs.get("ref_prefix", self.DEFAULT_REF_PREFIX)
+        self.__id_field = kwargs.get("id_field", self.DEFAULT_ID_FIELD)
+
         graph: Graph = Graph()
         self.__nodes = {}
         self.__unresolved_edges = []
