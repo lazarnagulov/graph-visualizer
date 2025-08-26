@@ -1,3 +1,47 @@
+<style>
+  #workspace-counter {
+      display: inline-block;
+      margin-left: 300px;
+      font-weight: bold;
+      font-size: 1.0rem;
+      color: #333;
+      vertical-align: middle;
+      padding: 0.8rem;
+  }
+
+  .kv-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .kv-item input {
+    flex: 1;
+    padding: 3px 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .kv-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.5rem;
+    width: 1.5rem;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .kv-remove:hover {
+    background: #e0e0e0;
+  }
+
+</style>
+
 <div id="app-header">
   <div class="tab">
     <button class="tablinks active" onclick="openTab(event, 'main-tab', 'app-header-tabs')">Main</button>
@@ -95,32 +139,13 @@
           <button id="advanced-close" type="button"
                   onclick="document.getElementById('advanced-modal').style.display='none'">✕</button>
           <h4>Extra Properties</h4>
-          <div id="kv-list">
-            <div class="kv-item">
-              <input type="text" name="extra_keys" placeholder="Key" form="data-file-form">
-              <input type="text" name="extra_values" placeholder="Value" form="data-file-form">
-              <button type="button" onclick="this.parentElement.remove()">✕</button>
-            </div>
-          </div>
+          <div id="kv-list"></div>
           <button type="button" id="add-kv-btn" onclick="addProperty()">+ Add Property</button>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<style>
-  #workspace-counter {
-      display: inline-block;
-      margin-left: 300px;
-      font-weight: bold;
-      font-size: 1.0rem;
-      color: #333;
-      vertical-align: middle;
-      padding: 0.8rem;
-  }
-</style>
-
 
 <script>
   document.body.addEventListener('htmx:configRequest', function (event) {
@@ -144,34 +169,31 @@
   }
 
 
-  function addProperty() {
-    const kvList = document.getElementById("kv-list");
+   function addProperty() {
+      const kvList = d3.select("#kv-list");
 
-    const div = document.createElement("div");
-    div.className = "kv-item";
+      const item = kvList.append("div")
+        .attr("class", "kv-item");
 
-    const keyInput = document.createElement("input");
-    keyInput.type = "text";
-    keyInput.name = "extra_keys";
-    keyInput.placeholder = "Key";
-    keyInput.setAttribute("form", "data-file-form");
+      item.append("input")
+        .attr("type", "text")
+        .attr("name", "extra_keys")
+        .attr("placeholder", "Key")
+        .attr("form", "data-file-form")
+        .attr("class", "kv-input");
 
-    const valueInput = document.createElement("input");
-    valueInput.type = "text";
-    valueInput.name = "extra_values";
-    valueInput.placeholder = "Value";
-    valueInput.setAttribute("form", "data-file-form");
+      item.append("input")
+        .attr("type", "text")
+        .attr("name", "extra_values")
+        .attr("placeholder", "Value")
+        .attr("form", "data-file-form")
+        .attr("class", "kv-input");
 
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.textContent = "✕";
-    removeBtn.onclick = () => div.remove();
-
-    div.appendChild(keyInput);
-    div.appendChild(valueInput);
-    div.appendChild(removeBtn);
-
-    kvList.appendChild(div);
-  }
+      item.append("button")
+        .attr("type", "button")
+        .attr("class", "kv-remove")
+        .text("✕")
+        .on("click", () => item.remove());
+    }
 
 </script>
