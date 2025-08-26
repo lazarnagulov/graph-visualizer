@@ -1,0 +1,41 @@
+@prefix ex: <http://example.org/> .
+
+ex:node001 a ex:Person ;
+    ex:name "Elisa" ;
+    ex:age 21 ;
+    ex:city "Alpiarça" ;
+    ex:job "Research Assistant IV" ;
+    ex:hobby "cooking" , "hiking" ;
+    ex:friend ex:node002 , ex:node003 , ex:node004 .
+
+ex:node002 a ex:Person ;
+    ex:name "Ara" ;
+    ex:age 84 ;
+    ex:city "Non Sung" ;
+    ex:job "Professor" ;
+    ex:hobby "hiking" , "reading" , "cooking" ;
+    ex:friend ex:node001 , ex:node005 .
+
+ex:node003 a ex:Person ;
+    ex:name "Stanton" ;
+    ex:age 85 ;
+    ex:city "Mętków" ;
+    ex:job "Senior Financial Analyst" ;
+    ex:hobby "reading" ;
+    ex:friend ex:node004 .
+
+ex:node004 a ex:Person ;
+    ex:name "Nichol" ;
+    ex:age 131 ;
+    ex:city "Obock" ;
+    ex:job "General Manager" ;
+    ex:hobby "hiking" , "cooking" , "reading" ;
+    ex:friend ex:node001 , ex:node005 .
+
+ex:node005 a ex:Person ;
+    ex:name "Cassey" ;
+    ex:age 86 ;
+    ex:city "Kalodu" ;
+    ex:job "Geologist II" ;
+    ex:hobby "cooking" ;
+    ex:friend ex:node001 , ex:node002 , ex:node005 .
