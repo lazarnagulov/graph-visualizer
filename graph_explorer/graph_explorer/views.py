@@ -43,13 +43,20 @@ def visualizer_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
     workspace.set_visualizer_plugin(plugin_id)
-    return __build_views_response(workspace, True)  # we only include visualizer head when it's changed
+    return __build_views_response(workspace, True)
 
 
 def data_source_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
-    workspace.set_data_source_plugin(plugin_id)
+    try:
+        workspace.set_data_source_plugin(plugin_id)
+    except Exception as e:
+        response = HttpResponse(str(e), content_type="text/plain")
+        response["HX-Reswap"] = "innerHTML"
+        response["HX-Retarget"] = "#loader-error"
+        return response
+
     return __build_views_response(workspace)
 
 
@@ -129,23 +136,18 @@ def delete_workspace(_request):
     platform.delete_workspace(current_id)
     return __build_workspace_response(platform)
 
-def switch_workspace_back(_request):
-    platform = apps.get_app_config('graph_explorer').platform
-    ids = list(platform.workspaces.keys())
-    if platform.current_workspace_id and ids:
-        idx = ids.index(platform.current_workspace_id)
-        new_idx = max(0, idx - 1)
-        platform.switch_workspace(ids[new_idx])
-    return __build_workspace_response(platform)
 
 def switch_workspace_next(_request):
     platform = apps.get_app_config('graph_explorer').platform
-    ids = list(platform.workspaces.keys())
-    if platform.current_workspace_id and ids:
-        idx = ids.index(platform.current_workspace_id)
-        new_idx = min(len(ids) - 1, idx + 1)
-        platform.switch_workspace(ids[new_idx])
+    platform.switch_to_next_workspace()
     return __build_workspace_response(platform)
+
+
+def switch_workspace_back(_request):
+    platform = apps.get_app_config('graph_explorer').platform
+    platform.switch_to_previous_workspace()
+    return __build_workspace_response(platform)
+
 
 def __build_workspace_response(platform: Platform):
     workspace = platform.get_selected_workspace()
@@ -158,7 +160,6 @@ def __build_workspace_response(platform: Platform):
     tree_view_head, tree_view_body = workspace.render_tree_view()
 
     body = main_view_body + tree_view_body
-    head = main_view_head + plugin_head + tree_view_head
 
     return HttpResponse(app_header + body)
 
