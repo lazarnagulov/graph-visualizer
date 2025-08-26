@@ -26,8 +26,8 @@ class RDFLoader(DataSourcePlugin):
         rdf_graph = RDFGraph()
         try:
             rdf_graph.parse(data=file_content, format=rdf_format)
-        except Exception as e:
-            raise InvalidParameterValueError(f"Failed to parse RDF content: {e}")
+        except Exception:
+            raise InvalidParameterValueError(f"Provided file_content is not valid RDF.")
 
         for subj, pred, obj in rdf_graph:
             subj_node = self._get_or_create_node(subj)

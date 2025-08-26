@@ -62,7 +62,8 @@
       <select name="plugin_id" id="select-data-source"
               hx-get="/change-data-source"
               hx-trigger="change"
-              hx-swap="multi:#main-view,#tree-view:outerHTML">
+              hx-swap="multi:#main-view,#tree-view:outerHTML"
+              >
         {% for plugin in data_source_plugins %}
           <option value="{{ plugin.id }}" {% if plugin.id == selected_data_source %}selected{% endif %}>
             {{ plugin.name }}
@@ -70,7 +71,7 @@
         {% endfor %}
       </select>
 
-        <form id="data-file-form"
+      <form id="data-file-form"
           hx-post="/upload-data-file/"
           hx-trigger="change from:#file-input"
           hx-swap="multi:#main-view,#tree-view:outerHTML"
