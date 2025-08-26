@@ -129,14 +129,15 @@
     }
   });
 
-  // Keep tab switching functionality
   function openTab(event, tabId, tabContainerId) {
     event.target.parentNode.querySelector(".active")?.classList.remove("active");
     event.target.classList.add("active");
 
+    const container = document.getElementById(tabContainerId);
     if (container) {
       container.querySelectorAll('.tabcontent').forEach(pane => pane.classList.remove('active'));
     }
+
     const target = document.getElementById(tabId);
     if (target) target.classList.add('active');
   }
