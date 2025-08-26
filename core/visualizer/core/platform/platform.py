@@ -20,20 +20,36 @@ class Platform:
     
 
     def delete_workspace(self, workspace_id: str) -> bool:
-        """Delete an existing workspace. Automatically switch if necessary."""
-        if workspace_id in self.workspaces:
-            del self.workspaces[workspace_id]
-            # switch to another workspace if any left
-            if self.workspaces:
-                self.current_workspace_id = next(iter(self.workspaces))
-                # regenerate the graph for the new current workspace
-                current_ws = self.workspaces[self.current_workspace_id]
-                if current_ws.data_file_string:
-                    current_ws.generate_graph()
+        """Delete an existing workspace. Automatically switch to the next workspace if possible."""
+        if workspace_id not in self.workspaces:
+            return False
+
+        # Get ordered list of workspace IDs
+        ids = list(self.workspaces.keys())
+        idx = ids.index(workspace_id)  # index of workspace to delete
+
+        # Delete the workspace
+        del self.workspaces[workspace_id]
+
+        # Determine new current_workspace_id
+        remaining_ids = list(self.workspaces.keys())
+        if remaining_ids:
+            if idx < len(remaining_ids):
+                self.current_workspace_id = remaining_ids[idx]  # next workspace
             else:
-                self.current_workspace_id = None
-            return True
-        return False
+                self.current_workspace_id = remaining_ids[-1]  # last workspace if deleted was last
+        else:
+            self.current_workspace_id = None  # no workspace left
+
+        # Regenerate graph if needed
+        if self.current_workspace_id:
+            current_ws = self.workspaces[self.current_workspace_id]
+            if current_ws.data_file_string:
+                current_ws.generate_graph()
+
+        return True
+
+
 
     def get_selected_workspace(self) -> Workspace:
         """Return the currently selected workspace."""

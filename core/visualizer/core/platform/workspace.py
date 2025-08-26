@@ -142,11 +142,18 @@ class Workspace:
         """
         return tree_view.render(self.__graph_manager.graph)
 
-    def render_app_header(self) -> Tuple[str, str]:
+    def render_app_header(
+        self, 
+        workspaces: Optional[list[dict]] = None, 
+        selected_workspace: Optional[str] = None
+    ) -> Tuple[str, str]:
         """
         Returns the required header and body html content that needs to be included in page
         in order to display the app header.
-
-        :return: (header,body) html string that should be included in page.
         """
-        return app_header_view.render(self.__plugin_manager)
+        return app_header_view.render(
+            self.__plugin_manager,
+            workspaces=workspaces,
+            selected_workspace=selected_workspace
+        )
+
