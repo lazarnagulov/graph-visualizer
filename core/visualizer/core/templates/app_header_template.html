@@ -40,8 +40,6 @@
           <button type="button" id="search-apply" hx-post="/search-graph/" hx-include="#search-input"
                  hx-swap="multi:#main-view,#tree-view:outerHTML">Apply</button>
       </div>
-      <button type="button" id="filter-reload" hx-get="/reload-graph"
-              hx-swap="multi:#main-view,#tree-view:outerHTML">Reload</button>
     </div>
 
     <div id="main-tab" class="tabcontent active">
@@ -100,6 +98,8 @@
         </div>
       </div>
     </div>
+    <button type="button" id="filter-reload" hx-get="/reload-graph"
+            hx-swap="multi:#main-view,#tree-view:outerHTML">Reload</button>
   </div>
 </div>
 

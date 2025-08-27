@@ -120,7 +120,7 @@ def search_graph(request):
 
 def reload_graph(_request):
     workspace: Workspace = __get_workspace()
-    workspace.generate_graph()
+    workspace.generate_graph(True)
     return __build_views_response(workspace)
 
 

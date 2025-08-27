@@ -26,6 +26,10 @@ class GraphManager:
         return self.__graph
 
     @property
+    def properties(self) -> Dict[str, Any]:
+        return self.__properties
+
+    @property
     def graph_generated(self) -> bool:
         return self.__graph_generated
 

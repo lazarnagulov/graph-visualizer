@@ -92,9 +92,12 @@ class Workspace:
         """
         return self.__command_service.execute_command(self.__graph_manager.graph, command_input)
 
-    def generate_graph(self, **kwargs) -> None:
+    def generate_graph(self, use_properties: bool = False, **kwargs) -> None:
         """ Generate the graph using the currently selected data source plugin. """
-        self.__graph_manager.generate(file_content=self.__graph_manager.data_file_string, **kwargs)
+        if use_properties:
+            self.__graph_manager.generate(**self.__graph_manager.properties)
+        else:
+            self.__graph_manager.generate(file_content=self.__graph_manager.data_file_string, **kwargs)
 
     def filter_graph(self, key: str, operator: str, value: Any) -> str:
         """
