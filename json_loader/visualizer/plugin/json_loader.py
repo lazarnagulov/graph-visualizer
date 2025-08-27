@@ -79,6 +79,8 @@ class JsonLoader(DataSourcePlugin):
             self.__resolve_edges(graph)
         except json.JSONDecodeError:
             raise InvalidParameterValueError("Provided file_content is not valid JSON.")
+        except ValueError as e:
+            raise InvalidParameterValueError(str(e))
 
         return graph
 
