@@ -1,0 +1,35 @@
+[
+  {
+    "name": "pera",
+    "value": 0
+  },
+  {
+    "name": "mika",
+    "value": 2,
+    "friend": "&pera"
+  },
+  {
+    "name": "zoka",
+    "value": 5,
+    "friend": "&mika",
+    "rival": "&lena"
+  },
+  {
+    "name": "lena",
+    "value": 3,
+    "friend": "&pera",
+    "mentor": "&zoka"
+  },
+  {
+    "name": "jovan",
+    "value": 7,
+    "enemy": "&mika",
+    "partner": "&lena"
+  },
+  {
+    "name": "ana",
+    "value": 4,
+    "friend": "&jovan",
+    "rival": "&zoka"
+  }
+]

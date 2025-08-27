@@ -1,0 +1,32 @@
+[
+  {
+    "name": "alice",
+    "role": "frontend",
+    "experience": 3
+  },
+  {
+    "name": "bob",
+    "role": "backend",
+    "experience": 5,
+    "mentor": "ref:alice"
+  },
+  {
+    "name": "carol",
+    "role": "devops",
+    "experience": 6,
+    "teammate": "ref:bob",
+    "manager": "ref:eve"
+  },
+  {
+    "name": "dave",
+    "role": "fullstack",
+    "experience": 2,
+    "mentor": "ref:carol"
+  },
+  {
+    "name": "eve",
+    "role": "team lead",
+    "experience": 10,
+    "teammate": "ref:alice"
+  }
+]
