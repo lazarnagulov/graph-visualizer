@@ -28,15 +28,21 @@ class VisualizerPlugin(Plugin):
         All nodes and edges that implement the "Mouse over" functionality must be tagged with ``"mouse-over"=true``.
 
         Visualizer plugin must have exactly one <div> element tagged with ``"id"="[visualizer type]visualizer-main-div"``.
-        Visualizer plugin must have exactly one <svg> element.
+        Visualizer plugin must have exactly one <svg> element tagged with ``"id"="visualizer-container"``.
         It is recommended that these two elements be implemented so that the <svg> element is a child of the <div> element.
             Otherwise, correct behaviour of the program cannot be guaranteed.
+        Visualizer plugin must call the ``window.initializeBirdView(links, nodes)`` function at the end of its own initialization.
+            Function parameters:
+                1. links - An array of all edge objects of the graph.
+                2. nodes - An array of all node objects of the graph.
 
         Visualizer plugin should define a global getGraphSimulation() function for accessing the d3 simulation object.
 
         For example::
 
             window.getGraphSimulation = () => simulation;
+        
+        Visualizer plugin must call the ``window.updateBirdView()`` function every time the simulation tick happens.
 
         :param graph: The graph to visualize.
         :param kwargs: Arbitrary keyword arguments for customization (e.g., layout options).

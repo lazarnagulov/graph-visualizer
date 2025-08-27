@@ -25,17 +25,18 @@ def index(request):
     workspace: Workspace = __get_workspace()
     main_view_head, plugin_head, main_view_body = workspace.render_main_view()
     tree_view_head, tree_view_body = workspace.render_tree_view()
-    # --- Pass workspaces and selected workspace for workspace counter ---
     platform = apps.get_app_config('graph_explorer').platform
     workspaces_list = [{"id": ws.id} for ws in platform.list_workspaces()]
     _, app_header = workspace.render_app_header(workspaces=workspaces_list, selected_workspace=platform.current_workspace_id)
+    bird_view_head, bird_view_body = workspace.render_bird_view()
 
     return render(request, 'index.html', {
         'title': 'Graph Explorer',
         'app_header': app_header,
         'main_view': main_view_body,
-        'head': main_view_head + plugin_head + tree_view_head,
+        'head': main_view_head + plugin_head + tree_view_head + bird_view_head,
         'tree_view': tree_view_body,
+        'bird_view': bird_view_body
     })
 
 

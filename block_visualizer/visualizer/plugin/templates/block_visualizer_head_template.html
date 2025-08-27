@@ -30,6 +30,7 @@
 
         // Create the SVG container.
         const svg = d3.select("#block-visualizer-main-div").append("svg")//;.create("svg")
+            .attr("id", "visualizer-container")
             .attr("width", width)
             .attr("height", height)
             .attr("viewBox", [-width / 2, -height / 2, width, height])
@@ -120,6 +121,7 @@
             .attr("dy", "20px")
             .text(d => `${d[0]}: ${d[1]}`);
 
+        window.initializeBirdView(links, nodes);
         
         // Align node borders.
         const nodeBoundingBoxSeparators = document.getElementsByClassName("node-bounding-box-separator");
@@ -147,8 +149,8 @@
         simulation.on("tick", () => {
             link.attr("d", linkPath)
             node.attr("transform", d => `translate(${d.x}, ${d.y})`);
+            window.updateBirdView();
         });
-
 
         function linkPath(d) {
             const source = document.getElementById(d.source.id);
