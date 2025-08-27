@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from visualizer.core.command.command_result import CommandResult, CommandStatus
 from visualizer.core.platform.workspace import Workspace
 from visualizer.core.service.plugin_service import PluginService
+from visualizer.core.platform.platform import Platform
 
 from .apps import datasource_group, visualizer_group
 
@@ -44,13 +45,20 @@ def visualizer_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
     workspace.set_visualizer_plugin(plugin_id)
-    return __build_views_response(workspace, True)  # we only include visualizer head when it's changed
+    return __build_views_response(workspace, True)
 
 
 def data_source_change(request):
     plugin_id: str = request.GET.get('plugin_id')
     workspace: Workspace = __get_workspace()
-    workspace.set_data_source_plugin(plugin_id)
+    try:
+        workspace.set_data_source_plugin(plugin_id)
+    except Exception as e:
+        response = HttpResponse(str(e), content_type="text/plain")
+        response["HX-Reswap"] = "innerHTML"
+        response["HX-Retarget"] = "#loader-error"
+        return response
+
     return __build_views_response(workspace)
 
 
@@ -59,8 +67,17 @@ def data_file_upload(request):
     if request.method == "POST" and 'file_input' in request.FILES:
         uploaded_file: UploadedFile = request.FILES['file_input']
         file_string = uploaded_file.read()
+        keys = request.POST.getlist("extra_keys")
+        values = request.POST.getlist("extra_values")
+        extra_props = {k: v for k, v in zip(keys, values) if k.strip()}
         workspace.data_file_string = file_string
-        workspace.generate_graph()
+        try:
+            workspace.generate_graph(**extra_props)
+        except Exception as e:
+            response = HttpResponse(str(e), content_type="text/plain")
+            response["HX-Reswap"] = "innerHTML"
+            response["HX-Retarget"] = "#loader-error"
+            return response
 
     return __build_views_response(workspace)
 
@@ -105,8 +122,48 @@ def search_graph(request):
 
 def reload_graph(_request):
     workspace: Workspace = __get_workspace()
-    workspace.generate_graph()
+    workspace.generate_graph(True)
     return __build_views_response(workspace)
+
+
+def create_workspace(_request):
+    platform = apps.get_app_config('graph_explorer').platform
+    platform.create_workspace()
+    return __build_workspace_response(platform)
+
+
+def delete_workspace(_request):
+    platform = apps.get_app_config('graph_explorer').platform
+    current_id = platform.current_workspace_id
+    platform.delete_workspace(current_id)
+    return __build_workspace_response(platform)
+
+
+def switch_workspace_next(_request):
+    platform = apps.get_app_config('graph_explorer').platform
+    platform.switch_to_next_workspace()
+    return __build_workspace_response(platform)
+
+
+def switch_workspace_back(_request):
+    platform = apps.get_app_config('graph_explorer').platform
+    platform.switch_to_previous_workspace()
+    return __build_workspace_response(platform)
+
+
+def __build_workspace_response(platform: Platform):
+    workspace = platform.get_selected_workspace()
+
+    workspaces_list = [{"id": ws.id} for ws in platform.list_workspaces()]
+    _, app_header = workspace.render_app_header(workspaces=workspaces_list,
+                                                selected_workspace=platform.current_workspace_id)
+
+    main_view_head, plugin_head, main_view_body = workspace.render_main_view()
+    tree_view_head, tree_view_body = workspace.render_tree_view()
+
+    body = main_view_body + tree_view_body
+
+    return HttpResponse(app_header + body)
 
 
 def __get_workspace() -> Workspace:
@@ -139,92 +196,3 @@ def __build_views_response(workspace: Workspace = None, include_plugin_head=Fals
     body = main_view_body + tree_view_body
 
     return HttpResponse(head + body)
-
-
-# WORKSPACE FUNC
-
-def create_workspace(request):
-    platform = apps.get_app_config('graph_explorer').platform
-    platform.create_workspace()
-    workspace = platform.get_selected_workspace()
-
-    # --- Pass workspaces and selected workspace for workspace counter ---
-    workspaces_list = [{"id": ws.id} for ws in platform.list_workspaces()]
-    _, app_header = workspace.render_app_header(workspaces=workspaces_list, selected_workspace=platform.current_workspace_id)
-
-    main_view_head, plugin_head, main_view_body = workspace.render_main_view()
-    tree_view_head, tree_view_body = workspace.render_tree_view()
-
-    body = main_view_body + tree_view_body
-    head = main_view_head + plugin_head + tree_view_head
-
-    # Return multi-swap response for HTMX
-    response = HttpResponse(app_header + body)
-    return response
-
-
-def delete_workspace(request):
-    platform = apps.get_app_config('graph_explorer').platform
-    current_id = platform.current_workspace_id
-    platform.delete_workspace(current_id)
-    workspace = platform.get_selected_workspace()
-
-    # --- Pass workspaces and selected workspace for workspace counter ---
-    workspaces_list = [{"id": ws.id} for ws in platform.list_workspaces()]
-    _, app_header = workspace.render_app_header(workspaces=workspaces_list, selected_workspace=platform.current_workspace_id)
-
-    main_view_head, plugin_head, main_view_body = workspace.render_main_view()
-    tree_view_head, tree_view_body = workspace.render_tree_view()
-
-    body = main_view_body + tree_view_body
-    head = main_view_head + plugin_head + tree_view_head
-
-    return HttpResponse(app_header + body)
-
-
-def switch_workspace_back(request):
-    platform = apps.get_app_config('graph_explorer').platform
-    ids = list(platform.workspaces.keys())
-    if platform.current_workspace_id and ids:
-        idx = ids.index(platform.current_workspace_id)
-        new_idx = max(0, idx - 1)
-        platform.switch_workspace(ids[new_idx])
-    workspace = platform.get_selected_workspace()
-
-    # --- Pass workspaces and selected workspace for workspace counter ---
-    workspaces_list = [{"id": ws.id} for ws in platform.list_workspaces()]
-    _, app_header = workspace.render_app_header(workspaces=workspaces_list, selected_workspace=platform.current_workspace_id)
-
-    main_view_head, plugin_head, main_view_body = workspace.render_main_view()
-    tree_view_head, tree_view_body = workspace.render_tree_view()
-
-    body = main_view_body + tree_view_body
-    head = main_view_head + plugin_head + tree_view_head
-
-    # Return multi-swap response for HTMX
-    response = HttpResponse(app_header + body)
-    return response
-
-
-def switch_workspace_next(request):
-    platform = apps.get_app_config('graph_explorer').platform
-    ids = list(platform.workspaces.keys())
-    if platform.current_workspace_id and ids:
-        idx = ids.index(platform.current_workspace_id)
-        new_idx = min(len(ids) - 1, idx + 1)
-        platform.switch_workspace(ids[new_idx])
-    workspace = platform.get_selected_workspace()
-
-    # --- Pass workspaces and selected workspace for workspace counter ---
-    workspaces_list = [{"id": ws.id} for ws in platform.list_workspaces()]
-    _, app_header = workspace.render_app_header(workspaces=workspaces_list, selected_workspace=platform.current_workspace_id)
-
-    main_view_head, plugin_head, main_view_body = workspace.render_main_view()
-    tree_view_head, tree_view_body = workspace.render_tree_view()
-
-    body = main_view_body + tree_view_body
-    head = main_view_head + plugin_head + tree_view_head
-
-    # Return multi-swap response for HTMX
-    response = HttpResponse(app_header + body)
-    return response

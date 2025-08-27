@@ -2,17 +2,12 @@
   <div class="tab">
     <button class="tablinks active" onclick="openTab(event, 'main-tab', 'app-header-tabs')">Main</button>
     <button class="tablinks" onclick="openTab(event, 'filter-tab', 'app-header-tabs')">Filters</button>
-   
-    <div id="workspace-controls">
-      <!-- <label for="current-workspace">Current Workspace:</label>
-      <input type="text" id="current-workspace" value="{{ selected_workspace }}" readonly /> -->
 
+    <div id="workspace-controls">
       <button hx-get="/create-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">CREATE</button>
       <button hx-get="/delete-workspace/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">DELETE</button>
       <button hx-get="/switch-workspace-back/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">BACK</button>
       <button hx-get="/switch-workspace-next/" hx-swap="multi:#app-header:outerHTML,#main-view,#tree-view:outerHTML">NEXT</button>
-      
-      <!-- Workspace counter -->
       <span id="workspace-counter">{{ current_workspace_index }}/{{ total_workspaces }}</span>
     </div>
   </div>
@@ -45,8 +40,6 @@
           <button type="button" id="search-apply" hx-post="/search-graph/" hx-include="#search-input"
                  hx-swap="multi:#main-view,#tree-view:outerHTML">Apply</button>
       </div>
-      <button type="button" id="filter-reload" hx-get="/reload-graph"
-              hx-swap="multi:#main-view,#tree-view:outerHTML">Reload</button>
     </div>
 
     <div id="main-tab" class="tabcontent active">
@@ -67,7 +60,8 @@
       <select name="plugin_id" id="select-data-source"
               hx-get="/change-data-source"
               hx-trigger="change"
-              hx-swap="multi:#main-view,#tree-view:outerHTML">
+              hx-swap="multi:#main-view,#tree-view:outerHTML"
+              >
         {% for plugin in data_source_plugins %}
           <option value="{{ plugin.id }}" {% if plugin.id == selected_data_source %}selected{% endif %}>
             {{ plugin.name }}
@@ -75,28 +69,39 @@
         {% endfor %}
       </select>
 
-      <label for="file-input">Upload File: </label>
-      <input type="file" id="file-input" name="file_input"
-             hx-post="/upload-data-file/"
-             hx-trigger="change"
-             hx-swap="multi:#main-view,#tree-view:outerHTML"
-             hx-encoding="multipart/form-data">
+      <form id="data-file-form"
+          hx-post="/upload-data-file/"
+          hx-trigger="change from:#file-input"
+          hx-swap="multi:#main-view,#tree-view:outerHTML"
+          hx-encoding="multipart/form-data"
+          oninput="document.getElementById('loader-error').innerHTML='';">
+
+        <label for="file-input">Upload File:</label>
+        <input type="file" id="file-input" name="file_input">
+
+        <button type="button" id="toggle-advanced"
+                onclick="document.getElementById('advanced-modal').style.display='block'">
+          Advanced Settings
+        </button>
+        <div class="tooltip">
+          <img src="static/images/mark.png" alt="error" class="tooltip-icon" width="20" height="20"/>
+          <span class="inline-block tooltiptext" id="loader-error"></span>
+        </div>
+      </form>
+      <div id="advanced-modal" style="display:none;">
+        <div id="advanced-modal-content">
+          <button id="advanced-close" type="button"
+                  onclick="document.getElementById('advanced-modal').style.display='none'">✕</button>
+          <h4>Extra Properties</h4>
+          <div id="kv-list"></div>
+          <button type="button" id="add-kv-btn" onclick="addProperty()">+ Add Property</button>
+        </div>
+      </div>
     </div>
+    <button type="button" id="filter-reload" hx-get="/reload-graph"
+            hx-swap="multi:#main-view,#tree-view:outerHTML">Reload</button>
   </div>
 </div>
-
-<style>
-  #workspace-counter {
-      display: inline-block;
-      margin-left: 300px;
-      font-weight: bold;
-      font-size: 1.0rem;
-      color: #333;
-      vertical-align: middle;
-      padding: 0.8rem;
-  }
-</style>
-
 
 <script>
   document.body.addEventListener('htmx:configRequest', function (event) {
@@ -106,14 +111,45 @@
     }
   });
 
-  // Keep tab switching functionality
   function openTab(event, tabId, tabContainerId) {
     event.target.parentNode.querySelector(".active")?.classList.remove("active");
     event.target.classList.add("active");
 
-    document.querySelector(`#${tabContainerId} > .active`)?.classList.remove("active");
-    document.querySelector(`#${tabId}`)?.classList.add("active");
+    const container = document.getElementById(tabContainerId);
+    if (container) {
+      container.querySelectorAll('.tabcontent').forEach(pane => pane.classList.remove('active'));
+    }
+
+    const target = document.getElementById(tabId);
+    if (target) target.classList.add('active');
   }
 
-  // Removed D3 visualizer/data source JS as it's now fully server-side
+
+   function addProperty() {
+      const kvList = d3.select("#kv-list");
+
+      const item = kvList.append("div")
+        .attr("class", "kv-item");
+
+      item.append("input")
+        .attr("type", "text")
+        .attr("name", "extra_keys")
+        .attr("placeholder", "Key")
+        .attr("form", "data-file-form")
+        .attr("class", "kv-input");
+
+      item.append("input")
+        .attr("type", "text")
+        .attr("name", "extra_values")
+        .attr("placeholder", "Value")
+        .attr("form", "data-file-form")
+        .attr("class", "kv-input");
+
+      item.append("button")
+        .attr("type", "button")
+        .attr("class", "kv-remove")
+        .text("✕")
+        .on("click", () => item.remove());
+    }
+
 </script>
