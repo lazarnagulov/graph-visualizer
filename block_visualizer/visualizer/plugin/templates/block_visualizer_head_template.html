@@ -153,14 +153,19 @@
         });
 
         function linkPath(d) {
+            const source = document.getElementById(d.source.id);
+            const target = document.getElementById(d.target.id);
+
+            if (source === null | target === null) return;
+
             const sx = d.source.x;
             const sy = d.source.y;
-            const sw = document.getElementById(d.source.id).getBBox().width;
-            const sh = document.getElementById(d.source.id).getBBox().height;
+            const sw = source.getBBox().width;
+            const sh = source.getBBox().height;
             const tx = d.target.x;
             const ty = d.target.y;
-            const tw = document.getElementById(d.target.id).getBBox().width;
-            const th = document.getElementById(d.target.id).getBBox().height;
+            const tw = target.getBBox().width;
+            const th = target.getBBox().height;
 
             const elipseRadius = 1;
             const doubleEdgeSpacing = 10
