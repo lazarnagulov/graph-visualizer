@@ -16,95 +16,113 @@
 </style>
 
 <script>
+    window.highlightedTreeNodes = new Set();
+
     function swapHeadContent(event) {
         window.getGraphSimulation = undefined;
-        if (event.detail.pathInfo.requestPath === "/change-visualizer")
-        {
+        if (event.detail.pathInfo.requestPath === "/change-visualizer") {
             const tempContainer = document.createElement("div");
             tempContainer.innerHTML = event.detail.serverResponse;
 
             d3.select(document.head).selectChildren(".plugin-visualizer-head").remove();
             d3.select(document.body).selectChildren(".plugin-visualizer-head").remove();
-            d3.select(tempContainer)
-                .selectAll(".plugin-visualizer-head")
-                .each(function() {
-                    let clonedNode = this.cloneNode(true)
-                    if (clonedNode.nodeName === "SCRIPT") { // recreate script to force execution
-                        const newScript = document.createElement("script");
-                        for (const attr of clonedNode.attributes)
-                            newScript.setAttribute(attr.name, attr.value);
-                        if (!clonedNode.src)
-                            newScript.textContent = clonedNode.textContent;
 
-                        document.body.appendChild(newScript); // put at end of body for better coverage
-                    }
-                    else
-                        document.head.appendChild(clonedNode); // other head tags
-
-                    this.remove();
+            d3.select(tempContainer).selectAll(".plugin-visualizer-head").each(function() {
+                let clonedNode = this.cloneNode(true);
+                if (clonedNode.nodeName === "SCRIPT") {
+                    const newScript = document.createElement("script");
+                    for (const attr of clonedNode.attributes)
+                        newScript.setAttribute(attr.name, attr.value);
+                    if (!clonedNode.src) newScript.textContent = clonedNode.textContent;
+                    document.body.appendChild(newScript);
+                } else {
+                    document.head.appendChild(clonedNode);
+                }
+                this.remove();
             });
 
             event.detail.serverResponse = tempContainer.innerHTML;
         }
     }
+
     function addMainViewFunctionality(event) {
         if (!window.getGraphSimulation) {
             console.log("ERROR: Graph simulation does not exist.");
             return;
         }
+
         const mainDivElements = document.querySelectorAll("[id$='visualizer-main-div']");
         if (mainDivElements.length != 1) {
             console.log("ERROR: There must be exactly one <[visualizer type]visualizer-main-div> element.");
             return;
         }
+
         const visualizerContainer = document.getElementById("visualizer-container");
-        if (visualizerContainer === null) {
+        if (!visualizerContainer || visualizerContainer.tagName != "svg") {
             console.log("ERROR: There must be exactly one <svg id=\"visualizer-container\"> element.");
-            return;
-        }
-        if (visualizerContainer.tagName != "svg") {
-            console.log("ERROR: visualizer-container element must be an <svg> element.");
             return;
         }
 
         let simulation = window.getGraphSimulation();
 
-        // Drag functionality logic.
+        // --- Drag functionality ---
         d3.selectAll("g.node[drag='true']").call(d3.drag()
             .on("start", dragstarted)
             .on("drag", dragged)
-            .on("end", dragended));
-        
-        // Zoom and pan functionality logic.
-        (function initZoom() {
-            d3.select("#visualizer-container").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
-            //d3.selectAll("svg").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
-            // d3.zoom().on("zoom") recognizes the zoom event and applies the transformation it gets to the appropriate <g> elements.
-        })();
+            .on("end", dragended)
+        );
 
-        // "Mouse over" functionality logic.
+        // --- Click to highlight tree node ---
+        d3.selectAll("g.node[drag='true']").on("click", (event, d) => {
+            if (!d || !d.id) return;
+
+            // Reset all main view nodes to default color
+            document.querySelectorAll(".node").forEach(n => n.setAttribute("fill", "black"));
+
+            // Highlight clicked main view node
+            const mainNode = document.getElementById(d.id);
+            if (mainNode) mainNode.setAttribute("fill", "green");
+
+            // Reset previous highlights in Tree view
+            if (window.resetTreeHighlights) window.resetTreeHighlights();
+
+            // Highlight node in Tree view
+            if (window.highlightTreeNode) window.highlightTreeNode(d.id);
+
+            // Highlight node in Bird view
+            if (window.highlightBirdNode) {
+                window.highlightBirdNode(d.id);
+            } else {
+                const birdNode = document.getElementById("bvn-" + d.id);
+                if (birdNode) {
+                    document.querySelectorAll(".bird-view-node").forEach(n => n.setAttribute("fill", "#A00"));
+                    birdNode.setAttribute("fill", "green");
+                }
+            }
+        });
+
+        // --- Zoom & pan ---
+        d3.select("#visualizer-container").call(d3.zoom()
+            .on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform))
+        );
+
+        // --- Mouse over/out ---
         d3.selectAll("*[mouse-over='true']").attr("onmouseover", d => `mouseOver(${JSON.stringify(d)})`);
-        d3.selectAll("*[mouse-over='true']").attr("onmouseout", d => `mouseOut()`)
+        d3.selectAll("*[mouse-over='true']").attr("onmouseout", d => `mouseOut()`);
 
         const dataDisplay = document.createElement("div");
         dataDisplay.id = "data-display";
         mainDivElements[0].appendChild(dataDisplay);
 
-        // Reheat the simulation when drag starts, and fix the subject position.
         function dragstarted(event) {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             event.subject.fx = event.subject.x;
             event.subject.fy = event.subject.y;
         }
-
-        // Update the subject (dragged node) position during drag.
         function dragged(event) {
             event.subject.fx = event.x;
             event.subject.fy = event.y;
         }
-
-        // Restore the target alpha so the simulation cools after dragging ends.
-        // Unfix the subject position now that it’s no longer being dragged.
         function dragended(event) {
             if (!event.active) simulation.alphaTarget(0);
             event.subject.fx = null;
@@ -113,39 +131,34 @@
 
         function mouseOver(element) {
             const properties = element.properties;
-            let dataDisplay = document.getElementById("data-display")
-
             let text = "";
-            if ("id" in element) { // Element is a node.
+            const dataDisplay = document.getElementById("data-display");
+
+            if ("id" in element) {
                 for (const key in properties) {
-                    if (Object.keys(properties).length == 2 && "type" in properties && "value" in properties) {
-                        text += `${properties["value"]}\n`; // Beautifing output in case of a List literal.
+                    if (Object.keys(properties).length === 2 && "type" in properties && "value" in properties) {
+                        text += `${properties["value"]}\n`;
                         break;
                     } else {
                         text += `${key}: ${properties[key]}\n`;
                     }
                 }
-                let nodeBouds = document.getElementById(element.id).getBoundingClientRect();
-                
-                dataDisplay.style.left = `${nodeBouds.left + nodeBouds.width / 2 + 70}px`;
-                dataDisplay.style.top = `${nodeBouds.top}px`;
-
-            } else { // Element is a link.
+                const nodeBounds = document.getElementById(element.id).getBoundingClientRect();
+                dataDisplay.style.left = `${nodeBounds.left + nodeBounds.width / 2 + 70}px`;
+                dataDisplay.style.top = `${nodeBounds.top}px`;
+            } else {
                 for (const key in properties) {
-                    if (Object.keys(properties).length == 1 && typeof(properties[key]) === "boolean") {
-                        text += `${key}\n`; // Beautifing output in case of a link with no additional properties.
+                    if (Object.keys(properties).length === 1 && typeof(properties[key]) === "boolean") {
+                        text += `${key}\n`;
                         break;
                     } else {
                         text += `${key}: ${properties[key]}\n`;
                     }
                 }
-                let sourceNodeBounds = document.getElementById(element.source.id).getBoundingClientRect();
-                let targetNodeBounds = document.getElementById(element.target.id).getBoundingClientRect();
-                let sourceNodeMiddlePoint = [sourceNodeBounds.left + sourceNodeBounds.width / 2, sourceNodeBounds.top + sourceNodeBounds.height / 2];
-                let targetNodeMiddlePoint = [targetNodeBounds.left + targetNodeBounds.width / 2, targetNodeBounds.top + targetNodeBounds.height / 2];
-
-                dataDisplay.style.left = `${(sourceNodeMiddlePoint[0] + targetNodeMiddlePoint[0]) / 2}px`;
-                dataDisplay.style.top = `${(sourceNodeMiddlePoint[1] + targetNodeMiddlePoint[1]) / 2}px`;
+                const sourceBounds = document.getElementById(element.source.id).getBoundingClientRect();
+                const targetBounds = document.getElementById(element.target.id).getBoundingClientRect();
+                dataDisplay.style.left = `${(sourceBounds.left + targetBounds.left)/2}px`;
+                dataDisplay.style.top = `${(sourceBounds.top + targetBounds.top)/2}px`;
             }
 
             dataDisplay.textContent = text;
@@ -154,7 +167,7 @@
         window.mouseOver = mouseOver;
 
         function mouseOut() {
-            var dataDisplay = document.getElementById("data-display")
+            const dataDisplay = document.getElementById("data-display");
             dataDisplay.style.visibility = "hidden";
         }
         window.mouseOut = mouseOut;
