@@ -14,13 +14,13 @@ if errorlevel 1 exit /b 1
 call :install_component "Simple visualizer" "./simple_visualizer"
 if errorlevel 1 exit /b 1
 
-call :install_component "Json loader" "./json_loader"
+call :install_component "Block visualizer" "./block_visualizer"
+if errorlevel 1 exit /b 1
+
+call :install_component "RDF Loader" "./rdf_loader"
 if errorlevel 1 exit /b 1
 
 call :install_component "Python loader" "./python_loader"
-if errorlevel 1 exit /b 1
-
-call :install_component "Block visualizer" "./block_visualizer"
 if errorlevel 1 exit /b 1
 
 call :install_component "Json loader" "./json_loader"

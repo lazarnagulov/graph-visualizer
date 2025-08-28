@@ -1,0 +1,91 @@
+from typing import Optional
+
+from rdflib import Graph as RDFGraph, URIRef, Literal
+from rdflib.namespace import RDF, split_uri
+from visualizer.api.exception.data_source_exception import MissingRequiredParameterError, InvalidParameterValueError
+from visualizer.api.model.graph import Graph
+from visualizer.api.model.node import Node
+from visualizer.api.model.edge import Edge
+from visualizer.api.service.data_source_plugin import DataSourcePlugin
+
+class RDFLoader(DataSourcePlugin):
+
+    def __init__(self):
+        self._graph = Graph()
+        self._nodes_by_uri = {}
+
+    def load(self, **kwargs) -> Graph:
+        self._graph.clear()
+        self._nodes_by_uri.clear()
+
+        file_content: Optional[str] = kwargs.get("file_content", None)
+        if not file_content:
+            raise MissingRequiredParameterError("file_content must be provided")
+        rdf_format: str = kwargs.get("rdf_format", "turtle")
+
+        rdf_graph = RDFGraph()
+        try:
+            rdf_graph.parse(data=file_content, format=rdf_format)
+        except Exception:
+            raise InvalidParameterValueError(f"Provided file_content is not valid RDF.")
+
+        for subj, pred, obj in rdf_graph:
+            subj_node = self._get_or_create_node(subj)
+
+            if pred == RDF.type and isinstance(obj, URIRef):
+                subj_node.add_property("type", str(obj))
+                continue
+
+            try:
+                _, pred_name = split_uri(pred)
+            except ValueError:
+                pred_name = str(pred)
+            except Exception as e:
+                raise InvalidParameterValueError(f"Failed to parse RDF content: {e}")
+
+            if isinstance(obj, Literal):
+                try:
+                    subj_node.add_property(pred_name, obj.value)
+                except Exception as e:
+                    raise InvalidParameterValueError(
+                        f"Failed to add literal property '{pred_name}' to node '{subj}': {e}"
+                    )
+            elif isinstance(obj, URIRef):
+                try:
+                    obj_node = self._get_or_create_node(obj)
+                    edge = Edge(subj_node, obj_node, predicate=pred_name)
+                    self._graph.insert_edge(edge)
+                except Exception as e:
+                    raise InvalidParameterValueError(
+                        f"Failed to create edge from '{subj}' to '{obj}' with predicate '{pred_name}': {e}"
+                    )
+
+        return self._graph
+
+    def _get_or_create_node(self, uri: URIRef) -> Node:
+        uri_str = str(uri)
+        if uri_str not in self._nodes_by_uri:
+            node = Node(uri_str)
+            self._graph.insert_node(node)
+            self._nodes_by_uri[uri_str] = node
+        return self._nodes_by_uri[uri_str]
+
+    def identifier(self) -> str:
+        return "rdf_loader"
+
+    def name(self) -> str:
+        return "RDF Loader"
+
+
+def main():
+    path = "data/rdf/example1.ttl.txt"
+    with open(path, "r", encoding="utf-8") as f:
+        data = f.read()
+
+    loader = RDFLoader()
+    g = loader.load(data)
+    print(g)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,5 @@
 from typing import Tuple, Optional, Any
+import uuid
 
 from visualizer.core.service.command_service import CommandService
 from visualizer.core.service.plugin_service import PluginService
@@ -16,7 +17,8 @@ class Workspace:
         self,
         plugin_service: PluginService,
         command_service: Optional[CommandService] = None,
-        graph_manager: Optional[GraphManager] = None
+        graph_manager: Optional[GraphManager] = None,
+        workspace_id: str = None
     ):
         """
         Initialize the Workspace with plugin and command services.
@@ -28,6 +30,7 @@ class Workspace:
         :param plugin_service: The service responsible for managing available plugins.
         :type plugin_service: PluginService
         """
+        self.id = workspace_id or str(uuid.uuid4())
         self.__command_service = command_service or CommandService(self.generate_graph)
         self.__plugin_manager = PluginManager(plugin_service)
         self.__graph_manager = graph_manager or GraphManager(self.__plugin_manager)
@@ -39,7 +42,7 @@ class Workspace:
         """
         self.__plugin_manager.set_visualizer(identifier)
 
-    def set_data_source_plugin(self, identifier: str) -> None:
+    def set_data_source_plugin(self, identifier: str, **kwargs) -> None:
         """
         Set data source plugin via its identifier.
         :param identifier: plugin identifier
@@ -47,7 +50,7 @@ class Workspace:
         old_identifier: str = self.__plugin_manager.data_source_plugin.identifier()
         self.__plugin_manager.set_data_source(identifier)
         if old_identifier != identifier:
-            self.generate_graph()
+            self.generate_graph(**kwargs)
 
     def __set_default_plugins(self) -> None:
         """ Set plugins to first available. """
@@ -72,7 +75,6 @@ class Workspace:
         :type data_file_string: str
         """
         self.__graph_manager.data_file_string = data_file_string
-        self.generate_graph()
 
     def execute_command(self, command_input: str) -> CommandResult:
         """
@@ -90,9 +92,12 @@ class Workspace:
         """
         return self.__command_service.execute_command(self.__graph_manager.graph, command_input)
 
-    def generate_graph(self) -> None:
+    def generate_graph(self, use_properties: bool = False, **kwargs) -> None:
         """ Generate the graph using the currently selected data source plugin. """
-        self.__graph_manager.generate()
+        if use_properties:
+            self.__graph_manager.generate(**self.__graph_manager.properties)
+        else:
+            self.__graph_manager.generate(file_content=self.__graph_manager.data_file_string, **kwargs)
 
     def filter_graph(self, key: str, operator: str, value: Any) -> str:
         """
@@ -146,11 +151,18 @@ class Workspace:
         """
         return tree_view.render(self.__graph_manager.graph)
 
-    def render_app_header(self) -> Tuple[str, str]:
+    def render_app_header(
+        self, 
+        workspaces: Optional[list[dict]] = None, 
+        selected_workspace: Optional[str] = None
+    ) -> Tuple[str, str]:
         """
         Returns the required header and body html content that needs to be included in page
         in order to display the app header.
-
-        :return: (header,body) html string that should be included in page.
         """
-        return app_header_view.render(self.__plugin_manager)
+        return app_header_view.render(
+            self.__plugin_manager,
+            workspaces=workspaces,
+            selected_workspace=selected_workspace
+        )
+

@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import List, Callable, Dict, Any
 
 from visualizer.api.model.graph import Graph
 from visualizer.core.cli.command_parser import parse_command
@@ -14,18 +14,18 @@ class CommandService:
 
     __slots__ = ["__undo_stack", "__redo_stack", "__graph_generator"]
 
-    def __init__(self, graph_generator: Callable[[], None]) -> None:
+    def __init__(self, graph_generator: Callable[..., None]) -> None:
         """
         Initialize the CommandService with undo and redo stacks.
 
         This sets up internal stacks to manage command history, allowing support for undoing
         and redoing commands.
         """
-        self.__graph_generator: Callable[[], None] = graph_generator
+        self.__graph_generator: Callable[..., None] = graph_generator
         self.__undo_stack: List[Command] = []
         self.__redo_stack: List[Command] = []
 
-    def execute_command(self, graph: Graph, command_input: str) -> CommandResult:
+    def execute_command(self, graph: Graph, command_input: str, **kwargs) -> CommandResult:
         """
         Parse and execute a command string.
 
@@ -47,7 +47,7 @@ class CommandService:
                     return CommandResult(CommandStatus.INFO, self.help())
 
                 case "reload":
-                    self.__graph_generator()
+                    self.__graph_generator(**kwargs)
                     return CommandResult.success()
 
                 case _:

@@ -1,6 +1,8 @@
 import ast
 import os
+from typing import Optional
 
+from visualizer.api.exception.data_source_exception import MissingRequiredParameterError, InvalidParameterValueError
 from visualizer.api.model.graph import Graph
 from visualizer.api.service.data_source_plugin import DataSourcePlugin
 from visualizer.plugin.code_visitor import CodeVisitor
@@ -11,9 +13,16 @@ class PythonLoader(DataSourcePlugin):
     def __init__(self):
         self.__visitor = CodeVisitor()
 
-    def load(self, file_string: str, **kwargs) -> Graph:
+    def load(self, **kwargs) -> Graph:
+        file_content: Optional[str] = kwargs.get('file_content', None)
+        if not file_content:
+            raise MissingRequiredParameterError("file_content must be provided")
+
         self.__visitor.graph = Graph()
-        tree = ast.parse(file_string)
+        try:
+            tree = ast.parse(file_content)
+        except SyntaxError:
+            raise InvalidParameterValueError(f"Provided file_content is not valid Python code.")
         self.__visitor.visit(tree)
         return self.__visitor.graph
 
