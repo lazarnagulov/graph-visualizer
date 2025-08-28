@@ -77,10 +77,16 @@
         
         // Zoom and pan functionality logic.
         (function initZoom() {
-            d3.select("#visualizer-container").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
+            d3.select("#visualizer-container").call(d3.zoom().on("zoom", e => calculateZoom(e)));
+            //d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
             //d3.selectAll("svg").call(d3.zoom().on("zoom", e => d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform)));
             // d3.zoom().on("zoom") recognizes the zoom event and applies the transformation it gets to the appropriate <g> elements.
         })();
+
+        function calculateZoom(e) {
+            d3.selectAll("g[zoom-and-pan='true']").attr("transform", e.transform);
+            updateViewport();
+        }
 
         // "Mouse over" functionality logic.
         d3.selectAll("*[mouse-over='true']").attr("onmouseover", d => `mouseOver(${JSON.stringify(d)})`);
