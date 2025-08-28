@@ -1,0 +1,3 @@
+class ParserError(Exception):
+    """Exception raised when parser error occurs."""
+    ...

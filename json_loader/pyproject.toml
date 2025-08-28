@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "json_loader"
+version = "1.0.1"
+description = "Json loader"
+dependencies = [
+    "graph-visualizer-api==0.1.1",
+]
+
+[project.scripts]
+json_loader = "visualizer.command.json_config:config"
+
+[tool.setuptools]
+provides = ["visualizer.commands", "visualizer.plugin"]
+
+[project.entry-points."visualizer.datasource"]
+datasource_json = "visualizer.plugin.json_loader:JsonLoader"

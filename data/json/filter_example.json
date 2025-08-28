@@ -1,0 +1,29 @@
+[
+  {
+    "@id": "1",
+    "connected": ["&2", "&3", "&4"],
+    "name": "One",
+    "fruits": "Apple, Banana",
+    "value": 3
+  },
+  {
+    "@id": "2",
+    "connected": ["&1", "&4", "&3"],
+    "name": "Two",
+    "fruits": "Banana, Orange",
+    "value": 7
+  },
+  {
+    "@id": "3",
+    "connected": ["&1", "&4", "&2"],
+    "name": "Three",
+    "value": -5
+  },
+  {
+    "@id": "4",
+    "connected": ["&1", "&3", "&2"],
+    "name": "Four",
+    "fruits": "Peach, Fig",
+    "value": 0
+  }
+]

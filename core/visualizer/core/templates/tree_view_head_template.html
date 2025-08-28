@@ -1,0 +1,176 @@
+<style>
+    .tree-node .tree-node { /* Skip root nodes */
+        margin-left: 30px;
+    }
+    .tree-property-id {
+        margin-left: 1px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .tree-node-properties {
+        margin-left: 20px;
+    }
+    .tree-arrow-container {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+    }
+    .tree-arrow {
+        vertical-align: middle;
+    }
+    .tree-hidden {
+        display: none;
+    }
+    .highlighted-node {
+        /* background-color: yellow; */
+        border-left: 3px solid lightgreen;
+    }
+    #tree-view {
+        overflow:auto;
+        width: 100%;
+        height: 100%;
+        text-wrap: nowrap;
+    }
+</style>
+
+<script>
+window.highlightedTreeNodes = window.highlightedTreeNodes || new Set();
+
+window.renderTreeView = function(graph) {
+    const tree_view = d3.select("#tree-view-inner");
+
+    const root_nodes = tree_view.selectAll("div")
+        .data(graph.start_nodes)
+        .enter()
+        .append("div")
+        .classed("tree-node", true)
+        .attr("tree_state", "not-generated");
+
+    root_nodes.each(function(d) { createHeader(this, d); });
+
+    function toggleNodeState(containerElement, nodeIndex) {
+        const node = graph.nodes[nodeIndex];
+        const container = d3.select(containerElement);
+        const state = containerElement.getAttribute("tree_state");
+
+        if (state === "not-generated") {
+            const node_body = container.append("div").classed("tree-node-body", true);
+            const node_properties = node_body.append("div").classed("tree-node-properties", true);
+
+            Object.entries(node.properties).forEach(([key, value]) => {
+                node_properties.append("div").text(`- ${key}: ${value}`);
+            });
+
+            if (node.children) {
+                node_body.selectAll(".tree-node-header")
+                    .data(node.children)
+                    .enter()
+                    .append("div")
+                    .classed("tree-node", true)
+                    .attr("tree_state", "not-generated")
+                    .each(function(d) { createHeader(this, d); });
+            }
+
+            containerElement.setAttribute("tree_state", "expanded");
+            container.select(".tree-arrow").attr("src", "static/images/arrow-down.svg");
+        } else if (state === "expanded") {
+            container.select(".tree-node-body").classed("tree-hidden", true);
+            container.select(".tree-arrow").attr("src", "static/images/arrow-right.svg");
+            containerElement.setAttribute("tree_state", "collapsed");
+        } else {
+            container.select(".tree-node-body").classed("tree-hidden", false);
+            container.select(".tree-arrow").attr("src", "static/images/arrow-down.svg");
+            containerElement.setAttribute("tree_state", "expanded");
+        }
+    }
+
+    function createHeader(containerElement, nodeIndex) {
+        const node = graph.nodes[nodeIndex];
+        const container = d3.select(containerElement);
+        const header = container.append("div").classed("tree-node-header", true);
+
+        header.append("div")
+            .classed("tree-arrow-container", true)
+            .on("click", (event) => toggleNodeState(containerElement, nodeIndex))
+            .append("img")
+            .classed("tree-arrow", true)
+            .attr("src", "static/images/arrow-right.svg")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        header.append("div")
+            .classed("tree-property-id", true)
+            .text(`Id: ${node.id}`);
+    }
+
+    /** Highlight only the exact node; children remain collapsed */
+    window.highlightTreeNode = function(nodeId) {
+        d3.selectAll(".highlighted-node").classed("highlighted-node", false);
+        const visited = new Set();
+        let found = false;
+
+        function search(container) {
+            let nodeFound = false;
+
+            container.selectAll(".tree-node")
+                .filter(function() { return this.parentNode === container.node(); })
+                .each(function(d) {
+                    if (nodeFound || found) return;
+                    const nodeContainer = d3.select(this);
+                    if (visited.has(d)) return;
+                    visited.add(d);
+
+                    const nodeData = graph.nodes[d];
+                    const header = nodeContainer.select(".tree-property-id");
+
+                    if (!header.empty() && header.text().endsWith(nodeId)) {
+                        // Highlight this node only
+                        nodeContainer.select(".tree-node-header").classed("highlighted-node", true);
+                        this.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                        // Expand ancestors so node is visible
+                        expandParents(this);
+
+                        nodeFound = true;
+                        found = true;
+                        return;
+                    }
+
+                    // Expand if needed to continue searching
+                    const state = this.getAttribute("tree_state");
+                    if (state === "not-generated") toggleNodeState(this, d);
+
+                    const body = nodeContainer.select(".tree-node-body");
+                    if (!body.empty()) {
+                        const childFound = search(body);
+                        if (childFound) nodeFound = true;
+                    }
+                });
+
+            return nodeFound;
+        }
+
+        function expandParents(element) {
+            let parent = element.parentNode;
+            while (parent && parent.id !== "tree-view-inner") {
+                if (parent.classList.contains("tree-node")) {
+                    parent.setAttribute("tree_state", "expanded");
+                    d3.select(parent).select(".tree-node-body").classed("tree-hidden", false);
+                    d3.select(parent).select(".tree-arrow").attr("src", "static/images/arrow-down.svg");
+                }
+                parent = parent.parentNode;
+            }
+        }
+
+        search(d3.select("#tree-view-inner"));
+    }
+
+    // Optional: reset all highlights
+    window.resetTreeHighlights = function() {
+        document.querySelectorAll("#tree-view-inner .tree-node").forEach(n => {
+            n.classList.remove("highlighted-node");
+        });
+        window.highlightedTreeNodes.clear();
+    }
+}
+</script>

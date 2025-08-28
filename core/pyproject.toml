@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graph-visualizer-core"
+version = "0.0.1"
+description = "Graph visualizer core component that contains busines logic and rules."
+dependencies = [
+    "graph-visualizer-api==0.1.1"
+]
+
+[tool.setuptools.data-files]
+templates = ["visualizer/core/templates/*"]
+
+[project.scripts]
+repl = "visualizer.core.cli.repl:run_repl"

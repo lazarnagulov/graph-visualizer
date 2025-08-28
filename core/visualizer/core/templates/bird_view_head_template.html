@@ -1,0 +1,136 @@
+<style>
+    #bird-view-container {
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+        border: 1px solid #CCC;
+    }
+</style>
+
+<script>
+    const paddingFactor = 1; // Increases the distance between edges of the Bird view graph and its borders.
+                             // Range is 0-1. It is inversly proportional.
+    let mainViewNodes;
+    let mainViewLinks;
+    let mainViewNodesContainer;
+    let birdViewNodes;
+    let birdViewLinks;
+    let birdViewSize;
+    let graphWidth;
+    let graphHeight;
+
+    function updateBirdView() {
+        if (mainViewNodesContainer === undefined | birdViewNodes.length <= 0) return;
+
+        graphBoundingBox = mainViewNodesContainer.getBoundingClientRect();
+        
+        // Recalculate graph size
+        graphWidth = Math.max(graphWidth, graphBoundingBox.width);
+        graphHeight = Math.max(graphHeight, graphBoundingBox.height);
+
+        /*
+        transform = mainViewNodesContainer.getAttribute("transform")
+        if (transform == null) {
+            scale = 1
+        } else {
+            scale = transform.match(/.*scale\((.*)\)/)[1].split(", ");
+        }
+        
+        x = padding + ((birdViewSize.width - padding) - padding) / graphWidth * scale * (mainViewNodes[i].__data__.x + (graphWidth / 2) / scale)
+        y = padding + ((birdViewSize.height - padding) - padding) / graphHeight * scale * (mainViewNodes[i].__data__.y + (graphHeight / 2) / scale)
+        */
+
+        padding = birdViewSize.height * (1 - paddingFactor) / 2
+
+        // Reposition nodes
+        for (let i = 0; i < birdViewNodes.length; i++) {
+            x = padding + ((birdViewSize.width - padding) - padding) / graphWidth * (mainViewNodes[i].__data__.x + graphWidth / 2)
+            y = padding + ((birdViewSize.height - padding) - padding) / graphHeight * (mainViewNodes[i].__data__.y + graphHeight / 2)
+            // Range mapping formula:
+            // output = output_start + (output_end - output_start) / (input_end - input_start) * (input - input_start)
+            // f(x) = (x')
+            // x in range [input_start, input_end]
+            // x' in range [output_start, output_end]
+
+            birdViewNodes[i].setAttribute("transform", `translate(${x}, ${y})`);
+        }
+
+        // Reposition links
+        for (let link of birdViewLinks) {
+            sourcePosition = document.getElementById(link.getAttribute("source")).getAttribute("transform").match(/translate\((.*)\)/)[1].split(", ");
+            destinationPosition = document.getElementById(link.getAttribute("destination")).getAttribute("transform").match(/translate\((.*)\)/)[1].split(", ");
+
+            link.setAttribute("d", `M${sourcePosition[0]},${sourcePosition[1]} L${destinationPosition[0]},${destinationPosition[1]}`);
+        }
+    }
+    window.updateBirdView = updateBirdView;
+
+    function initializeBirdView(links, nodes) {
+        if (nodes.length <= 0) return;
+
+        // Initialize elements
+        mainViewNodes = document.getElementsByClassName("node")
+        mainViewLinks = document.getElementsByClassName("link")
+        birdViewNodes = document.getElementsByClassName("bird-view-node");
+        birdViewLinks = document.getElementsByClassName("bird-view-link");
+        birdViewSize = document.getElementById("bird-view-container").getBoundingClientRect();
+        graphWidth = 0;
+        graphHeight = 0;
+
+        if (mainViewNodes.length <= 0) return;
+        
+        mainViewNodesContainer = mainViewNodes[0].parentNode;
+
+        // Create Bird view elements
+        const container = d3.select("#bird-view-container");
+        container.selectChildren().remove();
+
+        const linkContainer = container
+            .append("g")
+            .attr("id", "bird-view-links")
+            .attr("fill", "none")
+            .attr("stroke", "#000")
+            .attr("stroke-opacity", 1)
+            .attr("stroke-width", 3.2)
+            .selectAll("path")
+            .data(links)
+            .join("path")
+            .attr("class", "bird-view-link")
+            .attr("source", d => "bvn-" + d.source.id)
+            .attr("destination", d => "bvn-" + d.target.id)
+
+        const nodeContainer = container
+            .append("g")
+            .attr("id", "bird-view-nodes")
+            .selectAll("g")
+            .data(nodes)
+            .enter()
+            .append("circle")
+            .attr("id", d => "bvn-" + d.id)
+            .attr("class", "bird-view-node")
+            .attr("r", 5)
+            .attr("fill", "#A00")
+            .on("click", (event, d) => {
+                // Reset other bird nodes
+                document.querySelectorAll(".bird-view-node").forEach(n => n.setAttribute("fill", "#A00"));
+
+                // Reset main view nodes
+                document.querySelectorAll(".node").forEach(n => n.setAttribute("fill", "black"));
+
+                // Highlight clicked bird node
+                const birdNode = document.getElementById("bvn-" + d.id);
+                if (birdNode) birdNode.setAttribute("fill", "green");
+
+                // Highlight corresponding main view node
+                const mainNode = document.getElementById(d.id);
+                if (mainNode) mainNode.setAttribute("fill", "green");
+
+                // Highlight in tree view
+                if (window.resetTreeHighlights) window.resetTreeHighlights();
+                if (window.highlightTreeNode) window.highlightTreeNode(d.id);
+            });
+
+            updateBirdView();
+        }
+    window.initializeBirdView = initializeBirdView;
+</script>

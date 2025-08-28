@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block head_content %}
+    {{ head|safe }}
+{% endblock %}
+{% block content %}
+    <div class="workspace-page">
+        <div class="header">
+            {% csrf_token %}
+            {{ app_header|safe }}
+        </div>
+        <div class="workspace-content">
+            <div class="sidebar">
+                <div class="tree-view">
+                    {{ tree_view|safe }}
+                </div>
+                <div class="bird-view">
+                    {{ bird_view|safe }}
+                </div>
+            </div>
+            <div class="main-column">
+                <div class="main-graph">
+                    {{ main_view|safe }}
+                </div>
+                <div id="cli-terminal">
+                    {% csrf_token %}
+                    <div id="terminal-output"
+                         hx-swap-oob="true"></div>
+                    <input id="terminal-input"
+                           name="command"
+                           placeholder="Enter command..."
+                           hx-post="/execute-command/"
+                           hx-include="[name=command]"
+                           hx-swap="none"
+                           autocomplete="off"
+                           />
+                    <div
+                        hx-get="/generate-graph"
+                        hx-trigger="graph-updated from:body"
+                        hx-swap="multi:#main-view,#tree-view:outerHTML">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        document.addEventListener("htmx:afterRequest", () => {
+          const input = document.getElementById("terminal-input");
+          if (input) input.value = "";
+        });
+
+        document.body.addEventListener("htmx:afterSwap", _ => {
+            if (document.querySelector("#main-view"))
+                addMainViewFunctionality();
+        });
+    </script>
+{% endblock %}
