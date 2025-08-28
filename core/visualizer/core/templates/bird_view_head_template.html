@@ -5,6 +5,12 @@
         overflow: auto;
         border: 1px solid #CCC;
     }
+
+    #viewport {
+        position: fixed;
+        border: 3px solid red;
+        pointer-events: none;
+    }
 </style>
 
 <script>
@@ -18,15 +24,24 @@
     let birdViewSize;
     let graphWidth;
     let graphHeight;
+    let zoomInitiated;
 
     function updateBirdView() {
         if (mainViewNodesContainer === undefined | birdViewNodes.length <= 0) return;
 
         graphBoundingBox = mainViewNodesContainer.getBoundingClientRect();
         
+        // Stop resizing bird view display when the user starts zooming in/out
+        transform = mainViewNodesContainer.getAttribute("transform");
+        if (transform != null) {
+            if (transform.match(/scale\((.*)\)/)[1] != 1) zoomInitiated = true;
+        }
+
         // Recalculate graph size
-        graphWidth = Math.max(graphWidth, graphBoundingBox.width);
-        graphHeight = Math.max(graphHeight, graphBoundingBox.height);
+        if (zoomInitiated == false) {
+            graphWidth = Math.max(graphWidth, graphBoundingBox.width);
+            graphHeight = Math.max(graphHeight, graphBoundingBox.height);
+        }
 
         /*
         transform = mainViewNodesContainer.getAttribute("transform")
@@ -40,7 +55,7 @@
         y = padding + ((birdViewSize.height - padding) - padding) / graphHeight * scale * (mainViewNodes[i].__data__.y + (graphHeight / 2) / scale)
         */
 
-        padding = birdViewSize.height * (1 - paddingFactor) / 2
+        padding = birdViewSize.height * (1 - paddingFactor) / 2;
 
         // Reposition nodes
         for (let i = 0; i < birdViewNodes.length; i++) {
@@ -62,8 +77,57 @@
 
             link.setAttribute("d", `M${sourcePosition[0]},${sourcePosition[1]} L${destinationPosition[0]},${destinationPosition[1]}`);
         }
+
+        // Reposition viewport
+        updateViewport();
+        
     }
     window.updateBirdView = updateBirdView;
+
+    function updateViewport() {
+        a = document.getElementById("main-view").getBoundingClientRect().height
+
+        b = mainViewNodes[0].parentNode.getBoundingClientRect().height
+
+        d = document.getElementById("bird-view-nodes").getBoundingClientRect().height
+
+        height = a * d / b
+
+        e = document.getElementById("main-view").getBoundingClientRect().width
+
+        width = e * height / a
+
+
+        if (mainViewNodes[0].parentNode.getAttribute("transform") == null) {
+            translate = "0,0"
+            scale = "1"
+        } else {
+            translate = mainViewNodes[0].parentNode.getAttribute("transform").match("translate\((.*)\) ")[1].slice(1,-1)
+            scale = mainViewNodes[0].parentNode.getAttribute("transform").match("scale\((.*)\)")[1].slice(1,-1)
+        }
+        
+
+        n = translate.split(",")[0]
+        m = translate.split(",")[1]
+
+
+
+        a = document.getElementById("visualizer-container").getBoundingClientRect().width
+        b = document.getElementById("bird-view-container").getBoundingClientRect().width
+
+        a2 = document.getElementById("visualizer-container").getBoundingClientRect().height
+        b2 = document.getElementById("bird-view-container").getBoundingClientRect().height
+
+        shiftLeft = b * parseFloat(n) / a / 2 / scale
+        shiftTop = b2 * parseFloat(m) / a2 / 4 / scale
+
+        viewport = document.getElementById("viewport")
+        viewport.style.width = `${width}px`;
+        viewport.style.height = `${height}px`;
+        viewport.style.left = `${125 - width / 2 - shiftLeft}px`;
+        viewport.style.top = `${document.getElementsByClassName("workspace-page")[0].getBoundingClientRect().height - 100 - height / 2 - shiftTop}px`;
+    }
+    window.updateViewport = updateViewport;
 
     function initializeBirdView(links, nodes) {
         if (nodes.length <= 0) return;
@@ -76,6 +140,7 @@
         birdViewSize = document.getElementById("bird-view-container").getBoundingClientRect();
         graphWidth = 0;
         graphHeight = 0;
+        zoomInitiated = false;
 
         if (mainViewNodes.length <= 0) return;
         
@@ -129,6 +194,10 @@
                 if (window.resetTreeHighlights) window.resetTreeHighlights();
                 if (window.highlightTreeNode) window.highlightTreeNode(d.id);
             });
+
+            const viewport = document.createElement("div");
+        viewport.setAttribute("id", "viewport");
+        document.getElementsByClassName("bird-view")[0].append(viewport);
 
             updateBirdView();
         }
