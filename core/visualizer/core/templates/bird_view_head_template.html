@@ -109,9 +109,28 @@
             .attr("id", d => "bvn-" + d.id)
             .attr("class", "bird-view-node")
             .attr("r", 5)
-            .attr("fill", "#A00");
+            .attr("fill", "#A00")
+            .on("click", (event, d) => {
+                // Reset other bird nodes
+                document.querySelectorAll(".bird-view-node").forEach(n => n.setAttribute("fill", "#A00"));
 
-        updateBirdView();
-    }
+                // Reset main view nodes
+                document.querySelectorAll(".node").forEach(n => n.setAttribute("fill", "black"));
+
+                // Highlight clicked bird node
+                const birdNode = document.getElementById("bvn-" + d.id);
+                if (birdNode) birdNode.setAttribute("fill", "green");
+
+                // Highlight corresponding main view node
+                const mainNode = document.getElementById(d.id);
+                if (mainNode) mainNode.setAttribute("fill", "green");
+
+                // Highlight in tree view
+                if (window.resetTreeHighlights) window.resetTreeHighlights();
+                if (window.highlightTreeNode) window.highlightTreeNode(d.id);
+            });
+
+            updateBirdView();
+        }
     window.initializeBirdView = initializeBirdView;
 </script>
